@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact - Martin Luther Church & School</title>
+
+  <!-- ✅ Correct CSS Paths -->
+  <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/contact.css" />
+
+  <style>
+    .rate-limit-message {
+      display: none;
+      margin-top: 15px;
+      text-align: center;
+      color: red;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <section class="contact-section">
+    <div class="contact-container">
+
+      <!-- ✅ Left Side: Contact Info -->
+      <div class="contact-info">
+        <h2>Get In Touch!</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <img src="/images/phone.png" alt="Phone Icon" class="info-icon" />
+            <h3>Phone Number</h3>
+            <p>(920) 235-1612</p>
+          </div>
+          <div class="info-item">
+            <img src="/images/mail.png" alt="Mail Icon" class="info-icon" />
+            <h3>Email</h3>
+            <p>office@martinlutheroshkosh.com</p>
+          </div>
+          <div class="info-item">
+            <img src="/images/location.png" alt="Location Icon" class="info-icon" />
+            <h3>Location</h3>
+            <p>1526 Algoma Blvd<br />Oshkosh, WI 54901</p>
+          </div>
+          <div class="info-item">
+            <img src="/images/time.png" alt="Working Hours Icon" class="info-icon" />
+            <h3>Working Hours</h3>
+            <p>Sunday 8am & 10:30am<br />Monday 6pm</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Right Side: Contact Form -->
+      <div class="contact-form">
+        <h2>Contact Us</h2>
+
+        <!-- ✅ No action/method — handled by JavaScript -->
+        <form id="contactForm">
+          <div class="form-row">
+            <input type="text" name="firstName" placeholder="First Name *" required />
+            <input type="text" name="lastName" placeholder="Last Name" />
+          </div>
+
+          <div class="form-row">
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Mobile No *"
+              pattern="[0-9]{7,15}"
+              maxlength="15"
+              required
+              oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+            />
+            <input type="email" name="email" placeholder="Email ID *" required />
+          </div>
+
+          <textarea
+            name="message"
+            placeholder="Message (min. 10 characters)"
+            minlength="10"
+            required
+          ></textarea>
+
+          <!-- ✅ Honeypot (anti-bot) field -->
+          <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <button type="submit" class="btn">Submit</button>
+          <div id="rateLimitMsg" class="rate-limit-message"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="/js/header.js"></script>
+  <script src="/js/footer.js"></script>
+
+  <!-- ✅ Cleaned Up JavaScript -->
+  <script>
+    const form = document.getElementById("contactForm");
+    const msgBox = document.getElementById("rateLimitMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msgBox.style.display = "none";
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+
+      try {
+        // ✅ Correct backend endpoint
+        const res = await fetch("/contact/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        // ✅ Handle rate limit
+        if (res.status === 429) {
+          const result = await res.json().catch(() => ({}));
+          const retry = result.retryAfter ? parseInt(result.retryAfter, 10) : 600;
+          startCountdown(retry);
+          return;
+        }
+
+        // ✅ Handle normal success/error
+        const result = await res.json().catch(() => ({}));
+        if (result.ok) {
+          window.location.href = "/html/thankYou.html";
+        } else {
+          msgBox.style.display = "block";
+          msgBox.textContent = result.error || "⚠️ Error sending message.";
+        }
+      } catch (err) {
+        console.error("❌ Network error:", err);
+        msgBox.style.display = "block";
+        msgBox.textContent = "⚠️ Network error. Please try again later.";
+      }
+    });
+
+    // Countdown when rate limited
+    function startCountdown(seconds) {
+      let remaining = seconds;
+      msgBox.style.display = "block";
+      const tick = () => {
+        const minutes = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        msgBox.textContent = `⏳ Too many messages. Try again in ${minutes}:${secs
+          .toString()
+          .padStart(2, "0")}`;
+        if (remaining > 0) {
+          remaining--;
+          setTimeout(tick, 1000);
+        } else {
+          msgBox.style.display = "none";
+        }
+      };
+      tick();
+    }
+  </script>
+
+  <script src="/js/home.js"></script>
+</body>
+</html>

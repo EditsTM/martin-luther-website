@@ -1,0 +1,88 @@
+/* =============================
+   GLOBAL STYLES
+============================= */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  color: #2c3e50;
+  background-color: white;
+}
+
+/* =============================
+   HERO SECTION
+============================= */
+.story-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../images/storybackground.jpg") no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.story-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(66, 121, 188, 0.88); /* 🔵 Consistent transparent blue overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.story-overlay h1 {
+  color: white;
+  font-size: 50px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+/* =============================
+   MAIN CONTENT
+============================= */
+.story-content {
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 30px;
+  text-align: center;
+}
+
+.story-content h2 {
+  color: #282f7f;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.story-content p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+/* =============================
+   RESPONSIVE DESIGN
+============================= */
+@media (max-width: 950px) {
+  .story-overlay h1 {
+    font-size: 38px;
+  }
+
+  .story-content h2 {
+    font-size: 28px;
+  }
+
+  .story-content p {
+    font-size: 17px;
+  }
+}

@@ -1,0 +1,150 @@
+/*footer.css*/
+/* ==================== FOOTER TOP SECTION ==================== */
+/* Main top part of footer with centered content and limited width */
+.footer-top {
+  background: white;            /* white background */
+  color: #2c3e50;               /* dark slate text */
+  padding: 5px 15px;            /* slimmer padding for a tighter footer */
+  max-width: 1100px;            /* don’t stretch beyond 1100px */
+  margin: 0 auto;               /* center horizontally */
+}
+
+/* ==================== FOOTER COLUMNS ==================== */
+/* Places columns (logo, contact, service, location) side by side */
+.footer-columns {
+  display: flex;
+  justify-content: space-evenly; /* equal spacing between AND around items */
+  align-items: flex-start;       /* align columns to the top */
+  flex-wrap: nowrap;             /* keep columns in one row */
+  margin-bottom: 6px;
+  gap: 80px;                     /* spacing between columns */
+}
+
+/* ==================== INDIVIDUAL COLUMNS ==================== */
+/* Each column (contact, service, location) styled independently */
+.footer-column {
+  flex: 0 0 auto;      /* columns only take up their content’s width */
+  text-align: center;  /* center text inside */
+  transform: scale(1.15); /* slightly enlarged for emphasis */
+}
+
+/* ==================== LOGO ==================== */
+.footer-logo {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 15px;   /* moves logo down a bit so top shrinks */
+}
+
+.footer-logo img {
+  max-width: 230px;    /* keeps logo from being too big */
+}
+
+/* ==================== COLUMN HEADINGS ==================== */
+.footer-column h3 {
+  font-size: 23px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #4279bc;      /* lighter site blue */
+}
+
+/* ==================== COLUMN TEXT & LINKS ==================== */
+.footer-column p,
+.footer-column a {
+  font-size: 17px;
+  color: #2c3e50;
+  text-decoration: none;
+  margin: 3px 0;
+}
+
+.footer-column a:hover {
+  text-decoration: underline; /* show underline on hover for clarity */
+}
+
+/* ==================== PRAYER REQUEST BUTTON ==================== */
+/* Big red gradient button, centered under columns */
+.footer .btn {
+  display: block;
+  margin: -8px auto 0 auto;        /* center horizontally, pull up slightly */
+  background: linear-gradient(135deg, #8b0000, #b22222); /* dark red gradient */
+  color: white;
+  padding: 12px 80px;              /* wide button, thinner height */
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 6px;
+  font-size: 20px;
+  letter-spacing: 1px;             /* spaced-out letters */
+  width: 100%;                     /* stretch across parent container */
+  max-width: 500px;                /* cap so it’s not massive on wide screens */
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+/* Hover state: lift slightly + shadow */
+.footer .btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Shine effect overlay */
+.footer .btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg, 
+    rgba(255, 255, 255, 0.3) 0%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);  /* diagonal shine */
+}
+
+/* Shine animation triggered on hover */
+.footer .btn:hover::after {
+  animation: shine 0.8s forwards;
+}
+
+@keyframes shine {
+  0%   { left: -75%; }
+  100% { left: 125%; }
+}
+
+/* ==================== FOOTER BOTTOM BAR ==================== */
+/* Small bottom strip for copyright/info */
+.footer-bottom {
+  background: rgba(66, 121, 188, 0.85); /* semi-transparent blue */
+  color: white;
+  text-align: center;
+  padding: 2px 4px;                     /* thin bar */
+  font-size: 11px;                      /* small text */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* subtle glow for readability */
+  width: 100%;
+  margin: 0;
+}
+
+/* ==================== COLUMN ALIGNMENT FIXES ==================== */
+/* Ensure bottom alignment consistency */
+.footer-contact {
+  margin-top: 55px;
+}
+
+.footer-service {
+  margin-top: 55px;
+}
+
+.footer-location {
+  margin-top: 55px;  /* matches other columns */
+}
+
+/* ==================== FULL FOOTER WRAPPER ==================== */
+/* Wraps all footer sections and adds top border */
+.footer {
+  width: 100%;
+  background: white;
+  border-top: 3px solid #282f7f; /* bold blue line (matches header) */
+}

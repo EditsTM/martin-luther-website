@@ -1,0 +1,193 @@
+/*contact.css*/
+/* ==================== CONTACT SECTION BACKGROUND ==================== */
+/* Creates a full-width section with a blue-tinted background 
+   that stretches vertically and centers its content */
+.contact-section {
+  background: rgba(66, 121, 188, 0.85); /* semi-transparent blue overlay */
+  min-height: 75vh;                     /* at least 75% of viewport height */
+  padding: 60px 20px;                   /* breathing room inside */
+  display: flex;                        /* flex for easy centering */
+  justify-content: center;              /* horizontally center */
+  align-items: flex-start;              /* align to top within section */
+}
+
+/* ==================== FLEX CONTAINER ==================== */
+/* Two-column layout container that stretches wide on desktop */
+.contact-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* two equal-width columns */
+  gap: 40px;                        /* spacing between columns */
+  width: 100%;
+  max-width: 1600px;                /* wide but capped at 1600px */
+  margin: 0 auto;                   /* center on page */
+  box-sizing: border-box;
+  align-items: stretch;             /* columns stretch equally */
+}
+
+/* ==================== LEFT (INFO) & RIGHT (FORM) BOXES ==================== */
+/* Shared box styling for both sides */
+.contact-info,
+.contact-form {
+  display: flex;
+  flex-direction: column;   /* stack content vertically */
+  border-radius: 12px;
+  border: 2px solid black;
+  overflow: hidden;         /* keeps children inside rounded corners */
+  color: #2c3e50;           /* dark slate text */
+  min-height: 600px;        /* keeps sections balanced in height */
+}
+
+/* Backgrounds: left (white), right (grey) */
+.contact-info { background: #ffffff; }
+.contact-form { background: #cfcfcf; }
+
+/* ==================== HEADERS ==================== */
+/* Section headers (both sides) with bold blue background */
+.contact-info h2,
+.contact-form h2 {
+  background: #282f7f;  /* site blue */
+  color: white;
+  margin: 0;
+  padding: 24px;
+  font-size: 30px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ==================== INFO GRID (LEFT BOX) ==================== */
+/* 2x2 grid for address, phone, email, etc. */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  flex: 1;
+}
+
+/* Each info cell inside grid */
+.info-item {
+  padding: 40px 30px;
+  text-align: center;
+  border-top: 1px solid #ccc;  /* horizontal dividers */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+/* Sub-headings in info cells */
+.info-item h3 {
+  font-size: 28px;
+  margin: 12px 0;
+  color: #282f7f;   /* site blue */
+  font-weight: 700;
+}
+
+/* Vertical divider for right-side cells */
+.info-item:nth-child(2),
+.info-item:nth-child(4) {
+  border-left: 1px solid #ccc;
+}
+
+/* ==================== FORM (RIGHT BOX) ==================== */
+/* Form body layout */
+.contact-form form {
+  flex: 1;                     /* take full height */
+  display: flex;
+  flex-direction: column;      /* stack rows */
+  justify-content: space-between;
+  padding: 40px 50px;
+  box-sizing: border-box;
+}
+
+/* Group inputs in a row */
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Inputs inside row */
+.form-row input {
+  flex: 1;                   /* evenly grow inside row */
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+/* ==================== TEXTAREA ==================== */
+/* Larger multi-line input for message */
+textarea {
+  width: 100%;
+  padding: 16px;
+  height: 220px;               /* default tall height */
+  border: 1px solid #555;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  resize: vertical;            /* user can resize vertically */
+  flex-grow: 1;
+  box-sizing: border-box;
+}
+
+/* ==================== SUBMIT BUTTON ==================== */
+/* Big, bold button for sending the form */
+.contact-form .btn {
+  background: #282f7f;        /* site blue */
+  color: white;
+  padding: 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  transition: 0.3s;
+  width: 100%;
+  margin-top: auto;           /* push to bottom if space */
+}
+
+/* Button hover effect */
+.contact-form .btn:hover {
+  background: #1e245f;        /* darker blue */
+}
+
+/* ==================== INFO ICONS ==================== */
+/* Small icons inside info cells */
+.info-item .info-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 12px;
+  object-fit: contain;
+  display: block;
+  /* make icons match brand blue with filter trick */
+  filter: brightness(0) saturate(100%) invert(14%) sepia(44%)
+          saturate(2000%) hue-rotate(210deg) brightness(92%) contrast(90%);
+}
+
+/* ==================== RATE LIMIT ERROR MESSAGE ==================== */
+/* Red error text for when user hits submission limit */
+.rate-limit-message {
+  margin-top: 12px;
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* ==================== LOADING SPINNER ==================== */
+/* Spinner animation shown during form submission */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid rgba(0, 0, 0, 0.1);   /* light background ring */
+  border-top: 4px solid #282f7f;          /* blue rotating part */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;     /* continuous spin */
+}
+
+/* Spin keyframe */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

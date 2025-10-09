@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+/* =============================
+   HEADER
+============================= */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 225px;
+  background: white;
+  border-bottom: 3px solid #282f7f; /* blue line */
+  position: relative;
+  z-index: 1000;
+}
+
+/* =============================
+   LOGO
+============================= */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  max-height: 100px;
+  height: auto;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.logo-link:hover {
+  transform: scale(1.02);
+}
+
+.logo-text h1 {
+  font-weight: 700;
+  font-size: 36px;
+  color: #282f7f;
+}
+
+.logo-text p {
+  font-weight: 500;
+  font-size: 10px;
+  color: #4279bc;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* =============================
+   NAV LINKS
+============================= */
+.nav-links ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+  color: #4279bc;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 10px;
+  display: block;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #282f7f;
+  transform: scale(1.05);
+}
+
+/* =============================
+   DROPDOWN BASE STYLES
+============================= */
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  cursor: pointer;
+}
+
+/* =============================
+   MEGA MENU (FIXED POSITION)
+============================= */
+.mega-menu {
+  position: fixed;
+  top: var(--menu-top, 110px); /* dynamically set via JS */
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  padding: 40px 100px;
+  display: none;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.dropdown.open .mega-menu {
+  display: block;
+  opacity: 1;
+}
+
+/* Invisible hover buffer (no longer used for hover control) */
+.dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  z-index: 1500;
+}
+
+/* =============================
+   GRID LAYOUT INSIDE MENU
+============================= */
+.dropdown-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.mega-column h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  background-color: #1e245f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  margin-bottom: 12px;
+}
+
+.mega-column a {
+  display: block;
+  color: #1e245f;
+  text-decoration: none;
+  margin: 8px 0;
+  font-size: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 6px 0;
+  transition: color 0.2s ease, background 0.2s ease, padding-left 0.2s ease;
+}
+
+.mega-column a:hover {
+  color: #4279bc;
+  background: rgba(230, 240, 255, 0.7);
+  padding-left: 8px;
+}
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 1024px) {
+  .main-header {
+    flex-direction: column;
+    padding: 15px 30px;
+  }
+
+  .nav-links ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mega-menu {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    padding: 25px 40px;
+    top: auto;
+    opacity: 1;
+  }
+
+  .dropdown-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dropdown-content {
+    grid-template-columns: 1fr;
+  }
+}

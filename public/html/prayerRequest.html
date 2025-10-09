@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prayer Request | Martin Luther Church & School</title>
+
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/prayerRequest.css">
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <section class="prayer-hero">
+    <div class="prayer-overlay">
+      <h1>Prayer Requests</h1>
+    </div>
+  </section>
+
+  <section class="prayer-box">
+    <div class="prayer-content">
+      <p>
+        Prayer is more than words—it is our connection with God through faith and reflection.
+        Whether you seek comfort, strength, or gratitude, we are here to lift your requests in prayer.
+      </p>
+      <p><em>Your prayer requests go directly to our pastors.</em></p>
+
+      <!-- ✅ Removed action + method -->
+      <form id="prayerForm">
+        <label for="name">Name:*</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email Address:*</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="prayer">Prayer Request:*</label><br>
+        <textarea id="prayer" name="prayer" rows="5" required></textarea><br><br>
+
+        <input type="text" name="website" style="display:none">
+
+        <label>Would you like this request shared with your church family at Martin Luther? *</label>
+
+        <div class="radio-buttons">
+          <input type="radio" id="yes" name="share" value="yes">
+          <label for="yes" class="radio-btn yes-btn">Yes</label>
+
+          <input type="radio" id="no" name="share" value="no">
+          <label for="no" class="radio-btn no-btn">No</label>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit</button>
+
+        <div id="form-msg"
+             style="display:none;margin-top:12px;padding:10px;border-radius:6px;
+                    background:#fff3cd;color:#856404;font-weight:600;">
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="/js/header.js"></script>
+  <script src="/js/footer.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("prayerForm");
+      const msg = document.getElementById("form-msg");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const share = form.querySelector('input[name="share"]:checked');
+        if (!share) {
+          msg.style.display = "block";
+          msg.textContent = "⚠️ Please select Yes or No.";
+          return;
+        }
+
+        const data = {
+          name: form.name.value,
+          email: form.email.value,
+          prayer: form.prayer.value,
+          share: share.value,
+          website: form.website.value
+        };
+
+        try {
+          const res = await fetch("/prayer/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+
+          if (res.ok) {
+            window.location.href = "/html/thankYou.html";
+            return;
+          }
+
+          const err = await res.json().catch(() => ({}));
+          msg.style.display = "block";
+          msg.textContent = err.error || "⚠️ Error sending prayer request.";
+        } catch (error) {
+          console.error("Network error:", error);
+          msg.style.display = "block";
+          msg.textContent = "⚠️ Network error. Please try again later.";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

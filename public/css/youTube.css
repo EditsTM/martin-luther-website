@@ -1,0 +1,111 @@
+.youtube-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../images/martinLutherYouTube.png") no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.youtube-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(66, 121, 188, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 120px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+.youtube-section {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.youtube-heading {
+  background-color: #282f7f;
+  color: white;
+  font-size: 32px;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+  width: 100%;
+}
+
+.youtube-videos {
+  max-width: 1200px;
+  margin: 30px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.youtube-videos iframe {
+  border: 2px solid #282f7f;
+  border-radius: 6px;
+}
+
+/* Links Section */
+.links-section {
+  background: rgba(66, 121, 188, 0.85);
+  width: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  margin: 0;
+}
+
+.links-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.link-btn {
+  display: inline-block;
+  padding: 16px 40px;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* YouTube Button */
+.youtube-btn { 
+  background: linear-gradient(145deg, #ff0000, #cc0000); 
+}
+.youtube-btn:hover { 
+  background: linear-gradient(145deg, #e60000, #990000); 
+  transform: scale(1.07);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+}
+
+/* Facebook Button */
+.facebook-btn { 
+  background: linear-gradient(145deg, #1877f2, #0f5ec4); 
+}
+.facebook-btn:hover { 
+  background: linear-gradient(145deg, #1d4ed8, #0c4aaf); 
+  transform: scale(1.07);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+}

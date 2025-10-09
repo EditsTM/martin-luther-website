@@ -1,0 +1,76 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Updated image path */
+main.thankyou-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: url("../images/messageSent.jpg") no-repeat center center;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+main.thankyou-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(66, 121, 188, 0.6);
+  z-index: 1;
+}
+
+.thankyou-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 700px;
+}
+
+.thankyou-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+}
+
+.thankyou-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  line-height: 1.5;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.btn {
+  display: inline-block;
+  padding: 15px 40px;
+  font-size: 20px;
+  border: none;
+  background: #4279bc;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.btn:hover {
+  background: white;
+  color: #4279bc;
+  transform: scale(1.05);
+  box-shadow: none;
+  text-shadow: none;
+}
