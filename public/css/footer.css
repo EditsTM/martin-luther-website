@@ -26,7 +26,7 @@
   display: flex;
   align-items: center; /* ✅ centers text vertically with logo */
   justify-content: center;
-  gap: 80px; /* space between logo and text block */
+  gap: 70px; /* tighter space between logo and text */
   flex-wrap: wrap; /* ✅ stacks on mobile */
   text-align: center;
 }
@@ -52,8 +52,10 @@
 .footer-text-group {
   display: flex;
   flex-direction: column;
+  justify-content: center; /* ✅ vertical centering fix */
   align-items: center;
   flex: 1;
+  height: 100%; /* ensures full alignment with logo */
 }
 
 /* =============================
@@ -137,12 +139,8 @@
 }
 
 @keyframes shine {
-  0% {
-    left: -75%;
-  }
-  100% {
-    left: 125%;
-  }
+  0% { left: -75%; }
+  100% { left: 125%; }
 }
 
 /* =============================
