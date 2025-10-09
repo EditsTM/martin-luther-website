@@ -24,10 +24,10 @@
 ============================= */
 .footer-columns {
   display: flex;
-  align-items: center; /* ✅ centers text vertically with logo */
+  align-items: flex-start; /* start alignment, text manually lowered */
   justify-content: center;
-  gap: 70px; /* tighter space between logo and text */
-  flex-wrap: wrap; /* ✅ stacks on mobile */
+  gap: 70px;
+  flex-wrap: wrap;
   text-align: center;
 }
 
@@ -52,10 +52,10 @@
 .footer-text-group {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* ✅ vertical centering fix */
   align-items: center;
   flex: 1;
-  height: 100%; /* ensures full alignment with logo */
+  position: relative;
+  top: 40px; /* ✅ lowers text columns to align with logo middle */
 }
 
 /* =============================
@@ -163,6 +163,10 @@
   .footer-columns {
     flex-direction: column;
     gap: 30px;
+  }
+
+  .footer-text-group {
+    top: 0; /* ✅ reset offset on mobile */
   }
 
   .footer-text-columns {
