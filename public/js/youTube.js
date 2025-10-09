@@ -1,17 +1,22 @@
 // ✅ public/js/youtube.js
-// Front-end: Loads latest and past videos securely from your backend
-// The API key is safely stored in your server's .env file — not here.
+// Front-end script that securely loads videos via your backend proxy.
 
-async function loadVideos() {
+document.addEventListener("DOMContentLoaded", async () => {
   const latestContainer = document.getElementById("latest-stream");
   const pastContainer = document.getElementById("past-streams");
 
-  try {
-    // 🔒 Fetch video data from your backend (which calls YouTube privately)
-    const response = await fetch("/api/youtube");
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  if (!latestContainer || !pastContainer) {
+    console.error("❌ Missing video containers in HTML.");
+    return;
+  }
 
-    const data = await response.json();
+  try {
+    // 🔒 Fetch video data from your backend
+    const res = await fetch("/api/youtube");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    console.log("✅ YouTube API Data:", data);
 
     if (!data.items || data.items.length === 0) {
       latestContainer.innerHTML = "<p>No videos found.</p>";
@@ -19,40 +24,46 @@ async function loadVideos() {
       return;
     }
 
-    // 🎥 First video = most recent livestream or upload
-    const latestVideo = data.items[0].snippet.resourceId.videoId;
-    latestContainer.innerHTML = `
-      <iframe
-        width="100%"
-        height="600"
-        src="https://www.youtube.com/embed/${latestVideo}"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-    `;
+    // 🎥 Latest video
+    const latest = data.items[0];
+    const latestVideoId =
+      latest.snippet?.resourceId?.videoId || latest.id?.videoId || null;
 
-    // 🕐 Next 3 = previous videos
-    const pastVideos = data.items.slice(1, 4);
-    pastContainer.innerHTML = pastVideos
-      .map(
-        (item) => `
+    if (latestVideoId) {
+      latestContainer.innerHTML = `
         <iframe
-          width="360"
-          height="215"
-          src="https://www.youtube.com/embed/${item.snippet.resourceId.videoId}"
+          width="100%"
+          height="600"
+          src="https://www.youtube.com/embed/${latestVideoId}"
           frameborder="0"
           allow="autoplay; encrypted-media"
           allowfullscreen>
-        </iframe>`
-      )
+        </iframe>`;
+    } else {
+      latestContainer.innerHTML = "<p>Could not find latest video ID.</p>";
+    }
+
+    // 🕐 Past 3 videos
+    const pastVideos = data.items.slice(1, 4);
+    pastContainer.innerHTML = pastVideos
+      .map((item) => {
+        const vid =
+          item.snippet?.resourceId?.videoId || item.id?.videoId || null;
+        if (!vid) return "";
+        return `
+          <iframe
+            width="360"
+            height="215"
+            src="https://www.youtube.com/embed/${vid}"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+          </iframe>`;
+      })
       .join("");
   } catch (err) {
     console.error("💥 Error fetching YouTube videos:", err);
     latestContainer.innerHTML = "<p>Could not load videos.</p>";
     pastContainer.innerHTML = "<p>Could not load videos.</p>";
   }
-}
-
-// 🚀 Run when the page loads
-document.addEventListener("DOMContentLoaded", loadVideos);
+});
