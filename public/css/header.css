@@ -11,7 +11,7 @@ body {
 }
 
 /* =============================
-   HEADER
+   HEADER BASE
 ============================= */
 .main-header {
   display: flex;
@@ -19,9 +19,11 @@ body {
   align-items: center;
   padding: 0 225px;
   background: white;
-  border-bottom: 3px solid #282f7f; /* blue line */
+  border-bottom: 3px solid #282f7f;
   position: relative;
   z-index: 1000;
+  flex-wrap: nowrap;
+  transition: padding 0.25s ease;
 }
 
 /* =============================
@@ -36,6 +38,7 @@ body {
 .logo {
   max-height: 100px;
   height: auto;
+  transition: max-height 0.25s ease;
 }
 
 .logo-link {
@@ -55,6 +58,7 @@ body {
   font-weight: 700;
   font-size: 36px;
   color: #282f7f;
+  transition: font-size 0.25s ease;
 }
 
 .logo-text p {
@@ -73,6 +77,7 @@ body {
   display: flex;
   align-items: center;
   gap: 35px;
+  flex-wrap: nowrap;
 }
 
 .nav-links a {
@@ -93,7 +98,7 @@ body {
 }
 
 /* =============================
-   DROPDOWN BASE STYLES
+   DROPDOWN BASE
 ============================= */
 .dropdown {
   position: relative;
@@ -104,11 +109,11 @@ body {
 }
 
 /* =============================
-   MEGA MENU (FIXED POSITION)
+   MEGA MENU
 ============================= */
 .mega-menu {
   position: fixed;
-  top: var(--menu-top, 110px); /* dynamically set via JS */
+  top: var(--menu-top, 110px);
   left: 0;
   right: 0;
   width: 100%;
@@ -126,7 +131,6 @@ body {
   opacity: 1;
 }
 
-/* Invisible hover buffer (no longer used for hover control) */
 .dropdown::after {
   content: "";
   position: absolute;
@@ -180,17 +184,117 @@ body {
 }
 
 /* =============================
-   RESPONSIVE
+   RESPONSIVE BEHAVIOR
 ============================= */
+
+/* Large Desktop (1516px+) */
+@media (min-width: 1516px) {
+  .main-header {
+    padding: 0 225px;
+  }
+}
+
+/* Standard Desktop/Laptop (1000px–1515px) */
+@media (max-width: 1515px) and (min-width: 1000px) {
+  .main-header {
+    padding: 0 140px;
+  }
+
+  .logo-text h1 {
+    font-size: 32px;
+  }
+
+  .nav-links a {
+    font-size: 16.5px;
+  }
+
+  .nav-links ul {
+    gap: 28px;
+  }
+
+  .logo {
+    max-height: 85px;
+  }
+}
+
+/* Mid-Laptop Fix (1025px–1200px) */
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .main-header {
+    padding: 0 90px;
+  }
+
+  .logo {
+    max-height: 80px;
+  }
+
+  .logo-text h1 {
+    font-size: 30px;
+  }
+
+  .nav-links ul {
+    gap: 22px;
+  }
+
+  .nav-links a {
+    font-size: 15.5px;
+    padding: 10px 6px;
+  }
+
+  .dropdown-arrow {
+    transform: scale(0.85);
+  }
+
+  .contact-button {
+    font-size: 15px;
+    padding: 5px 10px;
+  }
+}
+
+/* 🩵 Micro Fix (1020px–1070px) – smooths small laptop transition */
+@media (max-width: 1070px) and (min-width: 1020px) {
+  .main-header {
+    padding: 0 70px;
+  }
+
+  .logo {
+    max-height: 75px;
+  }
+
+  .logo-text h1 {
+    font-size: 28px;
+  }
+
+  .nav-links ul {
+    gap: 20px;
+  }
+
+  .nav-links a {
+    font-size: 15px;
+    padding: 8px 5px;
+  }
+
+  .dropdown-arrow {
+    transform: scale(0.8);
+  }
+
+  .contact-button {
+    font-size: 14.5px;
+    padding: 5px 8px;
+  }
+}
+
+/* Tablets & Small Laptops (<=1024px) */
 @media (max-width: 1024px) {
   .main-header {
     flex-direction: column;
+    align-items: center;
     padding: 15px 30px;
   }
 
   .nav-links ul {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 22px;
   }
 
   .mega-menu {
@@ -206,10 +310,31 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
+
+  .logo-text h1 {
+    font-size: 28px;
+  }
+
+  .logo {
+    max-height: 75px;
+  }
 }
 
+/* Mobile Screens (<=640px) */
 @media (max-width: 640px) {
   .dropdown-content {
     grid-template-columns: 1fr;
+  }
+
+  .logo-text h1 {
+    font-size: 24px;
+  }
+
+  .nav-links a {
+    font-size: 15px;
+  }
+
+  .nav-links ul {
+    gap: 18px;
   }
 }

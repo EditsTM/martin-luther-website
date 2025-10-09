@@ -1,7 +1,6 @@
 // ✅ public/js/footer.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // Always fetch from absolute path under /html/
     const res = await fetch("/html/footer.html");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
