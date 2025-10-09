@@ -1,3 +1,6 @@
+/* =============================
+   HERO
+============================= */
 .youtube-hero {
   position: relative;
   width: 100%;
@@ -7,8 +10,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .youtube-overlay {
@@ -21,17 +22,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
-  font-size: 120px;
-  font-weight: 800;
-  letter-spacing: 3px;
-  text-align: center;
 }
 
+.youtube-overlay h1 {
+  color: white;
+  font-size: 90px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  margin: 0;
+}
+
+/* =============================
+   SECTIONS
+============================= */
 .youtube-section {
+  width: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
 }
 
 .youtube-heading {
@@ -41,7 +48,6 @@
   text-align: center;
   padding: 20px 0;
   margin: 0;
-  width: 100%;
 }
 
 .youtube-videos {
@@ -59,13 +65,13 @@
   border-radius: 6px;
 }
 
-/* Links Section */
+/* =============================
+   LINKS SECTION
+============================= */
 .links-section {
   background: rgba(66, 121, 188, 0.85);
-  width: 100%;
   padding: 40px 20px;
   text-align: center;
-  margin: 0;
 }
 
 .links-container {
@@ -87,25 +93,25 @@
   transition: all 0.3s ease;
   min-width: 180px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* YouTube Button */
-.youtube-btn { 
-  background: linear-gradient(145deg, #ff0000, #cc0000); 
+.youtube-btn {
+  background: linear-gradient(145deg, #ff0000, #cc0000);
 }
-.youtube-btn:hover { 
-  background: linear-gradient(145deg, #e60000, #990000); 
+.youtube-btn:hover {
+  background: linear-gradient(145deg, #e60000, #990000);
   transform: scale(1.07);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Facebook Button */
-.facebook-btn { 
-  background: linear-gradient(145deg, #1877f2, #0f5ec4); 
+.facebook-btn {
+  background: linear-gradient(145deg, #1877f2, #0f5ec4);
 }
-.facebook-btn:hover { 
-  background: linear-gradient(145deg, #1d4ed8, #0c4aaf); 
+.facebook-btn:hover {
+  background: linear-gradient(145deg, #1d4ed8, #0c4aaf);
   transform: scale(1.07);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
