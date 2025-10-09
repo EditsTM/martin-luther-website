@@ -40,13 +40,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ------------------------------------------------------
-   ✅ Custom CSP (Applied BEFORE Static Files)
+   ✅ Custom CSP (Applied BEFORE Routes)
 ------------------------------------------------------ */
 app.use((req, res, next) => {
-  // Remove any prior CSP set by middleware
   res.removeHeader("Content-Security-Policy");
-
-  // Apply your complete custom CSP
   res.setHeader(
     "Content-Security-Policy",
     [
@@ -69,12 +66,7 @@ app.use((req, res, next) => {
 });
 
 /* ------------------------------------------------------
-   🌐 Static Files
------------------------------------------------------- */
-app.use(express.static(path.join(__dirname, "../public")));
-
-/* ------------------------------------------------------
-   📩 Routes
+   📩 API ROUTES (Declared BEFORE Static Middleware)
 ------------------------------------------------------ */
 app.use("/contact", contactRoutes);
 app.use("/prayer", prayerRoutes);
@@ -94,8 +86,7 @@ app.get("/api/youtube", async (req, res) => {
     const channelRes = await fetch(channelUrl);
     const channelData = await channelRes.json();
 
-    if (!channelData.items?.length)
-      throw new Error("Invalid channel or API key.");
+    if (!channelData.items?.length) throw new Error("Invalid channel or API key.");
 
     const uploadsId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
 
@@ -109,6 +100,11 @@ app.get("/api/youtube", async (req, res) => {
     res.status(500).json({ error: "Failed to load YouTube videos." });
   }
 });
+
+/* ------------------------------------------------------
+   🌐 STATIC FILES (Placed AFTER API Routes)
+------------------------------------------------------ */
+app.use(express.static(path.join(__dirname, "../public")));
 
 /* ------------------------------------------------------
    🏠 Home & 404
