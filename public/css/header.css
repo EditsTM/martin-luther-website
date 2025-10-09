@@ -22,8 +22,10 @@ body {
   border-bottom: 3px solid #282f7f;
   position: relative;
   z-index: 1000;
-  flex-wrap: nowrap;
-  transition: padding 0.25s ease;
+  flex-wrap: nowrap; /* ✅ prevents wrapping */
+  white-space: nowrap; /* ✅ prevents multi-line breaks */
+  overflow: hidden;
+  transition: all 0.25s ease;
 }
 
 /* =============================
@@ -33,6 +35,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -48,6 +51,7 @@ body {
   text-decoration: none;
   color: inherit;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .logo-link:hover {
@@ -72,12 +76,18 @@ body {
 /* =============================
    NAV LINKS
 ============================= */
+.nav-links {
+  flex-shrink: 1; /* ✅ allows menu to shrink slightly instead of wrapping */
+  min-width: 0;
+}
+
 .nav-links ul {
   list-style: none;
   display: flex;
   align-items: center;
   gap: 35px;
   flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .nav-links a {
@@ -90,6 +100,7 @@ body {
   padding: 12px 10px;
   display: block;
   transition: color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap; /* ✅ ensures long names stay inline */
 }
 
 .nav-links a:hover {
@@ -98,10 +109,11 @@ body {
 }
 
 /* =============================
-   DROPDOWN BASE
+   DROPDOWN
 ============================= */
 .dropdown {
   position: relative;
+  flex-shrink: 0;
 }
 
 .dropbtn {
@@ -131,19 +143,8 @@ body {
   opacity: 1;
 }
 
-.dropdown::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  background: transparent;
-  z-index: 1500;
-}
-
 /* =============================
-   GRID LAYOUT INSIDE MENU
+   GRID INSIDE MENU
 ============================= */
 .dropdown-content {
   display: grid;
@@ -184,7 +185,7 @@ body {
 }
 
 /* =============================
-   RESPONSIVE BEHAVIOR
+   RESPONSIVE FIXES
 ============================= */
 
 /* Large Desktop (1516px+) */
@@ -195,36 +196,28 @@ body {
 }
 
 /* Standard Desktop/Laptop (1000px–1515px) */
-@media (max-width: 1515px) and (min-width: 1000px) {
+@media (max-width: 1515px) and (min-width: 1201px) {
   .main-header {
-    padding: 0 140px;
+    padding: 0 130px;
   }
 
   .logo-text h1 {
-    font-size: 32px;
-  }
-
-  .nav-links a {
-    font-size: 16.5px;
+    font-size: 33px;
   }
 
   .nav-links ul {
     gap: 28px;
   }
 
-  .logo {
-    max-height: 85px;
+  .nav-links a {
+    font-size: 17px;
   }
 }
 
-/* Mid-Laptop Fix (1025px–1200px) */
+/* Mid-Range Fix (1025px–1200px) */
 @media (max-width: 1200px) and (min-width: 1025px) {
   .main-header {
     padding: 0 90px;
-  }
-
-  .logo {
-    max-height: 80px;
   }
 
   .logo-text h1 {
@@ -232,54 +225,16 @@ body {
   }
 
   .nav-links ul {
-    gap: 22px;
-  }
-
-  .nav-links a {
-    font-size: 15.5px;
-    padding: 10px 6px;
-  }
-
-  .dropdown-arrow {
-    transform: scale(0.85);
-  }
-
-  .contact-button {
-    font-size: 15px;
-    padding: 5px 10px;
-  }
-}
-
-/* 🩵 Micro Fix (1020px–1070px) – smooths small laptop transition */
-@media (max-width: 1070px) and (min-width: 1020px) {
-  .main-header {
-    padding: 0 70px;
-  }
-
-  .logo {
-    max-height: 75px;
-  }
-
-  .logo-text h1 {
-    font-size: 28px;
-  }
-
-  .nav-links ul {
     gap: 20px;
   }
 
   .nav-links a {
-    font-size: 15px;
-    padding: 8px 5px;
+    font-size: 15.5px;
+    padding: 8px 6px;
   }
 
-  .dropdown-arrow {
-    transform: scale(0.8);
-  }
-
-  .contact-button {
-    font-size: 14.5px;
-    padding: 5px 8px;
+  .logo {
+    max-height: 85px;
   }
 }
 
@@ -289,12 +244,21 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 15px 30px;
+    white-space: normal; /* ✅ allow wrapping on small screens only */
   }
 
   .nav-links ul {
     flex-wrap: wrap;
     justify-content: center;
     gap: 22px;
+  }
+
+  .logo-text h1 {
+    font-size: 28px;
+  }
+
+  .logo {
+    max-height: 75px;
   }
 
   .mega-menu {
@@ -309,14 +273,6 @@ body {
   .dropdown-content {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-  }
-
-  .logo-text h1 {
-    font-size: 28px;
-  }
-
-  .logo {
-    max-height: 75px;
   }
 }
 
