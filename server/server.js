@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import fetch from "node-fetch";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 import contactRoutes from "./routes/contactRoutes.js";
@@ -16,7 +17,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Log the active server file
+// Log server startup
 console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
@@ -40,7 +41,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ------------------------------------------------------
-   ✅ Custom CSP (Applied BEFORE Routes)
+   ✅ Custom Content Security Policy (CSP)
 ------------------------------------------------------ */
 app.use((req, res, next) => {
   res.removeHeader("Content-Security-Policy");
@@ -75,11 +76,15 @@ app.use("/prayer", prayerRoutes);
    🎥 YouTube API Proxy
 ------------------------------------------------------ */
 app.get("/api/youtube", async (req, res) => {
+  console.log("🎬 YouTube route hit!");
   try {
     const { YOUTUBE_API_KEY, CHANNEL_ID } = process.env;
 
     if (!YOUTUBE_API_KEY || !CHANNEL_ID) {
-      return res.status(500).json({ error: "Missing YouTube API configuration." });
+      console.error("❌ Missing YOUTUBE_API_KEY or CHANNEL_ID in environment");
+      return res
+        .status(500)
+        .json({ error: "Missing YouTube API configuration." });
     }
 
     const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${YOUTUBE_API_KEY}`;
@@ -107,14 +112,23 @@ app.get("/api/youtube", async (req, res) => {
 app.use(express.static(path.join(__dirname, "../public")));
 
 /* ------------------------------------------------------
-   🏠 Home & 404
+   🏠 Home Route
 ------------------------------------------------------ */
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/html/index.html"));
 });
 
+/* ------------------------------------------------------
+   ❌ 404 Page Handler (Safe)
+------------------------------------------------------ */
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "../public/html/404.html"));
+  const notFoundPage = path.join(__dirname, "../public/html/404.html");
+
+  if (fs.existsSync(notFoundPage)) {
+    res.status(404).sendFile(notFoundPage);
+  } else {
+    res.status(404).send("<h1>404 - Page Not Found</h1>");
+  }
 });
 
 /* ------------------------------------------------------

@@ -14,44 +14,62 @@
 .footer-top {
   background: white;
   color: #2c3e50;
-  padding: 10px 15px;
-  max-width: 1100px;
+  padding: 20px 40px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 /* =============================
-   FOOTER COLUMNS (GRID)
+   MAIN LAYOUT (LOGO LEFT, TEXT RIGHT)
 ============================= */
 .footer-columns {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* ✅ perfect 4-column layout */
-  justify-items: center;
-  align-items: start;
-  gap: 40px;
+  display: flex;
+  align-items: center; /* ✅ centers text vertically with logo */
+  justify-content: center;
+  gap: 80px; /* space between logo and text block */
+  flex-wrap: wrap; /* ✅ stacks on mobile */
   text-align: center;
-  margin-bottom: 10px;
-}
-
-/* =============================
-   INDIVIDUAL COLUMNS
-============================= */
-.footer-column {
-  flex: 0 0 auto;
-  text-align: center;
-  transform: scale(1.1);
 }
 
 /* =============================
    LOGO
 ============================= */
+.footer-logo {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .footer-logo img {
   max-width: 230px;
   height: auto;
 }
 
 /* =============================
-   COLUMN HEADINGS
+   TEXT GROUP (ALL COLUMNS)
 ============================= */
+.footer-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+/* =============================
+   INDIVIDUAL TEXT COLUMNS
+============================= */
+.footer-text-columns {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  flex-wrap: wrap;
+}
+
+.footer-column {
+  text-align: center;
+}
+
 .footer-column h3 {
   font-size: 23px;
   margin-bottom: 8px;
@@ -59,9 +77,6 @@
   color: #4279bc;
 }
 
-/* =============================
-   COLUMN TEXT & LINKS
-============================= */
 .footer-column p,
 .footer-column a {
   font-size: 17px;
@@ -79,7 +94,7 @@
 ============================= */
 .footer .btn {
   display: block;
-  margin: 10px auto 0 auto;
+  margin: 25px auto 0 auto;
   background: linear-gradient(135deg, #8b0000, #b22222);
   color: white;
   padding: 12px 80px;
@@ -144,12 +159,16 @@
 }
 
 /* =============================
-   RESPONSIVENESS
+   RESPONSIVE ADJUSTMENTS
 ============================= */
 @media (max-width: 950px) {
   .footer-columns {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px 60px;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer-text-columns {
+    gap: 40px;
   }
 
   .footer-logo img {
@@ -163,9 +182,9 @@
 }
 
 @media (max-width: 600px) {
-  .footer-columns {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .footer-text-columns {
+    flex-direction: column;
+    gap: 25px;
   }
 
   .footer-logo img {
