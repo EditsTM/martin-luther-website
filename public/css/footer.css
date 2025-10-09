@@ -14,21 +14,22 @@
 .footer-top {
   background: white;
   color: #2c3e50;
-  padding: 5px 15px;
+  padding: 10px 15px;
   max-width: 1100px;
   margin: 0 auto;
 }
 
 /* =============================
-   FOOTER COLUMNS
+   FOOTER COLUMNS (GRID)
 ============================= */
 .footer-columns {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: flex-start;
-  flex-wrap: wrap; /* ✅ now wraps properly on small screens */
-  gap: 80px; /* keep your spacious feel */
-  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* ✅ perfect 4-column layout */
+  justify-items: center;
+  align-items: start;
+  gap: 40px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 /* =============================
@@ -37,19 +38,12 @@
 .footer-column {
   flex: 0 0 auto;
   text-align: center;
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
 /* =============================
    LOGO
 ============================= */
-.footer-logo {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 15px;
-}
-
 .footer-logo img {
   max-width: 230px;
   height: auto;
@@ -85,7 +79,7 @@
 ============================= */
 .footer .btn {
   display: block;
-  margin: -8px auto 0 auto;
+  margin: 10px auto 0 auto;
   background: linear-gradient(135deg, #8b0000, #b22222);
   color: white;
   padding: 12px 80px;
@@ -102,7 +96,6 @@
   text-align: center;
 }
 
-/* Hover state */
 .footer .btn:hover {
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
@@ -138,81 +131,50 @@
 }
 
 /* =============================
-   FOOTER BOTTOM BAR
+   FOOTER BOTTOM
 ============================= */
 .footer-bottom {
   background: rgba(66, 121, 188, 0.85);
   color: white;
   text-align: center;
-  padding: 2px 4px;
+  padding: 4px 6px;
   font-size: 11px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   width: 100%;
 }
 
 /* =============================
-   RESPONSIVE IMPROVEMENTS
+   RESPONSIVENESS
 ============================= */
-@media (max-width: 1100px) {
+@media (max-width: 950px) {
   .footer-columns {
-    gap: 40px; /* shrink gaps slightly */
-  }
-
-  .footer-column {
-    transform: scale(1.1);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 60px;
   }
 
   .footer-logo img {
-    max-width: 200px;
+    max-width: 190px;
   }
 
   .footer .btn {
-    padding: 12px 60px;
     font-size: 18px;
-  }
-}
-
-@media (max-width: 850px) {
-  .footer-columns {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-  }
-
-  .footer-column {
-    transform: scale(1);
-  }
-
-  .footer-logo img {
-    max-width: 180px;
-  }
-
-  .footer .btn {
     padding: 12px 50px;
-    font-size: 17px;
-    max-width: 90%;
   }
 }
 
 @media (max-width: 600px) {
   .footer-columns {
-    flex-direction: column;
-    align-items: center;
-    gap: 25px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .footer-column h3 {
-    font-size: 20px;
-  }
-
-  .footer-column p {
-    font-size: 15px;
+  .footer-logo img {
+    max-width: 150px;
   }
 
   .footer .btn {
     font-size: 16px;
     padding: 10px 40px;
-    width: 90%;
-    max-width: 350px;
+    max-width: 300px;
   }
 }
