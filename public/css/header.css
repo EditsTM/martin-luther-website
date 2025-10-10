@@ -17,29 +17,30 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 225px;
+  padding: 0 160px;
   background: white;
   border-bottom: 3px solid #282f7f;
   position: relative;
   z-index: 1000;
-  flex-wrap: nowrap; /* ✅ prevents wrapping */
-  white-space: nowrap; /* ✅ prevents multi-line breaks */
+  flex-wrap: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   transition: all 0.25s ease;
 }
 
 /* =============================
-   LOGO
+   LOGO SECTION
 ============================= */
 .logo-section {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 
 .logo {
-  max-height: 100px;
+  max-height: 95px;
   height: auto;
   transition: max-height 0.25s ease;
 }
@@ -58,26 +59,40 @@ body {
   transform: scale(1.02);
 }
 
+/* =============================
+   LOGO TEXT (SPACING FIXED)
+============================= */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.3;
+  padding-left: 12px; /* consistent breathing room between logo & text */
+  flex-shrink: 0;
+}
+
 .logo-text h1 {
   font-weight: 700;
-  font-size: 36px;
+  font-size: 34px;
   color: #282f7f;
+  margin-bottom: 8px; /* ensures stable space between title & subtitle */
   transition: font-size 0.25s ease;
 }
 
 .logo-text p {
   font-weight: 500;
-  font-size: 10px;
+  font-size: 11px;
   color: #4279bc;
   letter-spacing: 1px;
   text-transform: uppercase;
+  transform: translateY(2px); /* subtle buffer for visual spacing */
 }
 
 /* =============================
    NAV LINKS
 ============================= */
 .nav-links {
-  flex-shrink: 1; /* ✅ allows menu to shrink slightly instead of wrapping */
+  flex-shrink: 1;
   min-width: 0;
 }
 
@@ -85,22 +100,21 @@ body {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 35px;
+  gap: 32px;
   flex-wrap: nowrap;
-  overflow: hidden;
 }
 
 .nav-links a {
   text-decoration: none;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 17px;
   color: #4279bc;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 12px 10px;
+  padding: 10px 8px;
   display: block;
   transition: color 0.3s ease, transform 0.2s ease;
-  white-space: nowrap; /* ✅ ensures long names stay inline */
+  white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -109,7 +123,7 @@ body {
 }
 
 /* =============================
-   DROPDOWN
+   DROPDOWN MENU
 ============================= */
 .dropdown {
   position: relative;
@@ -188,21 +202,21 @@ body {
    RESPONSIVE FIXES
 ============================= */
 
-/* Large Desktop (1516px+) */
-@media (min-width: 1516px) {
+/* XL Desktop (≥1600px) */
+@media (min-width: 1600px) {
   .main-header {
-    padding: 0 225px;
+    padding: 0 220px;
   }
 }
 
-/* Standard Desktop/Laptop (1000px–1515px) */
-@media (max-width: 1515px) and (min-width: 1201px) {
+/* Large Desktop (1276px–1599px) */
+@media (max-width: 1599px) and (min-width: 1276px) {
   .main-header {
     padding: 0 130px;
   }
 
   .logo-text h1 {
-    font-size: 33px;
+    font-size: 32px;
   }
 
   .nav-links ul {
@@ -210,64 +224,117 @@ body {
   }
 
   .nav-links a {
-    font-size: 17px;
+    font-size: 16.5px;
   }
 }
 
-/* Mid-Range Fix (1025px–1200px) */
-@media (max-width: 1200px) and (min-width: 1025px) {
+/* Mid-width (1000px–1400px): increase spacing & scale down nav */
+@media (max-width: 1400px) and (min-width: 1000px) {
   .main-header {
-    padding: 0 90px;
+    padding: 0 100px;
+  }
+
+  .logo-text {
+    padding-left: 14px;
+  }
+
+  .logo-text h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .logo-text p {
+    font-size: 11.5px;
+  }
+
+  .nav-links ul {
+    gap: 26px;
+  }
+
+  .nav-links a {
+    font-size: 16px;
+  }
+}
+
+/* ✅ Graceful Wrap (≤1275px) — prevents "Contact Us" cutoff */
+@media (max-width: 1275px) and (min-width: 1025px) {
+  .main-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 70px;
+    white-space: normal;
+  }
+
+  .logo-section {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .logo {
+    max-height: 85px;
+  }
+
+  .logo-text {
+    text-align: center;
+    margin-top: 8px;
+    padding-left: 0;
   }
 
   .logo-text h1 {
     font-size: 30px;
   }
 
-  .nav-links ul {
-    gap: 20px;
-  }
-
-  .nav-links a {
-    font-size: 15.5px;
-    padding: 8px 6px;
-  }
-
-  .logo {
-    max-height: 85px;
-  }
-}
-
-/* Tablets & Small Laptops (<=1024px) */
-@media (max-width: 1024px) {
-  .main-header {
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 30px;
-    white-space: normal; /* ✅ allow wrapping on small screens only */
+  .logo-text p {
+    font-size: 12px;
   }
 
   .nav-links ul {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 22px;
+    gap: 24px;
+    margin-top: 10px;
   }
 
-  .logo-text h1 {
-    font-size: 28px;
+  .nav-links a {
+    font-size: 16px;
+    padding: 8px 6px;
+  }
+}
+
+/* Tablets & Small Laptops (≤1024px) */
+@media (max-width: 1024px) {
+  .main-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 40px;
+    white-space: normal;
   }
 
   .logo {
     max-height: 75px;
   }
 
-  .mega-menu {
-    position: static;
-    width: 100%;
-    box-shadow: none;
-    padding: 25px 40px;
-    top: auto;
-    opacity: 1;
+  .logo-text {
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  .logo-text h1 {
+    font-size: 28px;
+  }
+
+  .logo-text p {
+    font-size: 12px;
+  }
+
+  .nav-links ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .nav-links a {
+    font-size: 15.5px;
   }
 
   .dropdown-content {
@@ -276,14 +343,18 @@ body {
   }
 }
 
-/* Mobile Screens (<=640px) */
+/* Mobile (≤640px) */
 @media (max-width: 640px) {
-  .dropdown-content {
-    grid-template-columns: 1fr;
+  .main-header {
+    padding: 15px 25px;
   }
 
   .logo-text h1 {
     font-size: 24px;
+  }
+
+  .logo-text p {
+    font-size: 11px;
   }
 
   .nav-links a {
@@ -291,6 +362,10 @@ body {
   }
 
   .nav-links ul {
-    gap: 18px;
+    gap: 16px;
+  }
+
+  .dropdown-content {
+    grid-template-columns: 1fr;
   }
 }
