@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+:root {
+  --blue: #282f7f;
+  --light-blue: #4279bc;
+  --grey: #eaf0fa;
+  --orange: #ff9f45;
+  --orange-hover: #ffb366;
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  color: #2c3e50;
+  background: white;
+}
+
+/* =============================
+   HERO SECTION
+============================= */
+.financial-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.financial-hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(66, 121, 188, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.financial-hero h1 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  z-index: 1;
+  text-align: center;
+}
+
+/* =============================
+   MAIN CONTENT LAYOUT
+============================= */
+.financial-info {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 260px;
+  padding: 80px 40px;
+  background-color: white; /* ✅ changed from var(--grey) to white */
+  flex-wrap: wrap;
+}
+
+/* =============================
+   FAQ SECTION
+============================= */
+.faq-container {
+  flex: 1;
+  min-width: 380px;
+  max-width: 650px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.faq-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #4279bc;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.faq-item {
+  background: var(--grey); /* ✅ changed from white to light grey */
+  border-radius: 8px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+}
+
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 22px 28px;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-question::after {
+  content: "▼";
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-question::after {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: #f9f9f9;
+  padding: 0 28px;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 400px;
+  padding: 18px 28px;
+}
+
+/* =============================
+   FINANCIAL AID SECTION
+============================= */
+.aid-container {
+  flex: 1;
+  min-width: 380px;
+  max-width: 650px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.aid-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #4279bc;
+  margin-bottom: 25px;
+}
+
+.aid-container p {
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 22px;
+  text-align: left;
+  width: 100%;
+  max-width: 620px;
+}
+
+/* =============================
+   ELIGIBILITY TABLE STYLES
+============================= */
+.eligibility-table-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.eligibility-table {
+  width: 100%;
+  max-width: 600px;
+  border-collapse: collapse;
+  margin: 0 auto 10px auto;
+  background: rgba(66, 121, 188, 0.15);
+  border: 2px solid #4279bc;
+}
+
+.eligibility-table th {
+  background-color: #4279bc;
+  color: white;
+  font-weight: 700;
+  padding: 10px;
+  border: 1px solid #ffffff33;
+}
+
+.eligibility-table td {
+  border: 1px solid #4279bc;
+  padding: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.eligibility-note {
+  font-style: italic;
+  color: #2c3e50;
+  margin-top: 5px;
+}
+
+.eligibility-footnote {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* =============================
+   FAQ LIST INDENT FIX
+============================= */
+.faq-answer ul {
+  margin: 10px 0 20px 35px;
+  padding: 0;
+  list-style-type: disc;
+}
+
+.faq-answer li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+/* =============================
+   TOUR BUTTON
+============================= */
+.tour-button-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* 🔶 Brighter Orange Button Variant (same as enrollment page) */
+.btn-orange {
+  background: var(--orange);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 14px 36px;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-orange:hover {
+  background: var(--orange-hover);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 159, 69, 0.5);
+}
+
+/* =============================
+   RESPONSIVE DESIGN
+============================= */
+@media (max-width: 900px) {
+  .financial-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .faq-container,
+  .aid-container {
+    max-width: 600px;
+  }
+
+  .faq-item {
+    max-width: 100%;
+  }
+}

@@ -32,11 +32,12 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.88); /* 🔵 Standard transparent blue */
+  background: rgba(66, 121, 188, 0.75); /* ✅ matches financial page */
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 
 .beliefs-overlay h1 {
   color: white;
