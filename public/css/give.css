@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
+
 body {
   margin: 0;
   font-family: 'Open Sans', Arial, sans-serif;
@@ -6,6 +8,43 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
+
+/* =============================
+   HERO SECTION
+============================= */
+.give-hero {
+  position: relative;
+  width: 100%;
+  height: 300px; /* ✅ same height as calendar */
+  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.give-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(66, 121, 188, 0.7); /* ✅ transparent blue overlay */
+  z-index: 1;
+}
+
+.give-hero h1 {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+  margin: 0;
+}
+
+/* =============================
+   MAIN CONTENT
+============================= */
 
 /* Section Container */
 .give-section {
@@ -21,7 +60,7 @@ body {
   padding: 40px 20px 20px;
 }
 
-.give-header h1 {
+.give-header h2 {
   color: #282f7f;
   font-size: 36px;
   margin-bottom: 10px;
@@ -52,9 +91,15 @@ iframe {
   border-radius: 8px;
 }
 
-/* Responsive for mobile */
+/* =============================
+   RESPONSIVE
+============================= */
 @media (max-width: 768px) {
-  .give-header h1 {
+  .give-hero h1 {
+    font-size: 2rem;
+  }
+
+  .give-header h2 {
     font-size: 28px;
   }
 

@@ -16,8 +16,8 @@ body {
 .beliefs-hero {
   position: relative;
   width: 100%;
-  height: 400px;
-  background: url("../../images/becomemember.jpg") no-repeat center center;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center center;
   background-size: cover;
   display: flex;
   justify-content: center;

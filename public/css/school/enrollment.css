@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
+
+:root {
+  --blue: #282f7f;
+  --light-blue: #4279bc;
+  --grey: #eaf0fa;
+  --orange: #ff9f45;          /* 🌟 Brighter orange */
+  --orange-hover: #ffb366;    /* 🌤 Softer orange for hover */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background: #fff;
+  color: #2c3e50;
+  overflow-x: hidden;
+}
+
+/* =============================
+   ENROLL HERO SECTION
+============================= */
+.enroll-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.enroll-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(66, 121, 188, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.enroll-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+}
+
+.enroll-overlay h1 {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  margin-bottom: 10px;
+}
+
+/* ✅ Hero Buttons */
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.hero-buttons .btn {
+  padding: 15px 40px;
+  font-size: 20px;
+  border: none;
+  background: #4279bc;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.hero-buttons .btn:hover {
+  background: white;
+  color: #4279bc;
+  transform: scale(1.05);
+  box-shadow: none;
+  text-shadow: none;
+}
+
+/* 🔶 Brighter Orange Button Variant */
+.btn-orange {
+  background: var(--orange);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 14px 36px;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-orange:hover {
+  background: var(--orange-hover);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 159, 69, 0.5);
+}
+
+/* =============================
+   ANGLED SECTION
+============================= */
+.enroll-banner {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  min-height: 560px;            /* ✅ let it grow naturally */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: var(--grey);
+  overflow: visible;            /* ✅ allows full text display */
+  flex-wrap: wrap;
+}
+
+
+.enroll-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 55%;
+  background-image: url("../../images/Placeholder.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  clip-path: polygon(0 0, 95% 0, 75% 100%, 0% 100%);
+  z-index: 1;
+}
+
+.enroll-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 55%;
+  background: var(--grey);
+  clip-path: polygon(25% 0, 100% 0, 100% 100%, 5% 100%);
+  z-index: 1;
+}
+
+.white-pane {
+  position: relative;
+  z-index: 3;
+  width: 45%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--grey);
+  padding-left: 6%;
+}
+
+.banner-content {
+  max-width: 520px;
+  color: #2c3e50;
+}
+
+.banner-content h2 {
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: #000;
+  margin-bottom: 20px;
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+}
+
+/* ✅ Smaller Heading Override */
+.banner-content h2.smaller-heading {
+  font-size: clamp(1.4rem, 2vw, 2.1rem) !important;
+  letter-spacing: 0.5px;
+}
+
+/* ✅ Default Paragraphs */
+.banner-content p {
+  font-size: clamp(1rem, 1vw + 0.4rem, 1.1rem);
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* ✅ Slightly Smaller Paragraph */
+.banner-content p.smaller-paragraph {
+  font-size: clamp(0.95rem, 1vw + 0.3rem, 1rem);
+  line-height: 1.55;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* =============================
+   RESPONSIVE (BANNER)
+============================= */
+@media (max-width: 1200px) {
+  .enroll-banner::before {
+    width: 50%;
+    clip-path: polygon(0 0, 90% 0, 73% 100%, 0% 100%);
+  }
+  .white-pane { width: 50%; padding-left: 5%; }
+}
+
+@media (max-width: 900px) {
+  .enroll-banner::before { clip-path: polygon(0 0, 85% 0, 70% 100%, 0% 100%); }
+  .white-pane { width: 50%; padding-left: 4%; }
+  .banner-content h2 { font-size: 2rem; }
+  .banner-content p { font-size: 1rem; }
+}
+
+@media (max-width: 700px) {
+  .enroll-banner::before { clip-path: polygon(0 0, 82% 0, 68% 100%, 0% 100%); }
+  .white-pane { width: 55%; padding-left: 3%; }
+  .banner-content h2 { font-size: 1.6rem; }
+  .banner-content p { font-size: 0.95rem; }
+}
+
+/* =============================
+   ENROLLMENT STEPS SECTION
+============================= */
+.enroll-steps {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(66, 121, 188, 0.9), #2c3e50);
+  color: white;
+  text-align: center;
+  padding: 90px 20px;
+  border-radius: 12px;
+  margin: 100px auto;
+  max-width: 1200px;
+  border: 3px solid rgba(0, 0, 0, 0.8);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Bubble background */
+.enroll-steps::before,
+.enroll-steps::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: transparent;
+}
+
+.enroll-steps::before {
+  background-image:
+    radial-gradient(circle 120px at 10% 90%, rgba(255,255,255,0.4) 20%, transparent 70%),
+    radial-gradient(circle 160px at 80% 20%, rgba(255,255,255,0.35) 20%, transparent 80%),
+    radial-gradient(circle 200px at 50% 50%, rgba(255,255,255,0.25) 15%, transparent 70%);
+  background-size: 200% 200%;
+  animation: floatBubblesMain 25s ease-in-out infinite alternate;
+  opacity: 0.8;
+}
+
+.enroll-steps::after {
+  background-image:
+    radial-gradient(circle 80px at 30% 70%, rgba(255,255,255,0.25) 25%, transparent 80%),
+    radial-gradient(circle 100px at 70% 30%, rgba(255,255,255,0.2) 25%, transparent 80%),
+    radial-gradient(circle 150px at 20% 20%, rgba(255,255,255,0.15) 25%, transparent 80%);
+  background-size: 180% 180%;
+  animation: floatBubblesAlt 35s ease-in-out infinite alternate-reverse;
+  opacity: 0.7;
+}
+
+@keyframes floatBubblesMain {
+  0% { background-position: 0% 100%, 100% 0%, 50% 50%; }
+  50% { background-position: 50% 50%, 30% 70%, 70% 20%; }
+  100% { background-position: 100% 0%, 0% 100%, 40% 80%; }
+}
+
+@keyframes floatBubblesAlt {
+  0% { background-position: 100% 0%, 0% 100%, 80% 40%; opacity: 0.6; }
+  50% { background-position: 60% 80%, 40% 20%, 20% 60%; opacity: 0.9; }
+  100% { background-position: 0% 100%, 100% 0%, 50% 30%; opacity: 0.7; }
+}
+
+/* =============================
+   ENROLLMENT STEP CARDS
+============================= */
+.steps-container { position: relative; z-index: 2; }
+
+.steps-container h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.steps-container p {
+  font-size: 18px;
+  margin-bottom: 50px;
+  color: #f0f4ff;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.step {
+  position: relative;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  backdrop-filter: blur(5px);
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.step:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.step-icon {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 25px;
+  filter: brightness(0) invert(1);
+  object-fit: contain;
+}
+
+.step:nth-child(1) .step-icon { content: url("../../images/tour.png"); }
+.step:nth-child(2) .step-icon { content: url("../../images/application.png"); }
+.step:nth-child(3) .step-icon { content: url("../../images/decision.png"); }
+
+.step h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.step p {
+  font-size: 16px;
+  color: #eaf0fa;
+  line-height: 1.6;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* =============================
+   BUTTONS (Steps Section)
+============================= */
+.steps-button .btn-primary {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  padding: 14px 36px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.steps-button .btn-primary:hover {
+  background: var(--orange-hover);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 159, 69, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .steps-container h2 { font-size: 1.8rem; }
+  .steps-container p { font-size: 16px; }
+  .step p { font-size: 15px; }
+}
