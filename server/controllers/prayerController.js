@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 export const sendPrayerRequest = async (req, res) => {
   console.log("📩 Prayer request incoming:", req.body);
 
+  // ✅ Validate the incoming data
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ ok: false, errors: errors.array() });
@@ -13,28 +14,27 @@ export const sendPrayerRequest = async (req, res) => {
   const { name, email, prayer, share } = req.body;
 
   try {
-    // ✅ Use the same Gmail SMTP credentials
+    // ✅ Ensure SendGrid API key exists
+    if (!process.env.SENDGRID_API_KEY) {
+      console.error("❌ Missing SENDGRID_API_KEY in environment variables.");
+      return res.status(500).json({ ok: false, error: "Email service not configured." });
+    }
+
+    // ✅ Create a SendGrid transporter
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: Number(process.env.SMTP_PORT) === 465,
+      service: "SendGrid",
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: "apikey", // SendGrid requires this literal string
+        pass: process.env.SENDGRID_API_KEY,
       },
-      tls: { rejectUnauthorized: false },
     });
 
-    console.log("SMTP_USER =", process.env.SMTP_USER);
-    console.log("SMTP_PASS loaded?", !!process.env.SMTP_PASS);
-
-    await transporter.verify();
-
-    await transporter.sendMail({
-      from: `"ML Prayer Request" <${process.env.SMTP_USER}>`,
-      to: process.env.PRAYER_TO,
-      replyTo: email,
-      subject: `🙏 New Prayer Request from ${name}`,
+    const subject = `🙏 New Prayer Request from ${name}`;
+    const mailOptions = {
+      from: `"ML Prayer Request" <${process.env.TO_EMAIL}>`, // Verified sender in SendGrid
+      to: process.env.TO_EMAIL, // Recipient of prayer requests
+      replyTo: email, // So replies go back to the requester
+      subject,
       text: `
 New Prayer Request Submitted:
 
@@ -45,12 +45,20 @@ Share with congregation: ${share.toUpperCase()}
 Prayer Request:
 ${prayer}
       `.trim(),
-    });
+    };
+
+    // ✅ Send the email
+    await transporter.sendMail(mailOptions);
 
     console.log("✅ Prayer request sent successfully!");
     res.json({ ok: true });
   } catch (err) {
-    console.error("💥 Prayer request error:", err);
+    console.error("💥 Prayer request error:", {
+      message: err.message,
+      code: err.code,
+      command: err.command,
+      response: err.response && err.response.toString ? err.response.toString() : undefined,
+    });
     res.status(500).json({ ok: false, error: "Failed to send prayer request." });
   }
 };
