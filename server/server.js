@@ -22,7 +22,12 @@ console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
 const app = express();
+
+// ✅ Tell Express to trust Render’s proxy (fixes rate-limit warning)
+app.set("trust proxy", 1);
+
 const PORT = process.env.PORT || 3000;
+
 
 /* ------------------------------------------------------
    🛡️ Security & Core Middleware
