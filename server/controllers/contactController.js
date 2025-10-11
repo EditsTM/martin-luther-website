@@ -1,9 +1,11 @@
+// server/controllers/contactController.js
 import nodemailer from "nodemailer";
 import { validationResult } from "express-validator";
 
 export const sendContactEmail = async (req, res) => {
-  console.log("📨 Contact form hit:", { hasBody: !!req.body, keys: Object.keys(req.body || {}) });
+  console.log("📨 Contact form hit:", req.body);
 
+  // Validate input
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ ok: false, errors: errors.array() });
@@ -12,16 +14,14 @@ export const sendContactEmail = async (req, res) => {
   const { firstName, lastName, email, phone, message } = req.body;
 
   try {
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error("❌ Missing SENDGRID_API_KEY in env.");
-      return res.status(500).json({ ok: false, error: "Email service not configured." });
-    }
-
+    // ✅ Gmail SMTP transporter
     const transporter = nodemailer.createTransport({
-      service: "SendGrid",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // true = use SSL
       auth: {
-        user: "apikey", // SendGrid requires literal 'apikey' here
-        pass: process.env.SENDGRID_API_KEY,
+        user: process.env.EMAIL_USER, // your Gmail
+        pass: process.env.EMAIL_PASS, // your Gmail App Password
       },
     });
 
@@ -29,9 +29,9 @@ export const sendContactEmail = async (req, res) => {
     const subject = `📬 New Contact Message from ${fullName || "Visitor"}`;
 
     await transporter.sendMail({
-      from: `"Martin Luther Website" <${process.env.TO_EMAIL}>`,
-      to: process.env.TO_EMAIL,
-      replyTo: email,
+      from: `"ML Website" <${process.env.EMAIL_USER}>`, // sender (your Gmail)
+      to: process.env.CONTACT_TO,                       // recipient inbox
+      replyTo: email,                                   // visitor's email
       subject,
       text: `
 New message from the website:
