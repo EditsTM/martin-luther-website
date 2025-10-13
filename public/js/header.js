@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* ------------------------------------------------------
-   Dropdown Hover (Desktop) + Tap Toggle (Touch Devices)
+   Dropdown Hover (Desktop) + Tap (Mobile/iPhone)
 ------------------------------------------------------ */
 function setupDropdownMenu() {
   const dropdowns = document.querySelectorAll(".dropdown");
@@ -35,7 +35,7 @@ function setupDropdownMenu() {
     const trigger = dropdown.querySelector(".dropbtn");
     const menu = dropdown.querySelector(".mega-menu");
 
-    // Hover (Desktop)
+    /* ---------- 🖱️ DESKTOP HOVER ---------- */
     dropdown.addEventListener("mouseenter", () => {
       if (window.innerWidth <= 770) return;
       clearTimeout(timeout);
@@ -56,24 +56,33 @@ function setupDropdownMenu() {
       }, 150);
     });
 
-    // Tap to toggle (Touch/Mobile)
+    /* ---------- 📱 MOBILE TAP LOGIC ---------- */
     if (trigger) {
+      let tappedOnce = false;
       trigger.addEventListener("click", (e) => {
-        if (window.innerWidth > 770) return; // only for smaller screens
-        e.preventDefault();
-        e.stopPropagation();
+        if (window.innerWidth > 770) return; // only on small screens
 
         const isOpen = dropdown.classList.contains("open");
+
+        // Second tap (menu already open) → follow link
+        if (tappedOnce && isOpen) return true;
+
+        // First tap → open menu
+        e.preventDefault();
+        e.stopPropagation();
         closeAll();
-        if (!isOpen) {
-          dropdown.classList.add("open");
-          activeDropdown = dropdown;
-          document.body.classList.add("menu-open");
-          lockMegaMenuToHeader();
-        }
+        dropdown.classList.add("open");
+        activeDropdown = dropdown;
+        document.body.classList.add("menu-open");
+        lockMegaMenuToHeader();
+        tappedOnce = true;
+
+        // Reset tap state after 1.5s to prevent stale behavior
+        setTimeout(() => (tappedOnce = false), 1500);
       });
     }
 
+    /* ---------- Inside Menu Links ---------- */
     if (menu) {
       menu.addEventListener("click", (ev) => {
         if (ev.target.tagName === "A") closeAll();
@@ -81,13 +90,13 @@ function setupDropdownMenu() {
     }
   });
 
-  // Click outside closes it
+  /* ---------- Click Outside Closes ---------- */
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".dropdown") && !e.target.closest(".mega-menu"))
       closeAll();
   });
 
-  // ESC key closes menu
+  /* ---------- ESC Key Closes ---------- */
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeAll();
   });

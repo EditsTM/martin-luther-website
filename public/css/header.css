@@ -73,6 +73,19 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   .nav-links a{font-size:16.5px;}
 }
 
+/* 🔹 Center Nav for ≥1275px */
+@media(min-width:1275px) {
+  .main-header {
+    justify-content:center;   /* ✅ centers entire nav section */
+    gap:120px;                /* ✅ spacing between logo and nav */
+  }
+  .nav-links ul {
+    justify-content:center;   /* ✅ centers the link group */
+    position:relative;
+    top:8px;                  /* ✅ lowered slightly more for visual balance */
+  }
+}
+
 /* 🔹 WRAP START (≤1275px) */
 @media(max-width:1275px){
   .main-header{
