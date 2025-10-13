@@ -354,3 +354,26 @@
     margin-top: 8px;
   }
 }
+/* Fix: Prevent hero button cutoff on very small screens (≤420px) */
+@media (max-width: 420px) {
+  .hero {
+    height: auto;                /* allow it to grow naturally */
+    min-height: 85vh;            /* still keeps it tall visually */
+    padding-bottom: 40px;        /* extra space below buttons */
+  }
+
+  .hero-content h1 {
+    font-size: 42px;             /* scale headline down a bit */
+  }
+
+  .hero-content p {
+    font-size: 20px;             /* scale subtitle for better fit */
+    margin-bottom: 20px;
+  }
+
+  .hero-buttons .btn-outline {
+    padding: 14px 36px;          /* slightly smaller buttons */
+    font-size: 18px;
+  }
+}
+

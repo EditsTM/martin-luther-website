@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupDropdownMenu();
     lockMegaMenuToHeader();
     setupMenuReflowWatchers();
+    setupMobileDropdownToggle(); // ✅ added mobile toggle
   } catch (err) {
     console.error("⚠️ Header load error:", err);
   }
@@ -100,4 +101,39 @@ function setupMenuReflowWatchers() {
     const header = document.querySelector(".main-header");
     if (header) new ResizeObserver(update).observe(header);
   }
+}
+
+/* ------------------------------------------------------
+   📱 Mobile Tap Dropdown Toggle (Church / School)
+------------------------------------------------------ */
+function setupMobileDropdownToggle() {
+  const dropdowns = document.querySelectorAll(".dropdown");
+  const mq = window.matchMedia("(max-width: 1024px)");
+
+  dropdowns.forEach((dropdown) => {
+    const button = dropdown.querySelector(".dropbtn");
+    if (!button) return;
+
+    button.addEventListener("click", (e) => {
+      if (!mq.matches) return; // ✅ only apply on mobile/tablet
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Close other open dropdowns first
+      dropdowns.forEach((d) => {
+        if (d !== dropdown) d.classList.remove("open");
+      });
+
+      // Toggle this one
+      dropdown.classList.toggle("open");
+    });
+  });
+
+  // Close all dropdowns when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!mq.matches) return;
+    if (!e.target.closest(".dropdown")) {
+      dropdowns.forEach((d) => d.classList.remove("open"));
+    }
+  });
 }
