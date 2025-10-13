@@ -1,4 +1,6 @@
-/* ==================== HERO SECTION ==================== */
+/* ======================================================
+   HERO SECTION
+====================================================== */
 .hero {
   position: relative;
   width: 100%;
@@ -31,6 +33,7 @@
 .hero-content {
   position: relative;
   z-index: 2;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 /* Hero text */
@@ -39,6 +42,7 @@
   margin-bottom: 20px;
   font-weight: 800;
 }
+
 .hero-content p {
   font-size: 28px;
   margin-bottom: 30px;
@@ -49,37 +53,73 @@
 .hero-buttons {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 35px;
+  flex-wrap: wrap;
 }
-.hero-buttons .btn {
-  padding: 15px 40px;
-  font-size: 20px;
-  border: none;
-  background: #4279bc;
+
+.hero-buttons .btn-outline {
+  padding: 18px 50px;                /* ✅ larger size */
+  font-size: 22px;                   /* ✅ more prominent */
+  border: 2.5px solid white;         /* ✅ slightly thicker border */
+  background: transparent;
   color: white;
+  border-radius: 6px;                /* ✅ softer corners */
+  font-weight: 700;
   text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  text-shadow: none;                 /* ❌ remove text glow */
+  box-shadow: none;                  /* ❌ remove box shadow */
+}
+
+.hero-buttons .btn-outline:hover {
+  background: white;
+  color: #4279bc;
+  transform: scale(1.07);            /* ✅ gentle pop effect */
+}
+
+/* ======================================================
+   BASE BUTTON STYLES
+====================================================== */
+.btn,
+.btn-outline {
+  display: inline-block;
+  padding: 10px 20px;
   font-weight: 600;
   border-radius: 4px;
+  text-decoration: none;
   transition: background 0.3s, color 0.3s, transform 0.2s;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
-.hero-buttons .btn:hover {
+
+/* Filled Button */
+.btn {
+  background: #4279bc;
+  color: white;
+  border: 2px solid #4279bc;
+}
+
+.btn:hover {
   background: white;
   color: #4279bc;
   transform: scale(1.05);
-  box-shadow: none;
-  text-shadow: none;
 }
 
-/* Outline effect for hero text/buttons */
-.hero-content h1,
-.hero-content p,
-.hero-buttons .btn {
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+/* Outline Button — Worship Info, Learn More, Church & School buttons */
+.btn-outline {
+  border: 2px solid white;
+  color: white;
+  background: transparent;
 }
 
-/* ==================== EVENTS SECTION ==================== */
+.btn-outline:hover {
+  background: white;
+  color: #4279bc;
+  transform: scale(1.05);
+}
+
+/* ======================================================
+   EVENTS SECTION
+====================================================== */
 .events-section {
   background: #f9f9f9;
   text-align: center;
@@ -92,7 +132,7 @@
   color: #2c3e50;
 }
 
-/* ✅ Cards layout */
+/* Cards layout */
 .events-container {
   display: flex;
   justify-content: center;
@@ -101,7 +141,7 @@
   margin-bottom: 40px;
 }
 
-/* ✅ Updated event card styling */
+/* Event Card Styling */
 .event-card {
   background: white;
   border: 1px solid #ddd;
@@ -117,7 +157,7 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
 }
 
-/* ✅ Image path for cards */
+/* Event image */
 .event-image img {
   width: 100%;
   height: 180px;
@@ -126,7 +166,7 @@
   border-bottom: 1px solid #ddd;
 }
 
-/* Card text styling */
+/* Card text */
 .event-name {
   font-size: 20px;
   margin: 15px 0 5px;
@@ -140,20 +180,9 @@
   margin-bottom: 20px;
 }
 
-.events-button .btn {
-  background: #4279bc;
-  color: white;
-  padding: 12px 30px;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 4px;
-  transition: background 0.3s;
-}
-.events-button .btn:hover {
-  background: #2e5a8e;
-}
-
-/* ==================== ABOUT + WORSHIP SECTION ==================== */
+/* ======================================================
+   ABOUT + WORSHIP SECTION
+====================================================== */
 .about-feature-section {
   margin: 0;
   padding: 0;
@@ -166,7 +195,7 @@
   min-height: 420px;
 }
 
-/* Shared styles */
+/* Shared Styles */
 .about-us,
 .features {
   display: flex;
@@ -181,7 +210,7 @@
   background-repeat: no-repeat;
 }
 
-/* ✅ Corrected image paths (from css → ../images/) */
+/* Background Images */
 .about-us {
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -194,7 +223,7 @@
     url("../images/Bible.jpg");
 }
 
-/* Fix feature-box sizing */
+/* Feature Box */
 .features .feature-box {
   background: none;
   padding: 0;
@@ -206,55 +235,43 @@
   gap: 15px;
 }
 
-/* Text shadows */
+/* ✅ Unified Button Style — About, Worship, Church, School all match */
+.about-us .btn,
+.features .btn,
+.our-church .btn,
+.our-school .btn,
+.our-church a.btn,
+.our-school a.btn {
+  border: 2px solid white !important;
+  color: white !important;
+  background: transparent !important;
+  padding: 14px 36px !important;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.about-us .btn:hover,
+.features .btn:hover,
+.our-church .btn:hover,
+.our-school .btn:hover,
+.our-church a.btn:hover,
+.our-school a.btn:hover {
+  background: white !important;
+  color: #4279bc !important;
+  transform: scale(1.05);
+}
+
+/* Text Shadow (local) */
 .about-us h2, .about-us p,
 .features h3, .features p {
   text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
 }
 
-/* Buttons */
-.about-us .btn,
-.btn-outline {
-  display: inline-block;
-}
-
-.about-us .btn:hover {
-  background: #2e5a8e;
-  color: white;
-}
-
-.btn-outline {
-  border: 2px solid white;
-  padding: 10px 20px;
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 4px;
-  transition: background 0.3s, color 0.3s;
-}
-
-.btn-outline:hover {
-  background: white;
-  color: black;
-}
-
-.about-us .btn {
-  border: 2px solid white;
-  background: transparent;
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 4px;
-  transition: background 0.3s, color 0.3s;
-}
-
-.about-us .btn:hover {
-  background: white;
-  color: black;
-}
-
-/* ==================== BELIEFS SECTION ==================== */
+/* ======================================================
+   BELIEFS SECTION
+====================================================== */
 .beliefs-section {
   background: rgba(66, 121, 188, 0.85);
   text-align: center;
@@ -262,6 +279,7 @@
   align-items: center;
   justify-content: center;
   height: 120px;
+  padding: 0 20px;
 }
 
 .beliefs-content {
@@ -283,4 +301,56 @@
 
 .beliefs-content p {
   font-size: 15px;
+}
+
+/* ======================================================
+   RESPONSIVE DESIGN
+====================================================== */
+
+/* ABOUT + WORSHIP (≤500px) */
+@media (max-width: 500px) {
+  .about-feature-container {
+    grid-template-columns: 1fr;
+  }
+
+  .about-us,
+  .features {
+    padding: 60px 20px;
+    min-height: 300px;
+  }
+
+  .about-us h2,
+  .features h3 {
+    font-size: 24px;
+  }
+
+  .about-us p,
+  .features p {
+    font-size: 15px;
+  }
+
+  .btn,
+  .btn-outline {
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+}
+
+/* BELIEFS (≤700px and below) */
+@media (max-width: 700px) {
+  .beliefs-section {
+    height: auto;
+    padding: 40px 20px;
+  }
+
+  .beliefs-content h2 {
+    font-size: clamp(18px, 4vw, 20px);
+    line-height: 1.4;
+  }
+
+  .beliefs-content p {
+    font-size: clamp(13.5px, 3vw, 14px);
+    line-height: 1.5;
+    margin-top: 8px;
+  }
 }

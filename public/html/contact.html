@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="/css/footer.css" />
   <link rel="stylesheet" href="/css/contact.css" />
 
+  <!-- ✅ Consistent Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <style>
     .rate-limit-message {
       display: none;
@@ -31,7 +36,7 @@
       <!-- ✅ Left Side: Contact Info -->
       <div class="contact-info">
         <h2>Get In Touch!</h2>
-        <div class="info-grid">
+        <div class="info-row">
           <div class="info-item">
             <img src="/images/phone.png" alt="Phone Icon" class="info-icon" />
             <h3>Phone Number</h3>
@@ -59,11 +64,11 @@
       <div class="contact-form">
         <h2>Contact Us</h2>
 
-        <!-- ✅ No action/method — handled by JavaScript -->
+        <!-- ✅ Form Section -->
         <form id="contactForm">
           <div class="form-row">
             <input type="text" name="firstName" placeholder="First Name *" required />
-            <input type="text" name="lastName" placeholder="Last Name" />
+            <input type="text" name="lastName" placeholder="Last Name *" required />
           </div>
 
           <div class="form-row">
@@ -76,7 +81,17 @@
               required
               oninput="this.value=this.value.replace(/[^0-9]/g,'')"
             />
-            <input type="email" name="email" placeholder="Email ID *" required />
+            <input type="email" name="email" placeholder="Email Address *" required />
+          </div>
+
+          <!-- ✅ New Dropdown -->
+          <div class="form-row">
+            <select name="reason" required>
+              <option value="">Select a Reason *</option>
+              <option value="book a tour">Book a Tour</option>
+              <option value="financial aid application">Financial Aid Application</option>
+              <option value="other">Other</option>
+            </select>
           </div>
 
           <textarea
@@ -101,7 +116,7 @@
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
 
-  <!-- ✅ Cleaned Up JavaScript -->
+  <!-- ✅ JavaScript handling -->
   <script>
     const form = document.getElementById("contactForm");
     const msgBox = document.getElementById("rateLimitMsg");
@@ -114,14 +129,12 @@
       const data = Object.fromEntries(formData);
 
       try {
-        // ✅ Correct backend endpoint
         const res = await fetch("/contact/send", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });
 
-        // ✅ Handle rate limit
         if (res.status === 429) {
           const result = await res.json().catch(() => ({}));
           const retry = result.retryAfter ? parseInt(result.retryAfter, 10) : 600;
@@ -129,7 +142,6 @@
           return;
         }
 
-        // ✅ Handle normal success/error
         const result = await res.json().catch(() => ({}));
         if (result.ok) {
           window.location.href = "/html/thankYou.html";
@@ -144,7 +156,6 @@
       }
     });
 
-    // Countdown when rate limited
     function startCountdown(seconds) {
       let remaining = seconds;
       msgBox.style.display = "block";

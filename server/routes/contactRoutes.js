@@ -32,6 +32,7 @@ router.post(
     body("lastName").optional().trim().isLength({ max: 50 }),
     body("email").isEmail().withMessage("Valid email required"),
     body("phone").trim().matches(/^[0-9]{7,15}$/).withMessage("Phone must be 7–15 digits"),
+    body("reason").notEmpty().withMessage("Please select a reason"), // ✅ added
     body("message").trim().isLength({ min: 10 }).withMessage("Message too short"),
     body("website").custom((value) => {
       if (value && value.trim() !== "") throw new Error("Bot detected");
