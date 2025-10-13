@@ -5,56 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YouTube - Martin Luther Church & School</title>
 
-  <!-- Shared CSS -->
   <link rel="stylesheet" href="/css/header.css" />
   <link rel="stylesheet" href="/css/footer.css" />
-
-  <!-- Page-specific CSS -->
   <link rel="stylesheet" href="/css/youtube.css" />
 </head>
 
 <body>
-  <!-- Header -->
   <div id="header"></div>
 
-  <!-- Hero -->
   <section class="youtube-hero">
     <div class="youtube-overlay"><h1>Videos</h1></div>
   </section>
 
-  <!-- Latest Livestream -->
-  <section class="youtube-section">
+  <!-- ✅ Most Recent Livestream -->
+  <section class="youtube-section livestream-section">
     <h2 class="youtube-heading">Most Recent Livestream</h2>
-    <div class="youtube-videos" id="latest-stream">
-      <p>Loading latest livestream...</p>
+
+    <div class="youtube-feature-container">
+      <!-- Left: Stay Connected -->
+      <div class="youtube-left">
+        <div class="youtube-left-inner">
+          <h3>Stay Connected</h3>
+          <p>
+          Every worship service is streamed on the Martin Luther Oshkosh Media channel. 
+           Follow us on our offical social pages for the latest services and messages.
+          </p>
+          <div class="social-buttons">
+            <a
+              href="https://www.youtube.com/@MartinLutherOshkosh/featured"
+              target="_blank"
+              class="social-btn youtube-btn"
+              >YouTube</a
+            >
+            <a
+              href="https://www.facebook.com/mloshkosh"
+              target="_blank"
+              class="social-btn facebook-btn"
+              >Facebook</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+      <!-- Right: Video -->
+      <div class="youtube-right">
+        <div class="youtube-right-inner">
+          <div class="youtube-videos" id="latest-stream">
+            <p>Loading latest livestream...</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Past Livestreams -->
-  <section class="youtube-section">
-    <h2 class="youtube-heading">Past Livestreams</h2>
-    <div class="youtube-videos" id="past-streams">
-      <p>Loading past livestreams...</p>
-    </div>
-  </section>
+<section class="youtube-section past-livestreams">
+  <h2 class="youtube-heading">Past Livestreams</h2>
+  <div class="youtube-videos" id="past-streams">
+    <p>Loading past livestreams...</p>
+  </div>
+</section>
 
-  <!-- Links -->
-  <section class="youtube-section links-section">
-    <h2 class="youtube-heading">Links</h2>
-    <div class="links-container">
-      <a href="https://www.youtube.com/@MartinLutherOshkosh/featured"
-         target="_blank"
-         class="link-btn youtube-btn">YouTube</a>
-      <a href="https://www.facebook.com/mloshkosh"
-         target="_blank"
-         class="link-btn facebook-btn">Facebook</a>
-    </div>
-  </section>
 
-  <!-- Footer -->
   <div id="footer"></div>
 
-  <!-- JS -->
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/youtube.js"></script>

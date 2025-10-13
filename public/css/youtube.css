@@ -14,10 +14,7 @@
 
 .youtube-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(66, 121, 188, 0.85);
   display: flex;
   justify-content: center;
@@ -33,7 +30,7 @@
 }
 
 /* =============================
-   SECTIONS
+   GENERAL SECTIONS
 ============================= */
 .youtube-section {
   width: 100%;
@@ -62,56 +59,241 @@
 
 .youtube-videos iframe {
   border: 2px solid #282f7f;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 /* =============================
-   LINKS SECTION
+   MOST RECENT LIVESTREAM SECTION
 ============================= */
-.links-section {
-  background: rgba(66, 121, 188, 0.85);
-  padding: 40px 20px;
-  text-align: center;
+.livestream-section {
+  background: #eaf0fa;
+  margin: 0;
+  padding: 0;
 }
 
-.links-container {
+.youtube-feature-container {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  width: 100%;
+  height: 480px;
+  margin: 0;
+  border-top: 4px solid #282f7f;
+  border-bottom: 4px solid #282f7f;
+  overflow: hidden;
+}
+
+.divider {
+  width: 4px;
+  background-color: #282f7f;
+  margin: 0;
+  padding: 0;
+}
+
+/* =============================
+   LEFT SIDE (Stay Connected)
+============================= */
+.youtube-left {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.youtube-left-inner {
+  width: 90%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.youtube-left h3 {
+  color: #282f7f;
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0 0 24px 0;
+  letter-spacing: 1px;
+}
+
+.youtube-left p {
+  color: #2c3e50;
+  font-size: 22px;
+  line-height: 1.8;
+  margin: 0 0 40px 0;
+  max-width: 650px;
+}
+
+/* Buttons */
+.social-buttons {
   display: flex;
   justify-content: center;
   gap: 30px;
-  margin-top: 20px;
   flex-wrap: wrap;
 }
 
-.link-btn {
+.social-btn {
   display: inline-block;
-  padding: 16px 40px;
-  font-size: 20px;
-  font-weight: 700;
+  padding: 20px 60px;
+  font-size: 22px;
+  font-weight: 800;
   color: white;
   border-radius: 10px;
   text-decoration: none;
   transition: all 0.3s ease;
-  min-width: 180px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* YouTube Button */
 .youtube-btn {
   background: linear-gradient(145deg, #ff0000, #cc0000);
 }
 .youtube-btn:hover {
   background: linear-gradient(145deg, #e60000, #990000);
   transform: scale(1.07);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Facebook Button */
 .facebook-btn {
   background: linear-gradient(145deg, #1877f2, #0f5ec4);
 }
 .facebook-btn:hover {
   background: linear-gradient(145deg, #1d4ed8, #0c4aaf);
   transform: scale(1.07);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* =============================
+   RIGHT SIDE (Video)
+============================= */
+.youtube-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.youtube-right-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.youtube-right .youtube-videos {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.youtube-right .youtube-videos iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-left: 3px solid #282f7f;
+  border-right: 3px solid #282f7f;
+  border-radius: 0;
+  object-fit: cover;
+}
+
+/* =============================
+   PAST LIVESTREAMS — FIXED
+============================= */
+.youtube-section.past-livestreams {
+  background: #eaf0fa;
+  margin: 0;
+  padding: 0;
+  border-top: 4px solid #282f7f;
+  border-bottom: 4px solid #282f7f;
+}
+
+.youtube-section.past-livestreams .youtube-heading {
+  background-color: #282f7f;
+  color: white;
+  font-size: 32px;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.past-livestreams .youtube-videos {
+  width: 100%;
+  max-width: 100%; /* ✅ remove any container constraint */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0;
+  height: 480px;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  padding: 0; /* ✅ remove side padding */
+}
+
+.past-livestreams .youtube-videos iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: 3px solid #282f7f;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+}
+
+/* subtle divider between iframes */
+.past-livestreams .youtube-videos iframe + iframe {
+  border-left: 4px solid #282f7f;
+}
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 1000px) {
+  .youtube-feature-container {
+    flex-direction: column;
+    height: auto;
+    border: none;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .youtube-right .youtube-videos iframe {
+    width: 100%;
+    height: 340px;
+  }
+
+  .youtube-left-inner {
+    padding: 40px 20px;
+  }
+
+  .past-livestreams .youtube-videos {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .past-livestreams .youtube-videos iframe {
+    width: 100%;
+    height: 340px;
+    border-left: none;
+    border-right: none;
+    border-top: 4px solid #282f7f;
+  }
+
+  .past-livestreams .youtube-videos iframe:first-child {
+    border-top: none;
+  }
 }

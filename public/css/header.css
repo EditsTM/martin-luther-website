@@ -1,371 +1,129 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Open Sans',Arial,sans-serif}
+
+/* ===== HEADER ===== */
+.main-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 160px;background:#fff;border-bottom:3px solid #282f7f;
+  position:relative;z-index:1000;white-space:nowrap;overflow:hidden;
+  transition:.25s;flex-wrap:nowrap
 }
 
-body {
-  font-family: 'Open Sans', Arial, sans-serif;
+/* ===== LOGO ===== */
+.logo-section{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo{max-height:95px;transition:.25s}
+.logo-link{
+  display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;
+  transition:.2s;flex-shrink:0
+}
+.logo-link:hover{transform:scale(1.02)}
+.logo-text{
+  display:flex;flex-direction:column;justify-content:center;line-height:1.3;
+  padding-left:12px;flex-shrink:0
+}
+.logo-text h1{font:700 34px 'Open Sans';color:#282f7f;margin-bottom:8px;transition:.25s}
+.logo-text p{
+  font:500 11px 'Open Sans';color:#4279bc;letter-spacing:1px;
+  text-transform:uppercase;transform:translateY(2px)
 }
 
-/* =============================
-   HEADER BASE
-============================= */
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 160px;
-  background: white;
-  border-bottom: 3px solid #282f7f;
-  position: relative;
-  z-index: 1000;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  overflow: hidden;
-  transition: all 0.25s ease;
+/* ===== NAVIGATION ===== */
+.nav-links{flex-shrink:1;min-width:0}
+.nav-links ul{
+  list-style:none;display:flex;align-items:center;gap:32px;flex-wrap:nowrap
+}
+.nav-links a{
+  text-decoration:none;font-weight:600;font-size:17px;color:#4279bc;
+  letter-spacing:1px;text-transform:uppercase;padding:10px 8px;display:block;
+  transition:color .3s,transform .2s;white-space:nowrap
+}
+.nav-links a:hover{color:#282f7f;transform:scale(1.05)}
+
+/* ===== DROPDOWNS ===== */
+.dropdown{position:relative;flex-shrink:0}
+.dropbtn{cursor:pointer}
+.mega-menu{
+  position:fixed;top:var(--menu-top,110px);left:0;right:0;width:100%;
+  background:#fff;box-shadow:0 8px 25px rgba(0,0,0,.25);
+  padding:40px 100px;display:none;z-index:2000;opacity:0;transition:opacity .25s
+}
+.dropdown.open .mega-menu{display:block;opacity:1}
+
+/* ===== MENU GRID ===== */
+.dropdown-content{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:40px;
+  max-width:1600px;margin:0 auto;width:100%
+}
+.mega-column h3{
+  font-size:16px;font-weight:800;color:#fff;background:#1e245f;
+  text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;
+  border-radius:3px;margin-bottom:12px;text-align:left
+}
+.mega-column a{
+  display:block;color:#1e245f;text-decoration:none;margin:8px 0;font-size:15px;
+  border-bottom:1px solid rgba(0,0,0,.08);padding:6px 0;
+  transition:color .2s,background .2s,padding-left .2s
+}
+.mega-column a:hover{color:#4279bc;background:rgba(230,240,255,.7);padding-left:8px}
+
+/* ===== RESPONSIVE ===== */
+@media(min-width:1600px){.main-header{padding:0 220px}}
+@media(max-width:1599px) and (min-width:1276px){
+  .main-header{padding:0 130px}
+  .logo-text h1{font-size:32px}
+  .nav-links ul{gap:28px}
+  .nav-links a{font-size:16.5px}
+}
+@media(max-width:1400px) and (min-width:1000px){
+  .main-header{padding:0 100px}
+  .logo-text{padding-left:14px}
+  .logo-text h1{font-size:32px;margin-bottom:10px}
+  .logo-text p{font-size:11.5px}
+  .nav-links ul{gap:26px}
+  .nav-links a{font-size:16px}
+}
+@media(max-width:1275px) and (min-width:1025px){
+  .main-header{flex-direction:column;align-items:center;padding:15px 70px;white-space:normal}
+  .logo-section{flex-wrap:wrap;justify-content:center}
+  .logo{max-height:85px}
+  .logo-text{text-align:center;margin-top:8px;padding-left:0}
+  .logo-text h1{font-size:30px}
+  .logo-text p{font-size:12px}
+  .nav-links ul{flex-wrap:wrap;justify-content:center;gap:24px;margin-top:10px}
+  .nav-links a{font-size:16px;padding:8px 6px}
+}
+@media(max-width:1024px){
+  .main-header{flex-direction:column;align-items:center;padding:15px 40px;white-space:normal}
+  .logo{max-height:75px}
+  .logo-text{text-align:center;margin-top:6px}
+  .logo-text h1{font-size:28px}
+  .logo-text p{font-size:12px}
+  .nav-links ul{flex-wrap:wrap;justify-content:center;gap:20px}
+  .nav-links a{font-size:15.5px}
+  .dropdown-content{grid-template-columns:repeat(2,1fr);gap:20px}
+}
+@media(max-width:640px){
+  .main-header{padding:15px 25px}
+  .logo-text h1{font-size:24px}
+  .logo-text p{font-size:11px}
+  .nav-links a{font-size:15px}
+  .nav-links ul{gap:16px}
+  .dropdown-content{grid-template-columns:1fr}
 }
 
-/* =============================
-   LOGO SECTION
-============================= */
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  flex-wrap: nowrap;
-}
-
-.logo {
-  max-height: 95px;
-  height: auto;
-  transition: max-height 0.25s ease;
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.logo-link:hover {
-  transform: scale(1.02);
-}
-
-/* =============================
-   LOGO TEXT (SPACING FIXED)
-============================= */
-.logo-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  line-height: 1.3;
-  padding-left: 12px; /* consistent breathing room between logo & text */
-  flex-shrink: 0;
-}
-
-.logo-text h1 {
-  font-weight: 700;
-  font-size: 34px;
-  color: #282f7f;
-  margin-bottom: 8px; /* ensures stable space between title & subtitle */
-  transition: font-size 0.25s ease;
-}
-
-.logo-text p {
-  font-weight: 500;
-  font-size: 11px;
-  color: #4279bc;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transform: translateY(2px); /* subtle buffer for visual spacing */
-}
-
-/* =============================
-   NAV LINKS
-============================= */
-.nav-links {
-  flex-shrink: 1;
-  min-width: 0;
-}
-
-.nav-links ul {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  flex-wrap: nowrap;
-}
-
-.nav-links a {
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 17px;
-  color: #4279bc;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 10px 8px;
-  display: block;
-  transition: color 0.3s ease, transform 0.2s ease;
-  white-space: nowrap;
-}
-
-.nav-links a:hover {
-  color: #282f7f;
-  transform: scale(1.05);
-}
-
-/* =============================
-   DROPDOWN MENU
-============================= */
-.dropdown {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.dropbtn {
-  cursor: pointer;
-}
-
-/* =============================
-   MEGA MENU
-============================= */
-.mega-menu {
-  position: fixed;
-  top: var(--menu-top, 110px);
-  left: 0;
-  right: 0;
-  width: 100%;
-  background: #ffffff;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  padding: 40px 100px;
-  display: none;
-  z-index: 2000;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.dropdown.open .mega-menu {
-  display: block;
-  opacity: 1;
-}
-
-/* =============================
-   GRID INSIDE MENU
-============================= */
-.dropdown-content {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-.mega-column h3 {
-  font-size: 16px;
-  font-weight: 800;
-  color: #ffffff;
-  background-color: #1e245f;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 8px 12px;
-  border-radius: 3px;
-  margin-bottom: 12px;
-}
-
-.mega-column a {
-  display: block;
-  color: #1e245f;
-  text-decoration: none;
-  margin: 8px 0;
-  font-size: 15px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 6px 0;
-  transition: color 0.2s ease, background 0.2s ease, padding-left 0.2s ease;
-}
-
-.mega-column a:hover {
-  color: #4279bc;
-  background: rgba(230, 240, 255, 0.7);
-  padding-left: 8px;
-}
-
-/* =============================
-   RESPONSIVE FIXES
-============================= */
-
-/* XL Desktop (≥1600px) */
-@media (min-width: 1600px) {
-  .main-header {
-    padding: 0 220px;
+/* ===== MOBILE MENU FIXES ===== */
+@media(max-width:768px){
+  .mega-menu{
+    position:fixed;top:var(--menu-top,90px);left:0;right:0;width:100%;
+    height:calc(100vh - var(--menu-top,90px));overflow-y:auto;
+    padding:25px;background:#fff;box-shadow:0 8px 25px rgba(0,0,0,.25);z-index:3000
   }
-}
-
-/* Large Desktop (1276px–1599px) */
-@media (max-width: 1599px) and (min-width: 1276px) {
-  .main-header {
-    padding: 0 130px;
-  }
-
-  .logo-text h1 {
-    font-size: 32px;
-  }
-
-  .nav-links ul {
-    gap: 28px;
-  }
-
-  .nav-links a {
-    font-size: 16.5px;
-  }
-}
-
-/* Mid-width (1000px–1400px): increase spacing & scale down nav */
-@media (max-width: 1400px) and (min-width: 1000px) {
-  .main-header {
-    padding: 0 100px;
-  }
-
-  .logo-text {
-    padding-left: 14px;
-  }
-
-  .logo-text h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-  }
-
-  .logo-text p {
-    font-size: 11.5px;
-  }
-
-  .nav-links ul {
-    gap: 26px;
-  }
-
-  .nav-links a {
-    font-size: 16px;
-  }
-}
-
-/* ✅ Graceful Wrap (≤1275px) — prevents "Contact Us" cutoff */
-@media (max-width: 1275px) and (min-width: 1025px) {
-  .main-header {
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 70px;
-    white-space: normal;
-  }
-
-  .logo-section {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .logo {
-    max-height: 85px;
-  }
-
-  .logo-text {
-    text-align: center;
-    margin-top: 8px;
-    padding-left: 0;
-  }
-
-  .logo-text h1 {
-    font-size: 30px;
-  }
-
-  .logo-text p {
-    font-size: 12px;
-  }
-
-  .nav-links ul {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 24px;
-    margin-top: 10px;
-  }
-
-  .nav-links a {
-    font-size: 16px;
-    padding: 8px 6px;
-  }
-}
-
-/* Tablets & Small Laptops (≤1024px) */
-@media (max-width: 1024px) {
-  .main-header {
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 40px;
-    white-space: normal;
-  }
-
-  .logo {
-    max-height: 75px;
-  }
-
-  .logo-text {
-    text-align: center;
-    margin-top: 6px;
-  }
-
-  .logo-text h1 {
-    font-size: 28px;
-  }
-
-  .logo-text p {
-    font-size: 12px;
-  }
-
-  .nav-links ul {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .nav-links a {
-    font-size: 15.5px;
-  }
-
-  .dropdown-content {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-}
-
-/* Mobile (≤640px) */
-@media (max-width: 640px) {
-  .main-header {
-    padding: 15px 25px;
-  }
-
-  .logo-text h1 {
-    font-size: 24px;
-  }
-
-  .logo-text p {
-    font-size: 11px;
-  }
-
-  .nav-links a {
-    font-size: 15px;
-  }
-
-  .nav-links ul {
-    gap: 16px;
-  }
-
-  .dropdown-content {
-    grid-template-columns: 1fr;
-  }
+  .dropdown.open .mega-menu{display:block;opacity:1}
+  body.menu-open{overflow:hidden}
+  .dropdown-content{grid-template-columns:1fr;gap:25px}
+  .mega-column h3{font-size:18px;text-align:center}
+  .mega-column a{font-size:16px;padding:10px;text-align:center}
+  .nav-links ul{flex-direction:column;gap:12px;width:100%;text-align:center}
 }
