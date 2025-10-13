@@ -1,96 +1,111 @@
 // ✅ public/js/header.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // Always fetch from absolute path under /html/
     const res = await fetch("/html/header.html");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
     const html = await res.text();
     document.getElementById("header").innerHTML = html;
 
-    // Fix logo path to always go home
     const logo = document.querySelector(".logo-link");
     if (logo) logo.href = "/html/index.html";
 
-    // Initialize dropdown + layout
     setupDropdownMenu();
     lockMegaMenuToHeader();
     setupMenuReflowWatchers();
-    setupMobileDropdownToggle(); // ✅ added mobile toggle
   } catch (err) {
     console.error("⚠️ Header load error:", err);
   }
 });
 
 /* ------------------------------------------------------
-   Smooth + Smart Dropdown Hover Logic
+   Dropdown Hover (Desktop) + Tap Toggle (Touch Devices)
 ------------------------------------------------------ */
 function setupDropdownMenu() {
   const dropdowns = document.querySelectorAll(".dropdown");
   let activeDropdown = null;
   let timeout;
 
+  const closeAll = () => {
+    dropdowns.forEach((d) => d.classList.remove("open"));
+    activeDropdown = null;
+    document.body.classList.remove("menu-open");
+  };
+
   dropdowns.forEach((dropdown) => {
+    const trigger = dropdown.querySelector(".dropbtn");
     const menu = dropdown.querySelector(".mega-menu");
 
+    // Hover (Desktop)
     dropdown.addEventListener("mouseenter", () => {
+      if (window.innerWidth <= 770) return;
       clearTimeout(timeout);
-      if (activeDropdown && activeDropdown !== dropdown) {
+      if (activeDropdown && activeDropdown !== dropdown)
         activeDropdown.classList.remove("open");
-      }
       dropdown.classList.add("open");
       activeDropdown = dropdown;
+      document.body.classList.add("menu-open");
+      lockMegaMenuToHeader();
     });
 
     dropdown.addEventListener("mouseleave", (e) => {
+      if (window.innerWidth <= 770) return;
       timeout = setTimeout(() => {
-        if (
-          !dropdown.contains(e.relatedTarget) &&
-          !menu.contains(e.relatedTarget)
-        ) {
-          dropdown.classList.remove("open");
-          if (activeDropdown === dropdown) activeDropdown = null;
-        }
-      }, 200);
+        dropdown.classList.remove("open");
+        if (activeDropdown === dropdown) activeDropdown = null;
+        document.body.classList.remove("menu-open");
+      }, 150);
     });
 
-    if (menu) {
-      menu.addEventListener("mouseenter", () => {
-        clearTimeout(timeout);
-        dropdown.classList.add("open");
-        activeDropdown = dropdown;
-      });
+    // Tap to toggle (Touch/Mobile)
+    if (trigger) {
+      trigger.addEventListener("click", (e) => {
+        if (window.innerWidth > 770) return; // only for smaller screens
+        e.preventDefault();
+        e.stopPropagation();
 
-      menu.addEventListener("mouseleave", () => {
-        const hoveringAnother = Array.from(dropdowns).some((d) =>
-          d.matches(":hover")
-        );
-        if (!hoveringAnother) {
-          timeout = setTimeout(() => {
-            dropdown.classList.remove("open");
-            if (activeDropdown === dropdown) activeDropdown = null;
-          }, 200);
+        const isOpen = dropdown.classList.contains("open");
+        closeAll();
+        if (!isOpen) {
+          dropdown.classList.add("open");
+          activeDropdown = dropdown;
+          document.body.classList.add("menu-open");
+          lockMegaMenuToHeader();
         }
       });
     }
+
+    if (menu) {
+      menu.addEventListener("click", (ev) => {
+        if (ev.target.tagName === "A") closeAll();
+      });
+    }
+  });
+
+  // Click outside closes it
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".dropdown") && !e.target.closest(".mega-menu"))
+      closeAll();
+  });
+
+  // ESC key closes menu
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAll();
   });
 }
 
 /* ------------------------------------------------------
-   Keeps Mega Menu Flush Under Header (Dynamic Height)
+   Keeps Mega Menu Flush Below Header
 ------------------------------------------------------ */
 function lockMegaMenuToHeader() {
   const header = document.querySelector(".main-header");
   if (!header) return;
   const rect = header.getBoundingClientRect();
-  document.documentElement.style.setProperty(
-    "--menu-top",
-    `${Math.round(rect.bottom + window.scrollY)}px`
-  );
+  const top = Math.round(rect.bottom + window.scrollY);
+  document.documentElement.style.setProperty("--menu-top", `${top}px`);
 }
 
 /* ------------------------------------------------------
-   Keeps Position Synced on Resize, Scroll, or Font Load
+   Update Position on Resize/Scroll
 ------------------------------------------------------ */
 function setupMenuReflowWatchers() {
   const update = () => lockMegaMenuToHeader();
@@ -101,39 +116,4 @@ function setupMenuReflowWatchers() {
     const header = document.querySelector(".main-header");
     if (header) new ResizeObserver(update).observe(header);
   }
-}
-
-/* ------------------------------------------------------
-   📱 Mobile Tap Dropdown Toggle (Church / School)
------------------------------------------------------- */
-function setupMobileDropdownToggle() {
-  const dropdowns = document.querySelectorAll(".dropdown");
-  const mq = window.matchMedia("(max-width: 1024px)");
-
-  dropdowns.forEach((dropdown) => {
-    const button = dropdown.querySelector(".dropbtn");
-    if (!button) return;
-
-    button.addEventListener("click", (e) => {
-      if (!mq.matches) return; // ✅ only apply on mobile/tablet
-      e.preventDefault();
-      e.stopPropagation();
-
-      // Close other open dropdowns first
-      dropdowns.forEach((d) => {
-        if (d !== dropdown) d.classList.remove("open");
-      });
-
-      // Toggle this one
-      dropdown.classList.toggle("open");
-    });
-  });
-
-  // Close all dropdowns when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!mq.matches) return;
-    if (!e.target.closest(".dropdown")) {
-      dropdowns.forEach((d) => d.classList.remove("open"));
-    }
-  });
 }
