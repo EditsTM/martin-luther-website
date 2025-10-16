@@ -26,7 +26,6 @@
       <h1>Welcome to Martin Luther Church & School</h1>
       <p>Grow in Christ! Go in Christ!</p>
       <div class="hero-buttons">
-        <!-- ✅ Changed to btn-outline for matching style -->
         <a href="/html/church/church.html" class="btn-outline">OUR CHURCH</a>
         <a href="/html/school/school.html" class="btn-outline">OUR SCHOOL</a>
       </div>
@@ -36,34 +35,10 @@
   <!-- ✅ Events Section -->
   <section class="events-section">
     <h2 class="events-title">Events at Martin Luther</h2>
-    <div class="events-container">
 
-      <!-- Card 1 -->
-      <div class="event-card">
-        <div class="event-image">
-          <img src="/images/Placeholder.jpg" alt="Placeholder image">
-        </div>
-        <h3 class="event-name">TBD</h3>
-        <p class="event-date">TBD</p>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="event-card">
-        <div class="event-image">
-          <img src="/images/Placeholder.jpg" alt="Placeholder image">
-        </div>
-        <h3 class="event-name">TBD</h3>
-        <p class="event-date">TBD</p>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="event-card">
-        <div class="event-image">
-          <img src="/images/Placeholder.jpg" alt="Placeholder image">
-        </div>
-        <h3 class="event-name">TBD</h3>
-        <p class="event-date">TBD</p>
-      </div>
+    <!-- ✅ Dynamic Events Container (Fixed) -->
+    <div class="events-cards">
+      <!-- Event cards will be dynamically loaded here -->
     </div>
 
     <div class="events-button">
@@ -116,5 +91,8 @@
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/home.js"></script>
+
+  <!-- ✅ Added: Dynamic Events Loader -->
+  <script src="/js/eventsLoader.js"></script>
 </body>
 </html>

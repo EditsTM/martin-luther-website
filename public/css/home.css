@@ -58,24 +58,24 @@
 }
 
 .hero-buttons .btn-outline {
-  padding: 18px 50px;                /* ✅ larger size */
-  font-size: 22px;                   /* ✅ more prominent */
-  border: 2.5px solid white;         /* ✅ slightly thicker border */
+  padding: 18px 50px;
+  font-size: 22px;
+  border: 2.5px solid white;
   background: transparent;
   color: white;
-  border-radius: 6px;                /* ✅ softer corners */
+  border-radius: 6px;
   font-weight: 700;
   text-decoration: none;
   transition: all 0.3s ease;
   letter-spacing: 0.5px;
-  text-shadow: none;                 /* ❌ remove text glow */
-  box-shadow: none;                  /* ❌ remove box shadow */
+  text-shadow: none;
+  box-shadow: none;
 }
 
 .hero-buttons .btn-outline:hover {
   background: white;
   color: #4279bc;
-  transform: scale(1.07);            /* ✅ gentle pop effect */
+  transform: scale(1.07);
 }
 
 /* ======================================================
@@ -121,63 +121,84 @@
    EVENTS SECTION
 ====================================================== */
 .events-section {
-  background: #f9f9f9;
   text-align: center;
-  padding: 60px 20px;
+  background: #f9f9f9;
+  padding: 80px 20px;
 }
 
 .events-title {
-  font-size: 32px;
+  font-size: 36px;
+  font-weight: 700;
+  color: #000; /* 🟢 Changed from blue (#282f7f) to black */
   margin-bottom: 40px;
-  color: #2c3e50;
 }
 
-/* Cards layout */
-.events-container {
+/* Cards layout (Dynamic) */
+.events-cards {
   display: flex;
   justify-content: center;
-  gap: 40px;
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  gap: 30px;
+  margin: 0 auto 50px;
+  max-width: 1100px;
 }
 
-/* Event Card Styling */
+/* Individual event cards */
 .event-card {
-  background: white;
-  border: 1px solid #ddd;
-  width: 280px;
-  border-radius: 10px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  width: 300px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Event image */
-.event-image img {
+.event-card img {
   width: 100%;
-  height: 180px;
+  height: 200px;
   object-fit: cover;
   display: block;
-  border-bottom: 1px solid #ddd;
 }
 
-/* Card text */
+/* Event text */
 .event-name {
-  font-size: 20px;
+  color: #000;               /* 🟢 Changed from blue (#282f7f) to black */
+  font-size: 22px;
+  font-weight: 700;
   margin: 15px 0 5px;
-  color: #2c3e50;
-  font-weight: 600;
 }
 
 .event-date {
-  font-size: 15px;
-  color: #555;
+  color: #555;               /* ⬅️ Kept same grey for dates */
+  font-size: 16px;
   margin-bottom: 20px;
+}
+
+
+/* Button under cards */
+.events-button {
+  margin-top: 30px;
+}
+
+.events-button .btn {
+  display: inline-block;
+  background: #4279bc;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.events-button .btn:hover {
+  background: #282f7f;
 }
 
 /* ======================================================
@@ -334,6 +355,10 @@
     padding: 8px 18px;
     font-size: 14px;
   }
+
+  .event-card {
+    width: 85%;
+  }
 }
 
 /* BELIEFS (≤700px and below) */
@@ -354,26 +379,26 @@
     margin-top: 8px;
   }
 }
+
 /* Fix: Prevent hero button cutoff on very small screens (≤420px) */
 @media (max-width: 420px) {
   .hero {
-    height: auto;                /* allow it to grow naturally */
-    min-height: 85vh;            /* still keeps it tall visually */
-    padding-bottom: 40px;        /* extra space below buttons */
+    height: auto;
+    min-height: 85vh;
+    padding-bottom: 40px;
   }
 
   .hero-content h1 {
-    font-size: 42px;             /* scale headline down a bit */
+    font-size: 42px;
   }
 
   .hero-content p {
-    font-size: 20px;             /* scale subtitle for better fit */
+    font-size: 20px;
     margin-bottom: 20px;
   }
 
   .hero-buttons .btn-outline {
-    padding: 14px 36px;          /* slightly smaller buttons */
+    padding: 14px 36px;
     font-size: 18px;
   }
 }
-

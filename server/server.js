@@ -7,46 +7,68 @@ import fetch from "node-fetch";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import session from "express-session";
 
 import contactRoutes from "./routes/contactRoutes.js";
 import prayerRoutes from "./routes/prayerRoutes.js";
+import adminRoutes from "./routes/admin.js";
+import contentRoutes from "./routes/contentRoutes.js";
 
 dotenv.config();
 
-// Setup __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Log server startup
 console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
 const app = express();
-
-// ✅ Tell Express to trust Render’s proxy (fixes rate-limit warning)
 app.set("trust proxy", 1);
-
 const PORT = process.env.PORT || 3000;
 
-
 /* ------------------------------------------------------
-   🛡️ Security & Core Middleware
+   🛡️ Security & Middleware
 ------------------------------------------------------ */
 app.use(
   helmet({
-    contentSecurityPolicy: false, // disable Helmet’s internal CSP
+    contentSecurityPolicy: false,
     crossOriginOpenerPolicy: { policy: "same-origin" },
     crossOriginResourcePolicy: { policy: "same-origin" },
     referrerPolicy: { policy: "no-referrer" },
   })
 );
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ------------------------------------------------------
-   ✅ Custom Content Security Policy (CSP)
+   🧩 Session Configuration (Persistent 15-minute Login)
+------------------------------------------------------ */
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "ml-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 15 * 60 * 1000, // 🕒 15 minutes
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // secure only in production (false locally)
+    },
+  })
+);
+
+// 🕓 Extend session if user stays active
+app.use((req, res, next) => {
+  if (req.session && req.session.loggedIn) {
+    req.session._garbage = Date();
+    req.session.touch(); // refresh expiry timer
+  }
+  next();
+});
+
+/* ------------------------------------------------------
+   ✅ CSP Policy
 ------------------------------------------------------ */
 app.use((req, res, next) => {
   res.removeHeader("Content-Security-Policy");
@@ -66,40 +88,40 @@ app.use((req, res, next) => {
       "frame-ancestors 'self'",
     ].join("; ")
   );
-
-  console.log("🔒 Custom CSP applied to:", req.path);
   next();
 });
 
 /* ------------------------------------------------------
-   📩 API ROUTES (Declared BEFORE Static Middleware)
+   🧭 Redirect static admin.html to session-aware route
+------------------------------------------------------ */
+app.get("/html/school/admin.html", (req, res) => {
+  res.redirect("/admin/login");
+});
+
+/* ------------------------------------------------------
+   📩 API ROUTES
 ------------------------------------------------------ */
 app.use("/contact", contactRoutes);
 app.use("/prayer", prayerRoutes);
+app.use("/admin", adminRoutes);
+app.use("/content", contentRoutes);
 
 /* ------------------------------------------------------
-   🎥 YouTube API Proxy
+   🎥 YouTube Proxy
 ------------------------------------------------------ */
 app.get("/api/youtube", async (req, res) => {
-  console.log("🎬 YouTube route hit!");
   try {
     const { YOUTUBE_API_KEY, CHANNEL_ID } = process.env;
-
-    if (!YOUTUBE_API_KEY || !CHANNEL_ID) {
-      console.error("❌ Missing YOUTUBE_API_KEY or CHANNEL_ID in environment");
-      return res
-        .status(500)
-        .json({ error: "Missing YouTube API configuration." });
-    }
+    if (!YOUTUBE_API_KEY || !CHANNEL_ID)
+      return res.status(500).json({ error: "Missing YouTube configuration" });
 
     const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${YOUTUBE_API_KEY}`;
     const channelRes = await fetch(channelUrl);
     const channelData = await channelRes.json();
 
-    if (!channelData.items?.length) throw new Error("Invalid channel or API key.");
+    if (!channelData.items?.length) throw new Error("Invalid channel ID or key");
 
     const uploadsId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
-
     const videosUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=4&key=${YOUTUBE_API_KEY}`;
     const videosRes = await fetch(videosUrl);
     const videosData = await videosRes.json();
@@ -107,13 +129,15 @@ app.get("/api/youtube", async (req, res) => {
     res.json(videosData);
   } catch (err) {
     console.error("❌ YouTube API error:", err);
-    res.status(500).json({ error: "Failed to load YouTube videos." });
+    res.status(500).json({ error: "Failed to load YouTube videos" });
   }
 });
 
 /* ------------------------------------------------------
-   🌐 STATIC FILES (Placed AFTER API Routes)
+   🌐 STATIC FILES
 ------------------------------------------------------ */
+// 🟢 Added line to ensure uploads always resolve correctly
+app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(__dirname, "../public")));
 
 /* ------------------------------------------------------
@@ -124,21 +148,18 @@ app.get("/", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   ❌ 404 Page Handler (Safe)
+   ❌ 404 Handler
 ------------------------------------------------------ */
 app.use((req, res) => {
   const notFoundPage = path.join(__dirname, "../public/html/404.html");
-
-  if (fs.existsSync(notFoundPage)) {
-    res.status(404).sendFile(notFoundPage);
-  } else {
-    res.status(404).send("<h1>404 - Page Not Found</h1>");
-  }
+  fs.existsSync(notFoundPage)
+    ? res.status(404).sendFile(notFoundPage)
+    : res.status(404).send("<h1>404 - Page Not Found</h1>");
 });
 
 /* ------------------------------------------------------
    🚀 Start Server
 ------------------------------------------------------ */
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server running at: http://localhost:${PORT}`);
-});
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`✅ Server running at: http://localhost:${PORT}`)
+);

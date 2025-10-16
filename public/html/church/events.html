@@ -11,10 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-<link rel="stylesheet" href="../../css/header.css">
-<link rel="stylesheet" href="../../css/footer.css">
-<link rel="stylesheet" href="../../css/church/events.css">
-
+  <link rel="stylesheet" href="../../css/header.css">
+  <link rel="stylesheet" href="../../css/footer.css">
+  <link rel="stylesheet" href="../../css/church/events.css">
 </head>
 
 <body>
@@ -29,20 +28,198 @@
   </section>
 
   <!-- MAIN CONTENT -->
-  <main class="events-content">
-    <h2>Gather. Celebrate. Grow Together.</h2>
-    <p>
-      From worship services and community gatherings to school activities and outreach programs, 
-      there’s always something happening at Martin Luther Church and School.  
-      Explore our upcoming events and join us in fellowship and faith.
-    </p>
+  <main class="events-grid" id="events-grid">
+    <!-- 🟦 Events load dynamically here -->
   </main>
 
   <!-- ✅ Dynamic Footer -->
   <div id="footer"></div>
 
-  <!-- JS -->
-<script src="../../js/header.js"></script>
-<script src="../../js/footer.js"></script>
+  <!-- ✅ Core JS -->
+  <script src="../../js/header.js"></script>
+  <script src="../../js/footer.js"></script>
+
+  <!-- ✅ Dynamic Event Loader -->
+  <script>
+    // Fetch and dynamically inject events
+    fetch("/content/events.json")
+      .then(res => res.json())
+      .then(data => {
+        const grid = document.getElementById("events-grid");
+        const events = data.events || [];
+        const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+        // 🧱 Wrap each event pair in .event-row to keep order consistent
+        grid.innerHTML = events.map((ev, index) => {
+          const savedNotes = localStorage.getItem(`eventNotes_${index}`) || "*Insert text here*";
+
+          const textBlock = `
+            <div class="grid-item grey">
+              <div class="text-box">
+                <div class="event-header">
+                  <h2 id="event-title-${index}">${ev.title}</h2>
+                  ${isAdmin ? `<button class="edit-btn" data-type="title" data-index="${index}">✏️ Edit</button>` : ""}
+                  <p class="event-date" id="event-date-${index}">${ev.date}</p>
+                  ${isAdmin ? `<button class="edit-btn" data-type="date" data-index="${index}">📅 Edit</button>` : ""}
+                </div>
+                <p>${ev.description || ""}</p>
+                <div class="event-admin-section">
+                  <div id="admin-text-${index}" class="admin-display-text">${savedNotes}</div>
+                  <button class="save-notes-btn" data-index="${index}" style="display:${isAdmin ? 'inline-block' : 'none'};">
+                    Save Notes
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          const imageBlock = `
+            <div class="grid-item white" style="position:relative;">
+              <img src="/${ev.image}" alt="${ev.title}" class="event-img">
+              ${isAdmin ? `<div class="image-edit-overlay" data-index="${index}">🖼️ Edit Image</div>` : ""}
+            </div>
+          `;
+
+          // 🟢 FIXED LAYOUT LOGIC
+          // Odd-indexed events (1, 3, 5...) now render IMAGE first, then TEXT.
+          return `
+            <div class="event-row ${index % 2 === 0 ? "even" : "odd"}">
+              ${index % 2 === 0 ? textBlock + imageBlock : imageBlock + textBlock}
+            </div>
+          `;
+        }).join("");
+
+        if (isAdmin) enableAdminEditing();
+        syncHeights();
+      })
+      .catch(err => {
+        console.error("❌ Error loading events:", err);
+        document.getElementById("events-grid").innerHTML = "<p>Unable to load events.</p>";
+      });
+
+    /* ---------------------------------------------------
+       🧩 Enable Admin Inline Editing (Title, Date, Image)
+    --------------------------------------------------- */
+    function enableAdminEditing() {
+      // ✏️ Title / Date edits
+      document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const index = btn.dataset.index;
+          const type = btn.dataset.type;
+          const fieldId = `event-${type}-${index}`;
+          const fieldEl = document.getElementById(fieldId);
+          const currentValue = fieldEl.innerText.trim();
+          const newValue = prompt(`Edit event ${type}:`, currentValue);
+          if (!newValue || newValue === currentValue) return;
+
+          fieldEl.innerText = newValue;
+
+          const res = await fetch("/admin/update-event", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ index, [type]: newValue })
+          });
+          const result = await res.json();
+          if (result.success) {
+            alert("✅ Event updated successfully!");
+            syncHeights();
+          } else {
+            alert("❌ Failed to update event.");
+          }
+        });
+      });
+
+      // 📝 Notes editing
+      document.querySelectorAll(".event-admin-section").forEach((section, i) => {
+        const textDiv = section.querySelector(".admin-display-text");
+        const saveBtn = section.querySelector(".save-notes-btn");
+
+        textDiv.contentEditable = "true";
+        textDiv.style.border = "1px dashed #282f7f";
+        textDiv.style.background = "#fff";
+        saveBtn.style.display = "inline-block";
+
+        saveBtn.addEventListener("click", () => {
+          const content = textDiv.innerText.trim();
+          localStorage.setItem(`eventNotes_${i}`, content);
+          alert("✅ Notes saved!");
+          syncHeights();
+        });
+      });
+
+      // 🖼️ Image editing overlay (drag & drop + click upload)
+      document.querySelectorAll(".image-edit-overlay").forEach((overlay) => {
+        const index = overlay.dataset.index;
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.style.display = "none";
+        overlay.appendChild(fileInput);
+
+        ["dragenter", "dragover", "dragleave", "drop"].forEach(evt =>
+          overlay.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); })
+        );
+
+        overlay.addEventListener("click", () => fileInput.click());
+        overlay.addEventListener("dragover", () => {
+          overlay.style.background = "rgba(66,121,188,0.95)";
+        });
+        overlay.addEventListener("dragleave", () => {
+          overlay.style.background = "rgba(66,121,188,0.85)";
+        });
+        overlay.addEventListener("drop", async (e) => {
+          overlay.style.background = "rgba(66,121,188,0.85)";
+          const file = e.dataTransfer.files[0];
+          if (file) await uploadImage(index, file);
+        });
+        fileInput.addEventListener("change", async (e) => {
+          const file = e.target.files[0];
+          if (file) await uploadImage(index, file);
+        });
+      });
+    }
+
+    /* ---------------------------------------------------
+       📤 Upload Image
+    --------------------------------------------------- */
+    async function uploadImage(index, file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("index", index);
+      try {
+        const res = await fetch("/admin/upload-image", { method: "POST", body: formData });
+        const result = await res.json();
+        if (result.success) {
+          const img = document.querySelectorAll(".event-img")[index];
+          if (img) img.src = "/" + result.image + "?t=" + Date.now();
+          alert("✅ Image updated successfully!");
+          syncHeights();
+        } else {
+          alert("❌ Upload failed: " + (result.error || "Unknown error"));
+        }
+      } catch (err) {
+        console.error("❌ Upload error:", err);
+        alert("❌ Failed to upload image.");
+      }
+    }
+
+    /* ---------------------------------------------------
+       🧩 Sync Image Height with Text Block
+    --------------------------------------------------- */
+    function syncHeights() {
+      const rows = document.querySelectorAll(".event-row");
+      rows.forEach(row => {
+        const grey = row.querySelector(".grid-item.grey");
+        const img = row.querySelector(".grid-item.white img");
+        if (grey && img) {
+          img.style.height = grey.offsetHeight + "px";
+        }
+      });
+    }
+
+    window.addEventListener("load", syncHeights);
+    window.addEventListener("resize", syncHeights);
+    window.addEventListener("input", syncHeights);
+  </script>
 </body>
 </html>

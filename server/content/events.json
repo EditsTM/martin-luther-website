@@ -1,0 +1,19 @@
+{
+  "events": [
+    {
+      "title": "Title Placeholder 1",
+      "date": "Insert date",
+      "image": "images/events/event1-1760643803972-870941230.jpg"
+    },
+    {
+      "title": "Title Placeholder 2",
+      "date": "Insert date",
+      "image": "images/events/event2-1760643810492-71970328.jpg"
+    },
+    {
+      "title": "Title Placeholder 3",
+      "date": "Insert date",
+      "image": "images/events/event3.jpg"
+    }
+  ]
+}
