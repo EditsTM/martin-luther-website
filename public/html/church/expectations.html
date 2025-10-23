@@ -8,44 +8,206 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-<link rel="stylesheet" href="../../css/header.css">
-<link rel="stylesheet" href="../../css/footer.css">
-<link rel="stylesheet" href="../../css/church/expectations.css">
-
+  <link rel="stylesheet" href="../../css/header.css">
+  <link rel="stylesheet" href="../../css/footer.css">
+  <link rel="stylesheet" href="../../css/church/expectations.css">
 </head>
 
 <body>
   <!-- ✅ Dynamic Header -->
   <div id="header"></div>
 
-  <!-- HERO SECTION -->
+  <!-- HERO -->
   <section class="expectations-hero">
     <div class="expectations-overlay">
-      <h1>What to Expect</h1>
+      <div class="hero-text">
+        <h1>What to <span class="highlight">Expect</span></h1>
+        <p class="hero-subtext">
+          Here’s what you can expect when you join our church family for worship, fellowship, and community.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- MAIN CONTENT -->
   <main class="expectations-content">
-    <h2>Welcome to Martin Luther Church & School</h2>
-    <p>
-      Visiting a new church can bring questions — we’re here to make you feel
-      right at home. Learn what you can expect when you join us for worship,
-      fellowship, and community.
-    </p>
+    <h2>Service Times</h2>
+
+    <!-- Service Cards -->
+    <section class="service-cards">
+      <!-- 🟦 Sunday Worship -->
+      <div class="card sunday">
+        <div class="icon-circle blue-bg">
+          <img src="/images/worship.svg" alt="worship icon" class="card-icon">
+        </div>
+        <h3>Sunday Worship</h3>
+        <p><img src="/images/time.png" alt="time" class="icon-white"> 8:00 AM & 10:30 AM</p>
+        <p><img src="/images/people.svg" alt="people" class="icon-white"> All Ages Welcome</p>
+        <p><img src="/images/musicnote.svg" alt="music note" class="icon-white"> Contemporary Worship</p>
+      </div>
+
+      <!-- 🩶 Bible Study -->
+      <div class="card bible">
+        <div class="icon-circle light-blue-bg">
+          <img src="/images/book.svg" alt="book icon" class="card-icon bible-book-icon">
+        </div>
+        <h3>Bible Study</h3>
+        <p><img src="/images/time.png" alt="time" class="bible-icon-small"> 9:00 AM</p>
+        <p><img src="/images/schedule.svg" alt="schedule" class="bible-icon-small"> Sunday Mornings</p>
+        <p><img src="/images/heart.svg" alt="heart" class="bible-icon-small"> Welcoming</p>
+      </div>
+
+      <!-- 🟨 Monday Worship -->
+      <div class="card monday">
+        <div class="icon-circle yellow-bg">
+          <img src="/images/worship.svg" alt="worship icon" class="card-icon monday-icon">
+        </div>
+        <h3>Monday Worship</h3>
+        <p><img src="/images/time.png" alt="time" class="monday-icon-small"> 6:00 PM</p>
+        <p><img src="/images/message.svg" alt="message" class="monday-icon-small"> Sunday's Worship Message</p>
+        <p><img src="/images/cloud.svg" alt="cloud" class="monday-icon-small"> Relaxed Atmosphere</p>
+      </div>
+    </section>
+
+    <!-- Service Flow -->
+    <section class="service-flow">
+      <h3 class="flow-title">Service Flow</h3>
+      <p class="flow-subtitle">Below is an overview of what to expect during a typical worship service.</p>
+
+      <div class="flow-grid">
+        <div class="t-item theme-teal">
+          <div class="t-badge"><img src="/images/handshake.png" alt="Handshake"></div>
+          <div class="t-card">
+            <h4>Welcome & Greeting</h4>
+            <p>Upon arrival, please enter through the main entrance and turn right, where our friendly greeters will welcome you.</p>
+          </div>
+        </div>
+
+        <div class="t-item theme-blue">
+          <div class="t-badge"><img src="/images/musicnote.svg" alt="Music Note"></div>
+          <div class="t-card">
+            <h4>Worship Through Music</h4>
+            <p>We worship together through timeless hymns and songs of praise that lift our hearts to Jesus and prepare us to receive His Word.</p>
+          </div>
+        </div>
+
+        <div class="t-item theme-purple">
+          <div class="t-badge"><img src="/images/prayer.png" alt="Prayer"></div>
+          <div class="t-card">
+            <h4>Community Prayer</h4>
+            <p>We take time to pray together as a community, lifting up needs, giving thanks, and seeking God’s care.</p>
+          </div>
+        </div>
+
+        <div class="t-item theme-green">
+          <div class="t-badge"><img src="/images/message.svg" alt="Message"></div>
+          <div class="t-card">
+            <h4>Teaching & Message</h4>
+            <p>Each service includes a message from Scripture that connects God’s timeless truths to the real challenges and joys we face each day.</p>
+          </div>
+        </div>
+
+        <div class="t-item theme-warm">
+          <div class="t-badge"><img src="/images/gift.png" alt="Offering"></div>
+          <div class="t-card">
+            <h4>Offering & Communion</h4>
+            <p>We joyfully give as an act of worship and celebrate the Lord’s Supper on the second and last Sundays of each month. 
+              All are welcome to worship; Communion is reserved for WELS members. Please speak with a pastor if you’d like to learn more.</p>
+          </div>
+        </div>
+
+        <div class="t-item theme-warm-alt">
+          <div class="t-badge"><img src="/images/connection.png" alt="Connection"></div>
+          <div class="t-card">
+            <h4>Fellowship & Connection</h4>
+            <p>After service, we encourage everyone to say hello, enjoy refreshments, and build friendships with others.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ GOOD TO KNOW SECTION -->
+<section class="good-to-know">
+  <h3 class="good-title">Good to Know</h3>
+  <p class="good-subtitle">Practical information to help you feel prepared and comfortable</p>
+
+  <div class="good-grid">
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/shirt.png" alt="What to Wear"></div>
+      <div>
+        <h4>What to Wear</h4>
+        <p>Come as you are! Our congregation dresses casually — jeans, khakis, dresses, or business casual are all perfectly appropriate.</p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/hand.png" alt="Offering"></div>
+      <div>
+        <h4>Offering</h4>
+        <p>Giving is never expected from visitors or members. A QR code is available in the bulletin for members who wish to give electronically.</p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/parking.png" alt="Parking"></div>
+      <div>
+        <h4>Parking</h4>
+        <p>Parking is available in our main lot and on the street nearby in the back. </p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/wheelchair.png" alt="Accessibility"></div>
+      <div>
+        <h4>Accessibility</h4>
+        <p>Our building is fully wheelchair accessible with designated seating areas and hearing assistance devices available.</p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/baby.png" alt="Children"></div>
+      <div>
+        <h4>Children</h4>
+        <p>We welcome every child to worship with us, embracing each one as part of God’s family.</p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/smartphone.png" alt="Stay Connected"></div>
+      <div>
+        <h4>Stay Connected</h4>
+        <p>Check out the bulletin for weekly annoucments.  Pastors will also cover any important information during the worship service.</p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/coffee.png" alt="Coffee"></div>
+      <div>
+        <h4>Coffee & Refreshments</h4>
+        <p>Complimentary refreshments are available before and after the service in our lobby area.</p>
+      </div>
+    </div>
+
+    <div class="good-item">
+      <div class="good-icon"><img src="/images/question.png" alt="Questions"></div>
+      <div>
+        <h4>Questions</h4>
+        <p>Our pastors are happy to answer questions, pray with you, or help you get connected with others.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
   </main>
 
   <!-- ✅ Dynamic Footer -->
   <div id="footer"></div>
 
   <!-- JS -->
-<script src="../../js/header.js"></script>
-<script src="../../js/footer.js"></script>
+  <script src="../../js/header.js"></script>
+  <script src="../../js/footer.js"></script>
 </body>
 </html>

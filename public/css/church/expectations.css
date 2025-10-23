@@ -1,8 +1,6 @@
 /* =============================
    GLOBAL STYLES
 ============================= */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
-
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
@@ -13,9 +11,6 @@ body {
 /* =============================
    HERO SECTION
 ============================= */
-/* =============================
-   HERO SECTION (match YouTube style)
-============================= */
 .expectations-hero {
   position: relative;
   width: 100%;
@@ -25,10 +20,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
-
 
 .expectations-overlay {
   position: absolute;
@@ -36,42 +28,53 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.85); /* ✅ same overlay tone */
+  background: rgba(66, 121, 188, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
-  font-size: 120px; /* ✅ bold heading size */
-  font-weight: 800;
-  letter-spacing: 3px;
+  flex-direction: column;
   text-align: center;
-  text-transform: uppercase;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  padding: 0 20px;
 }
-
 
 .expectations-overlay h1 {
   color: white;
   font-size: 50px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2px;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
+.expectations-overlay .highlight {
+  background: linear-gradient(45deg, #ffb300, #ffde59);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtext {
+  color: #f9f9f9;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 750px;
+  margin: 0 auto;
+  font-weight: 400;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+}
 
 /* =============================
    MAIN CONTENT
 ============================= */
 .expectations-content {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 80px auto;
-  padding: 0 30px;
+  padding: 0 20px;
   text-align: center;
 }
 
 .expectations-content h2 {
-  color: #282f7f;
+  color: #000;
   font-size: 36px;
   margin-bottom: 20px;
 }
@@ -84,18 +87,317 @@ body {
 }
 
 /* =============================
-   RESPONSIVE DESIGN
+   SERVICE CARDS
 ============================= */
-@media (max-width: 950px) {
-  .expectations-overlay h1 {
-    font-size: 38px;
-  }
+.service-cards {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 35px;
+  flex-wrap: wrap;
+  padding: 0 5px;
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
 
-  .expectations-content h2 {
-    font-size: 28px;
-  }
+.card {
+  flex: 1 1 340px;
+  max-width: 380px;
+  height: 300px;
+  border-radius: 18px;
+  padding: 24px 25px 32px;
+  text-align: left;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border: 3px solid rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
 
-  .expectations-content p {
-    font-size: 17px;
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  border-color: rgba(66, 121, 188, 0.45);
+}
+
+.card h3 {
+  margin-top: 12px;
+  margin-bottom: 14px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.card p {
+  margin: 8px 0;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =============================
+   TOP ICONS (CIRCLES)
+============================= */
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.card-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Circle Background Colors */
+.blue-bg { background: rgba(255, 255, 255, 0.25); }
+.light-blue-bg { background: rgba(66, 121, 188, 0.15); }
+.yellow-bg { background: rgba(255, 255, 255, 0.25); }
+
+/* =============================
+   INDIVIDUAL CARD STYLES
+============================= */
+.sunday {
+  background: linear-gradient(135deg, #2f66a9, #4279bc);
+  color: white;
+}
+.sunday h3, .sunday p { color: white; }
+.sunday .card-icon { filter: brightness(0) invert(1); }
+.icon-white { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+
+.bible {
+  background: linear-gradient(135deg, #f7f9ff, #dee5fa);
+  color: #2c2c2c;
+}
+.bible h3 { color: #2c2c2c; }
+.bible-book-icon {
+  filter: brightness(0) saturate(100%) invert(35%) sepia(89%)
+          saturate(678%) hue-rotate(185deg) brightness(95%);
+}
+.bible-icon-small {
+  width: 18px; height: 18px;
+  filter: brightness(0) saturate(100%) invert(35%) sepia(89%)
+          saturate(678%) hue-rotate(185deg) brightness(95%);
+}
+
+.monday {
+  background: linear-gradient(135deg, #ffb300, #ffcf4a);
+  color: #2c2c2c;
+}
+.monday h3 { color: #2c2c2c; }
+.monday-icon { filter: brightness(0); }
+.monday-icon-small { width: 18px; height: 18px; filter: brightness(0); }
+
+/* =============================
+   SUNDAY SERVICE FLOW GRID (Full-Width Grey Section)
+============================= */
+.service-flow {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  background: #f6f6f6;
+  padding: 80px 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.flow-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.flow-subtitle {
+  font-size: 15px;
+  color: #5a6580;
+  margin-bottom: 40px;
+}
+
+/* --- GRID LAYOUT FOR BOXES --- */
+.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* --- INDIVIDUAL BOXES --- */
+.t-item {
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  padding: 28px;
+  text-align: left;
+  background: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.t-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* --- ICON CIRCLE --- */
+.t-badge {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.t-badge img {
+  width: 26px;
+  height: 26px;
+  filter: brightness(0) invert(1);
+}
+
+/* --- TEXT INSIDE BOXES --- */
+.t-card h4 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e2a57;
+}
+
+.t-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #2f2f2f;
+}
+
+/* --- COLOR THEMES --- */
+.theme-teal { background: #e4f8f6; }
+.theme-teal .t-badge { background: #2dd4bf; }
+
+.theme-warm { background: #fff3e0; }
+.theme-warm .t-badge { background: #f59e0b; }
+
+.theme-blue { background: #e8f0ff; }
+.theme-blue .t-badge { background: #3b82f6; }
+
+.theme-purple { background: #f1ebff; }
+.theme-purple .t-badge { background: #7c3aed; }
+
+.theme-green { background: #eafaf0; }
+.theme-green .t-badge { background: #22c55e; }
+
+.theme-warm-alt { background: #fff8eb; }
+.theme-warm-alt .t-badge { background: #f7b731; }
+
+/* --- RESPONSIVE GRID --- */
+@media (max-width: 1000px) {
+  .flow-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 650px) {
+  .flow-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* =============================
+   GOOD TO KNOW SECTION
+============================= */
+.good-to-know {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: white;
+  padding: 90px 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.good-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.good-subtitle {
+  font-size: 16px;
+  color: #5a6580;
+  margin-bottom: 60px;
+}
+
+/* --- Grid Layout --- */
+.good-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(480px, 1fr));
+  gap: 50px 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  text-align: left;
+}
+
+/* --- Individual Items --- */
+.good-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.good-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #4279bc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.good-icon img {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+}
+
+.good-item h4 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e2a57;
+  margin: 0 0 6px;
+}
+
+.good-item p {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 1100px) {
+  .good-grid {
+    grid-template-columns: 1fr;
+    gap: 35px 0;
+    padding: 0 25px;
+  }
+}
+
