@@ -11,37 +11,222 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-<link rel="stylesheet" href="../../css/header.css">
-<link rel="stylesheet" href="../../css/footer.css">
-<link rel="stylesheet" href="../../css/church/beliefs.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/church/beliefs.css">
+
+  <style>
+    /* Center expand button */
+    .expand-btn-wrapper {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .expand-toggle {
+      padding: 10px 22px;
+      background: linear-gradient(135deg, rgba(66, 121, 188, 0.85), #1e2a57);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.15s ease;
+    }
+
+    .expand-toggle:hover {
+      background: linear-gradient(135deg, #1e2a57, rgba(66, 121, 188, 0.85));
+      transform: scale(1.05);
+    }
+
+    /* Expanded grid layout */
+    .carousel.expanded .carousel__viewport {
+      overflow: visible;
+    }
+
+    .carousel.expanded .carousel__track {
+      display: grid !important;
+      grid-auto-flow: row !important;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      transform: none !important;
+    }
+
+    .carousel.expanded .carousel__arrow {
+      display: none;
+    }
+
+    @media (max-width: 1024px) {
+      .carousel.expanded .carousel__track {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .carousel.expanded .carousel__track {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- ✅ Dynamic Header -->
+  <!-- ✅ Header -->
   <div id="header"></div>
 
-  <!-- HERO SECTION -->
+  <!-- HERO -->
   <section class="beliefs-hero">
     <div class="beliefs-overlay">
       <h1>Our Beliefs</h1>
     </div>
   </section>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <main class="beliefs-content">
-    <h2>Faith. Grace. Scripture.</h2>
-    <p>
-      At Martin Luther Church, we believe in salvation by grace through faith in Jesus Christ alone.
-      Our beliefs are rooted in Scripture and grounded in the Lutheran tradition.
-    </p>
+    <section class="beliefs-carousel">
+      <h3 class="beliefs-carousel__title">What We Believe</h3>
+
+      <!-- CAROUSEL -->
+      <div class="carousel">
+        <button class="carousel__arrow carousel__arrow--prev" aria-label="Previous">&#10094;</button>
+
+        <div class="carousel__viewport">
+          <ul class="carousel__track">
+            <!-- 1 -->
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/god.svg" alt="God"></div>
+              <h4>God</h4>
+              <p>One God in three persons—Father, Son, and Holy Spirit—eternal, almighty, and merciful.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/bible.svg" alt="The Bible"></div>
+              <h4>The Bible</h4>
+              <p>God’s inspired and inerrant Word, our final authority for faith and life.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/world.svg" alt="Creation"></div>
+              <h4>Creation</h4>
+              <p>God created all things by His Word and sustains His creation with care.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/couple.svg" alt="Man & Woman"></div>
+              <h4>Man & Woman</h4>
+              <p>Humanity is created in God’s image with dignity, designed for relationship with Him.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/sin.svg" alt="Sin"></div>
+              <h4>Sin</h4>
+              <p>All have sinned and fall short of God’s glory, separated from Him without grace.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/megaphone.svg" alt="The Gospel"></div>
+              <h4>The Gospel</h4>
+              <p>The good news that Jesus lived, died, and rose to save sinners—God’s gift to us.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/worship.svg" alt="Jesus"></div>
+              <h4>Jesus</h4>
+              <p>True God and true man, the promised Savior who redeems us by His cross and empty tomb.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/hand.png" alt="Salvation"></div>
+              <h4>Salvation</h4>
+              <p>By grace alone through faith alone in Christ alone—not by works—so no one may boast.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/faith.svg" alt="Faith"></div>
+              <h4>Faith</h4>
+              <p>The Holy Spirit creates and strengthens faith through the Word and Sacraments.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/church.svg" alt="The Church"></div>
+              <h4>The Church</h4>
+              <p>All believers in Christ, gathered by His Word, sent to proclaim His grace.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/baptism.svg" alt="Baptism & Holy Communion"></div>
+              <h4>Baptism & Holy Communion</h4>
+              <p>Gospel gifts that deliver forgiveness and strengthen faith by God’s promise.</p>
+            </li>
+            <li class="belief-card">
+              <div class="belief-card__icon"><img src="/images/peace.svg" alt="Peace"></div>
+              <h4>Peace</h4>
+              <p>In Christ we have peace with God now and the hope of eternal life.</p>
+            </li>
+          </ul>
+        </div>
+
+        <button class="carousel__arrow carousel__arrow--next" aria-label="Next">&#10095;</button>
+      </div>
+
+      <!-- Expand Button BELOW -->
+      <div class="expand-btn-wrapper">
+        <button id="expandToggle" class="expand-toggle">Expand All</button>
+      </div>
+    </section>
   </main>
 
-  <!-- ✅ Dynamic Footer -->
+  <!-- ✅ Footer -->
   <div id="footer"></div>
 
   <!-- JS -->
- <script src="../../js/header.js"></script>
-<script src="../../js/footer.js"></script>
+  <script src="../../js/header.js"></script>
+  <script src="../../js/footer.js"></script>
 
+  <!-- Carousel JS -->
+  <script>
+    (function () {
+      const track = document.querySelector('.carousel__track');
+      const prevBtn = document.querySelector('.carousel__arrow--prev');
+      const nextBtn = document.querySelector('.carousel__arrow--next');
+      const cards = Array.from(document.querySelectorAll('.belief-card'));
+      let index = 0;
+
+      function perView() {
+        if (window.matchMedia('(max-width: 680px)').matches) return 1;
+        if (window.matchMedia('(max-width: 1024px)').matches) return 2;
+        return 3;
+      }
+
+      function update() {
+        const styles = getComputedStyle(track);
+        const gap = parseFloat(styles.columnGap || styles.gap) || 24;
+        const visible = perView();
+        const cardWidth = cards[0].getBoundingClientRect().width;
+        const offset = index * (cardWidth + gap);
+        track.style.transform = `translateX(-${offset}px)`;
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index >= cards.length - visible;
+      }
+
+      nextBtn.addEventListener('click', () => {
+        const visible = perView();
+        if (index < cards.length - visible) index++;
+        update();
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (index > 0) index--;
+        update();
+      });
+
+      window.addEventListener('resize', update);
+      window.requestAnimationFrame(update);
+    })();
+  </script>
+
+  <!-- Expand / Collapse Script -->
+  <script>
+    (function () {
+      const toggleBtn = document.getElementById('expandToggle');
+      const carousel = document.querySelector('.carousel');
+      let expanded = false;
+
+      toggleBtn.addEventListener('click', () => {
+        expanded = !expanded;
+        carousel.classList.toggle('expanded', expanded);
+        toggleBtn.textContent = expanded ? 'Collapse' : 'Expand All';
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -1,16 +1,4 @@
 /* =============================
-   GLOBAL STYLES
-============================= */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
-
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  color: #2c3e50;
-  background-color: white;
-}
-
-/* =============================
    HERO SECTION
 ============================= */
 .beliefs-hero {
@@ -32,12 +20,11 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.75); /* ✅ matches financial page */
+  background: rgba(66, 121, 188, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 
 .beliefs-overlay h1 {
   color: white;
@@ -49,41 +36,307 @@ body {
 }
 
 /* =============================
-   MAIN CONTENT
+   WHAT WE BELIEVE — CAROUSEL
 ============================= */
-.beliefs-content {
-  max-width: 1100px;
-  margin: 80px auto;
-  padding: 0 30px;
+.beliefs-carousel {
+  margin-top: 40px;
+}
+
+.beliefs-carousel__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
   text-align: center;
+  margin: 0 0 18px;
 }
 
-.beliefs-content h2 {
+/* Carousel frame */
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  padding: 0 52px;
+  box-sizing: border-box;
+}
+
+/* Side arrows */
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(40, 47, 127, 0.12);
   color: #282f7f;
-  font-size: 36px;
-  margin-bottom: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease;
+  z-index: 2;
 }
 
-.beliefs-content p {
-  font-size: 18px;
-  line-height: 1.7;
-  color: #333;
-  margin-bottom: 40px;
+.carousel__arrow:hover:not(:disabled) {
+  background: rgba(66, 121, 188, 0.25);
+}
+
+.carousel__arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carousel__arrow--prev { left: 8px; }
+.carousel__arrow--next { right: 8px; }
+
+/* Viewport and track */
+.carousel__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 2 * 24px) / 3);
+  gap: 24px;
+  transition: transform 320ms ease;
+  will-change: transform;
 }
 
 /* =============================
-   RESPONSIVE DESIGN
+   BELIEF CARD STYLING (Centered Version)
 ============================= */
-@media (max-width: 950px) {
-  .beliefs-overlay h1 {
-    font-size: 38px;
-  }
+.belief-card {
+  list-style: none;
+  background: #f0f0f0;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      
+  justify-content: center;  
+  text-align: center;       
+  min-height: 200px;
+  border: 1.5px solid rgba(0, 0, 0, 0.05);
+  color: #ffffff;
+}
 
-  .beliefs-content h2 {
-    font-size: 28px;
-  }
+/* No hover effects */
+.belief-card:hover {
+  transform: none;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-color: rgba(0, 0, 0, 0.05);
+}
 
-  .beliefs-content p {
-    font-size: 17px;
+/* Title & Text */
+.belief-card h4 {
+  margin: 12px 0 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e2a57;
+  letter-spacing: 0.3px;
+}
+
+.belief-card p {
+  margin: 0;
+  font-size: 15px;
+  color: #2f2f2f;
+  line-height: 1.6;
+  max-width: 85%;
+}
+
+/* =============================
+   ICON — Larger + Half Gradient Fill (mask fix)
+============================= */
+.belief-card__icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+
+/* =============================
+   ICON — Half Gradient Line Effect
+============================= */
+.belief-card__icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  background: none;
+  box-shadow: none;
+  border: none;
+  position: relative;
+}
+
+/* Icon itself */
+.belief-card__icon img {
+  width: 52px;  /* slightly bigger for visibility */
+  height: 52px;
+  position: relative;
+  z-index: 1;
+  display: block;
+  filter: brightness(0) saturate(100%) invert(0); /* make lines solid black base */
+}
+
+/* ✅ Overlay that colors the lines half blue / half navy */
+.belief-card__icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(66, 121, 188, 0.85) 50%, #1e2a57 50%);
+  mix-blend-mode: lighten; /* keeps black outlines visible while tinting color */
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+
+/* =============================
+   RESPONSIVE — 2 per view / 1 per view
+============================= */
+@media (max-width: 1024px) {
+  .carousel__track {
+    grid-auto-columns: calc((100% - 24px) / 2);
+  }
+}
+
+@media (max-width: 680px) {
+  .carousel {
+    padding: 0 44px;
+  }
+  .carousel__track {
+    grid-auto-columns: 100%;
+    gap: 18px;
+  }
+}
+
+/* =============================
+   EXPAND ALL / COLLAPSE TOGGLE
+============================= */
+.expand-toggle {
+  display: inline-block;
+  margin: 0 auto 25px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, rgba(66, 121, 188, 0.85), #1e2a57);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.expand-toggle:hover {
+  background: linear-gradient(135deg, #1e2a57, rgba(66, 121, 188, 0.85));
+}
+
+/* Grid view for expanded mode */
+.carousel.expanded .carousel__viewport {
+  overflow: visible;
+}
+
+.carousel.expanded .carousel__track {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  transform: none !important;
+}
+
+.carousel.expanded .carousel__arrow {
+  display: none;
+}
+
+/* Slightly smaller gap on tablets */
+@media (max-width: 1024px) {
+  .carousel.expanded .carousel__track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Single-column stack on phones */
+@media (max-width: 650px) {
+  .carousel.expanded .carousel__track {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Center the expand button */
+.expand-btn-wrapper {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.expand-toggle {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, rgba(66, 121, 188, 0.85), #1e2a57);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.expand-toggle:hover {
+  background: linear-gradient(135deg, #1e2a57, rgba(66, 121, 188, 0.85));
+  transform: scale(1.05);
+}
+
+/* Expanded grid layout */
+.carousel.expanded .carousel__viewport {
+  overflow: visible;
+}
+
+.carousel.expanded .carousel__track {
+  display: grid !important;
+  grid-auto-flow: row !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  transform: none !important;
+}
+
+/* ✅ Centered icons and text in expanded mode */
+.carousel.expanded .belief-card {
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Keep icons neatly aligned */
+.carousel.expanded .belief-card__icon {
+  margin-bottom: 10px;
+}
+
+.carousel.expanded .carousel__arrow {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .carousel.expanded .carousel__track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .carousel.expanded .belief-card {
+    height: 280px;
+  }
+}
+
+@media (max-width: 680px) {
+  .carousel.expanded .carousel__track {
+    grid-template-columns: 1fr;
+  }
+  .carousel.expanded .belief-card {
+    height: auto;
   }
 }
