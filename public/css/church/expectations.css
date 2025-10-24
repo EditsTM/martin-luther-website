@@ -28,7 +28,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.85);
+  background: rgba(30, 42, 87, 0.85); /* transparent #1e2a57 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -157,7 +157,6 @@ body {
   object-fit: contain;
 }
 
-/* Circle Background Colors */
 .blue-bg { background: rgba(255, 255, 255, 0.25); }
 .light-blue-bg { background: rgba(66, 121, 188, 0.15); }
 .yellow-bg { background: rgba(255, 255, 255, 0.25); }
@@ -165,39 +164,48 @@ body {
 /* =============================
    INDIVIDUAL CARD STYLES
 ============================= */
+
+/* Sunday (Correct) */
 .sunday {
-  background: linear-gradient(135deg, #2f66a9, #4279bc);
+  background: #1e2a57;
   color: white;
 }
 .sunday h3, .sunday p { color: white; }
 .sunday .card-icon { filter: brightness(0) invert(1); }
 .icon-white { width: 18px; height: 18px; filter: brightness(0) invert(1); }
 
+/* Bible (Reverted to BLACK icons) */
 .bible {
   background: linear-gradient(135deg, #f7f9ff, #dee5fa);
   color: #2c2c2c;
 }
 .bible h3 { color: #2c2c2c; }
-.bible-book-icon {
-  filter: brightness(0) saturate(100%) invert(35%) sepia(89%)
-          saturate(678%) hue-rotate(185deg) brightness(95%);
-}
+.bible-book-icon,
 .bible-icon-small {
-  width: 18px; height: 18px;
-  filter: brightness(0) saturate(100%) invert(35%) sepia(89%)
-          saturate(678%) hue-rotate(185deg) brightness(95%);
+  filter: none !important; /* restore black icons */
 }
 
+/* Monday (Correct color and correct icon size) */
 .monday {
-  background: linear-gradient(135deg, #ffb300, #ffcf4a);
-  color: #2c2c2c;
+  background: #1e2a57;
+  color: white;
 }
-.monday h3 { color: #2c2c2c; }
-.monday-icon { filter: brightness(0); }
-.monday-icon-small { width: 18px; height: 18px; filter: brightness(0); }
+.monday h3, .monday p { color: white; }
+
+/* Keep icons white but FIX size */
+.monday-icon {
+  width: 28px !important;
+  height: 28px !important;
+  filter: brightness(0) invert(1) !important;
+}
+.monday-icon-small {
+  width: 18px !important;
+  height: 18px !important;
+  filter: brightness(0) invert(1) !important;
+}
 
 /* =============================
-   SUNDAY SERVICE FLOW GRID (Full-Width Grey Section)
+   SUNDAY SERVICE FLOW GRID
 ============================= */
 .service-flow {
   position: relative;
@@ -225,7 +233,10 @@ body {
   margin-bottom: 40px;
 }
 
-/* --- GRID LAYOUT FOR BOXES --- */
+/* =============================
+   SERVICE FLOW - ICON LEFT LAYOUT
+============================= */
+
 .flow-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -235,12 +246,13 @@ body {
   padding: 0 20px;
 }
 
-/* --- INDIVIDUAL BOXES --- */
 .t-item {
+  display: flex;                 /* make it horizontal */
+  align-items: flex-start;       /* align text top with icon */
+  gap: 18px;                     /* space between icon and text */
   border-radius: 16px;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
-  padding: 28px;
-  text-align: left;
+  padding: 24px 28px;
   background: #fff;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -250,58 +262,42 @@ body {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* --- ICON CIRCLE --- */
+/* Circle (icon) style */
 .t-badge {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
+  background: #1e2a57 !important;  /* dark blue */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
+  flex-shrink: 0;
+  margin-bottom: 0; /* remove top spacing */
 }
 
+/* Icons stay white */
 .t-badge img {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   filter: brightness(0) invert(1);
 }
 
-/* --- TEXT INSIDE BOXES --- */
-.t-card h4 {
-  margin: 0 0 10px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e2a57;
+/* Text block */
+.t-card {
+  flex: 1;
+  text-align: left;
 }
 
-.t-card p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #2f2f2f;
+/* Alternate box backgrounds (keep your color scheme) */
+.theme-teal, .theme-purple, .theme-green, .theme-warm-alt {
+  background: #d8dcee !important; /* light blue shade */
 }
 
-/* --- COLOR THEMES --- */
-.theme-teal { background: #e4f8f6; }
-.theme-teal .t-badge { background: #2dd4bf; }
+.theme-blue, .theme-warm {
+  background: #f6f6f6 !important; /* light grey */
+}
 
-.theme-warm { background: #fff3e0; }
-.theme-warm .t-badge { background: #f59e0b; }
-
-.theme-blue { background: #e8f0ff; }
-.theme-blue .t-badge { background: #3b82f6; }
-
-.theme-purple { background: #f1ebff; }
-.theme-purple .t-badge { background: #7c3aed; }
-
-.theme-green { background: #eafaf0; }
-.theme-green .t-badge { background: #22c55e; }
-
-.theme-warm-alt { background: #fff8eb; }
-.theme-warm-alt .t-badge { background: #f7b731; }
-
-/* --- RESPONSIVE GRID --- */
+/* Responsive layout adjustments */
 @media (max-width: 1000px) {
   .flow-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -312,7 +308,17 @@ body {
   .flow-grid {
     grid-template-columns: 1fr;
   }
+  .t-item {
+    flex-direction: column; /* stack for small screens */
+    align-items: center;
+    text-align: center;
+  }
+  .t-badge {
+    margin-bottom: 12px;
+  }
 }
+
+
 /* =============================
    GOOD TO KNOW SECTION
 ============================= */
@@ -342,7 +348,6 @@ body {
   margin-bottom: 60px;
 }
 
-/* --- Grid Layout --- */
 .good-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(480px, 1fr));
@@ -353,7 +358,6 @@ body {
   text-align: left;
 }
 
-/* --- Individual Items --- */
 .good-item {
   display: flex;
   align-items: flex-start;
@@ -392,12 +396,141 @@ body {
   margin: 0;
 }
 
-/* --- Responsive Design --- */
 @media (max-width: 1100px) {
   .good-grid {
     grid-template-columns: 1fr;
     gap: 35px 0;
     padding: 0 25px;
   }
+}
+/* FIX: Bible Study icons should stay BLACK and the correct size */
+.bible-icon-small {
+  width: 18px !important;
+  height: 18px !important;
+  filter: none !important;
+}
+
+.bible-book-icon {
+  width: 28px !important;
+  height: 28px !important;
+  filter: none !important;
+}
+/* =============================
+   SERVICE FLOW - UPDATED COLORS
+============================= */
+
+/* All circles (badges) become dark blue */
+.t-badge {
+  background: #1e2a57 !important;
+}
+.t-badge img {
+  filter: brightness(0) invert(1) !important; /* keep icons white */
+}
+
+/* Alternate box backgrounds */
+.theme-teal,       /* Box 1 */
+.theme-purple,     /* Box 3 */
+.theme-green,      /* Box 5 */
+.theme-warm-alt {  /* Box 6 */
+  background: #d8dcee !important; /* lighter shade of #1e2a57 */
+}
+
+/* Grey boxes */
+.theme-blue,       /* Box 2 */
+.theme-warm {      /* Box 4 */
+  background: #f6f6f6 !important;
+}
+/* =============================
+   SERVICE FLOW — FINAL FIX
+============================= */
+
+.t-item {
+  background: #fff;
+  padding: 28px 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+  transition: .25s;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.t-line {
+  display: flex;
+  align-items: center; /* ✅ Header centers to icon */
+  gap: 16px;
+}
+
+.t-badge {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1e2a57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* ✅ Icon always stays correct size */
+}
+
+.t-badge img {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) invert(1);
+}
+
+.t-line h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e2a57;
+  line-height: 1.3;
+}
+
+.t-item p {
+  margin: 0; /* ✅ Body text starts immediately */
+  line-height: 1.55;
+  font-size: 15px;
+  color: #2f2f2f;
+  text-align: left;
+}
+
+
+/* Mobile: stack neatly (icon, header, then body) */
+@media (max-width: 650px) {
+  .t-item {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    text-align: center;
+  }
+  .t-badge {
+    grid-column: 1; grid-row: 1;
+    justify-self: center;
+  }
+  .t-card h4 {
+    grid-column: 1; grid-row: 2;
+    justify-self: center;
+  }
+  .t-card p {
+    grid-column: 1; grid-row: 3;
+    text-align: center;
+  }
+}
+/* =============================
+   GOOD TO KNOW ICON COLOR UPDATE
+============================= */
+.good-icon {
+  background: #1e2a57 !important;   /* new dark blue */
+}
+
+.good-icon img {
+  filter: brightness(0) invert(1) !important;  /* keep icons white */
+}
+/* =============================
+   MAKE BOLD TEXT BLACK IN CONTENT
+============================= */
+.expectations-content strong {
+  color: #000 !important;
+  font-weight: 700;
 }
 

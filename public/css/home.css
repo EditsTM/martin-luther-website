@@ -25,7 +25,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.6);
+  background: rgba(30, 42, 87, 0.6); /* #1e2a57 with 60% transparency */
   z-index: 1;
 }
 
@@ -49,7 +49,7 @@
   font-weight: 600;
 }
 
-/* Hero buttons */
+/* Hero buttons container */
 .hero-buttons {
   display: flex;
   justify-content: center;
@@ -57,14 +57,16 @@
   flex-wrap: wrap;
 }
 
+/* ======================================================
+   HERO BUTTON STYLES (SCOPED — DOES NOT AFFECT FOOTER)
+====================================================== */
+.hero-buttons .btn,
 .hero-buttons .btn-outline {
+  display: inline-block;
   padding: 18px 50px;
   font-size: 22px;
-  border: 2.5px solid white;
-  background: transparent;
-  color: white;
-  border-radius: 6px;
   font-weight: 700;
+  border-radius: 6px;
   text-decoration: none;
   transition: all 0.3s ease;
   letter-spacing: 0.5px;
@@ -72,50 +74,32 @@
   box-shadow: none;
 }
 
-.hero-buttons .btn-outline:hover {
+/* Filled Hero Button */
+.hero-buttons .btn {
+  background: #1e2a57;
+  color: white;
+  border: 2.5px solid #1e2a57;
+}
+
+.hero-buttons .btn:hover {
   background: white;
-  color: #4279bc;
+  color: #1e2a57;
   transform: scale(1.07);
 }
 
-/* ======================================================
-   BASE BUTTON STYLES
-====================================================== */
-.btn,
-.btn-outline {
-  display: inline-block;
-  padding: 10px 20px;
-  font-weight: 600;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background 0.3s, color 0.3s, transform 0.2s;
-}
-
-/* Filled Button */
-.btn {
-  background: #4279bc;
-  color: white;
-  border: 2px solid #4279bc;
-}
-
-.btn:hover {
-  background: white;
-  color: #4279bc;
-  transform: scale(1.05);
-}
-
-/* Outline Button — Worship Info, Learn More, Church & School buttons */
-.btn-outline {
-  border: 2px solid white;
-  color: white;
+/* Outline Hero Button */
+.hero-buttons .btn-outline {
   background: transparent;
+  border: 2.5px solid white;
+  color: white;
 }
 
-.btn-outline:hover {
+.hero-buttons .btn-outline:hover {
   background: white;
-  color: #4279bc;
-  transform: scale(1.05);
+  color: #1e2a57;
+  transform: scale(1.07);
 }
+
 
 /* ======================================================
    EVENTS SECTION
@@ -129,11 +113,11 @@
 .events-title {
   font-size: 36px;
   font-weight: 700;
-  color: #000; /* 🟢 Changed from blue (#282f7f) to black */
+  color: #000;
   margin-bottom: 40px;
 }
 
-/* Cards layout (Dynamic) */
+/* Cards layout */
 .events-cards {
   display: flex;
   justify-content: center;
@@ -168,18 +152,17 @@
 
 /* Event text */
 .event-name {
-  color: #000;               /* 🟢 Changed from blue (#282f7f) to black */
+  color: #000;
   font-size: 22px;
   font-weight: 700;
   margin: 15px 0 5px;
 }
 
 .event-date {
-  color: #555;               /* ⬅️ Kept same grey for dates */
+  color: #555;
   font-size: 16px;
   margin-bottom: 20px;
 }
-
 
 /* Button under cards */
 .events-button {
@@ -188,18 +171,24 @@
 
 .events-button .btn {
   display: inline-block;
-  background: #4279bc;
-  color: white;
+  background: #1e2a57 !important;
+  color: white !important;
   padding: 12px 30px;
   border-radius: 6px;
   font-weight: 600;
+  border: 2px solid #1e2a57 !important;
   text-decoration: none;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .events-button .btn:hover {
-  background: #282f7f;
+  background: white !important;
+  color: #1e2a57 !important;
+  border-color: #1e2a57 !important;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
 }
+
 
 /* ======================================================
    ABOUT + WORSHIP SECTION
@@ -233,15 +222,11 @@
 
 /* Background Images */
 .about-us {
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("../images/Cross.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/Cross.jpg");
 }
 
 .features {
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("../images/bible.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/bible.jpg");
 }
 
 /* Feature Box */
@@ -256,7 +241,7 @@
   gap: 15px;
 }
 
-/* ✅ Unified Button Style — About, Worship, Church, School all match */
+/* Unified site button style (EXCEPT HERO + FOOTER unchanged) */
 .about-us .btn,
 .features .btn,
 .our-church .btn,
@@ -280,7 +265,7 @@
 .our-church a.btn:hover,
 .our-school a.btn:hover {
   background: white !important;
-  color: #4279bc !important;
+  color: #1e2a57 !important;
   transform: scale(1.05);
 }
 
@@ -290,11 +275,12 @@
   text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
 }
 
+
 /* ======================================================
-   BELIEFS SECTION
+   BELIEFS SECTION (NEW SOLID COLOR)
 ====================================================== */
 .beliefs-section {
-  background: rgba(66, 121, 188, 0.85);
+  background: #1e2a57;
   text-align: center;
   display: flex;
   align-items: center;
@@ -324,11 +310,10 @@
   font-size: 15px;
 }
 
+
 /* ======================================================
    RESPONSIVE DESIGN
 ====================================================== */
-
-/* ABOUT + WORSHIP (≤500px) */
 @media (max-width: 500px) {
   .about-feature-container {
     grid-template-columns: 1fr;
@@ -350,10 +335,10 @@
     font-size: 15px;
   }
 
-  .btn,
-  .btn-outline {
-    padding: 8px 18px;
-    font-size: 14px;
+  .hero-buttons .btn,
+  .hero-buttons .btn-outline {
+    padding: 14px 36px;
+    font-size: 18px;
   }
 
   .event-card {
@@ -361,7 +346,6 @@
   }
 }
 
-/* BELIEFS (≤700px and below) */
 @media (max-width: 700px) {
   .beliefs-section {
     height: auto;
@@ -380,7 +364,6 @@
   }
 }
 
-/* Fix: Prevent hero button cutoff on very small screens (≤420px) */
 @media (max-width: 420px) {
   .hero {
     height: auto;
@@ -395,10 +378,5 @@
   .hero-content p {
     font-size: 20px;
     margin-bottom: 20px;
-  }
-
-  .hero-buttons .btn-outline {
-    padding: 14px 36px;
-    font-size: 18px;
   }
 }
