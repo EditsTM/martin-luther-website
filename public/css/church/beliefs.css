@@ -1,17 +1,15 @@
 /* =============================
-   HERO SECTION
+   HERO SECTION - OUR BELIEFS
 ============================= */
 .beliefs-hero {
   position: relative;
   width: 100%;
   height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center;
+  background: url("../../images/Prayer.jpg") no-repeat center 70%;
   background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .beliefs-overlay {
@@ -20,20 +18,52 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.75);
+  background: rgba(30, 42, 87, 0.85); /* match Expectations overlay */
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 0 20px;
 }
 
 .beliefs-overlay h1 {
   color: white;
   font-size: 50px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2px;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
+
+.belief-highlight {
+  background: linear-gradient(45deg, #ffb300, #ffde59);
+  -webkit-background-clip: text; /* Safari/Chrome */
+  -webkit-text-fill-color: transparent; /* Safari/Chrome */
+  background-clip: text; /* Standard property */
+  color: transparent; /* fallback */
+  display: inline-block;
+}
+
+
+
+.beliefs-overlay .highlight {
+  background: linear-gradient(45deg, #ffb300, #ffde59);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.beliefs-subtext {
+  color: #f9f9f9;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 750px;
+  margin: 0 auto;
+  font-weight: 400;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+}
+
 
 /* =============================
    WHAT WE BELIEVE — CAROUSEL
@@ -219,25 +249,32 @@
   }
 }
 
-/* =============================
-   EXPAND ALL / COLLAPSE TOGGLE
-============================= */
+/* ======================================================
+   EXPAND ALL BUTTON (MATCHES NEWS & EVENTS)
+====================================================== */
 .expand-toggle {
   display: inline-block;
-  margin: 0 auto 25px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, rgba(66, 121, 188, 0.85), #1e2a57);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  margin: 5px auto 25px;  /* was 0 auto 25px */
+  background: #1e2a57 !important;
+  color: white !important;
+  border: 2px solid #1e2a57 !important;
+  border-radius: 6px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.25s ease;
+  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
+
 .expand-toggle:hover {
-  background: linear-gradient(135deg, #1e2a57, rgba(66, 121, 188, 0.85));
+  background: white !important;
+  color: #1e2a57 !important;
+  border-color: #1e2a57 !important;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
 }
+
 
 /* Grid view for expanded mode */
 .carousel.expanded .carousel__viewport {
@@ -272,8 +309,9 @@
 /* Center the expand button */
 .expand-btn-wrapper {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 10px; /* was 25px — closer to boxes */
 }
+
 
 .expand-toggle {
   padding: 10px 20px;
@@ -340,3 +378,209 @@
     height: auto;
   }
 }
+/* =============================
+   EXPAND BUTTON + LAYOUT CLEANUP
+============================= */
+.expand-btn-wrapper {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.expand-toggle {
+  padding: 10px 22px;
+  background: linear-gradient(135deg, rgba(66, 121, 188, 0.85), #1e2a57);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.expand-toggle:hover {
+  background: linear-gradient(135deg, #1e2a57, rgba(66, 121, 188, 0.85));
+  transform: scale(1.05);
+}
+
+/* =============================
+   EXPANDED GRID LAYOUT
+============================= */
+.carousel.expanded .carousel__viewport {
+  overflow: visible;
+}
+
+.carousel.expanded .carousel__track {
+  display: grid !important;
+  grid-auto-flow: row !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  transform: none !important;
+}
+
+.carousel.expanded .carousel__arrow {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .carousel.expanded .carousel__track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .carousel.expanded .carousel__track {
+    grid-template-columns: 1fr;
+  }
+}
+/* ============================================
+   CONFESSION TABS SECTION (Themed Final)
+=============================================== */
+.confession-tabs {
+  width: 100vw;
+  margin: 80px 0 0;
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 60px 0 80px;
+  box-shadow: inset 0 6px 15px rgba(0,0,0,0.05);
+}
+
+/* Inner content container */
+.confession-tabs .tabs {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* NAVIGATION BAR */
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(30, 42, 87, 0.85); /* same as Expand All button */
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.25);
+}
+
+.tab-btn {
+  flex: 1;
+  text-align: center;
+  color: #e2e2e2;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 14px 18px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: #1e2a57; /* slightly darker than base color */
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(30, 42, 87, 0.4);
+}
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  background: #ffde59;
+  border-radius: 2px;
+}
+
+/* CONTENT GRID */
+.tab-content-wrapper {
+  display: block;
+}
+
+.tab-content {
+  display: none;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.tab-content.active {
+  display: grid;
+}
+
+/* CARD STYLING */
+.confession-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 26px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(30, 42, 87, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.confession-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 42, 87, 0.15);
+}
+
+.confession-card h3 {
+  color: #1e2a57;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.confession-card p {
+  color: #333;
+  line-height: 1.6;
+  font-size: 15.5px;
+  margin-bottom: 12px;
+}
+
+.confession-card ul {
+  margin: 0;
+  padding-left: 22px;
+  color: #333;
+}
+
+.confession-card li {
+  margin-bottom: 8px;
+  list-style-type: disc; /* clean bullet points */
+  color: #2f2f2f;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .tab-buttons {
+    flex-direction: column;
+    border-radius: 10px;
+  }
+
+  .tab-btn {
+    width: 100%;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .tab-btn:last-child {
+    border-bottom: none;
+  }
+
+  .tab-btn.active::after {
+    display: none;
+  }
+}
+
+
+
