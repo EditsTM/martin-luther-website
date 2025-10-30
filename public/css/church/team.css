@@ -7,7 +7,7 @@ body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
   color: #2c3e50;
-  background-color: white;
+  background-color: #fff;
 }
 
 /* =============================
@@ -17,13 +17,10 @@ body {
   position: relative;
   width: 100%;
   height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center;
-  background-size: cover;
+  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .team-overlay {
@@ -32,7 +29,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.88); /* 🔵 Consistent blue overlay */
+  background: rgba(30, 42, 87, 0.85); /* consistent ML blue overlay */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -48,41 +45,102 @@ body {
 }
 
 /* =============================
-   MAIN CONTENT
+   TEAM SECTION
 ============================= */
-.team-content {
-  max-width: 1100px;
-  margin: 80px auto;
-  padding: 0 30px;
+.team-section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: start;
+  justify-content: center;
+  min-height: 100vh;
+  border-top: 2px solid #ccc; /* dividing line between hero and team */
+  position: relative;
+}
+
+/* vertical divider between team members */
+.team-grid::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  background: #d1d1d1;
+  transform: translateX(-50%);
+}
+
+/* team member card */
+.team-member {
   text-align: center;
+  padding: 60px 40px;
+  margin: 0;
 }
 
-.team-content h2 {
-  color: #282f7f;
-  font-size: 36px;
-  margin-bottom: 20px;
+/* image */
+.team-member img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 25px;
 }
 
-.team-content p {
-  font-size: 18px;
-  line-height: 1.7;
-  color: #333;
-  margin-bottom: 40px;
+/* titles */
+.team-member h3 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: #000;
+}
+
+.team-member h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #777;
+  margin-bottom: 16px;
+}
+
+/* bio text section */
+.bio-text {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left; /* ✅ keeps text aligned left but centered overall */
+}
+
+.bio-text p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 16px;
 }
 
 /* =============================
-   RESPONSIVE DESIGN
+   RESPONSIVE
 ============================= */
 @media (max-width: 950px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-grid::after {
+    display: none;
+  }
+
+  .team-member {
+    padding: 40px 20px;
+  }
+
+  .team-member img {
+    max-width: 350px;
+  }
+
   .team-overlay h1 {
     font-size: 38px;
-  }
-
-  .team-content h2 {
-    font-size: 28px;
-  }
-
-  .team-content p {
-    font-size: 17px;
   }
 }
