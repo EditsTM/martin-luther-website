@@ -32,11 +32,12 @@ async function loadVideos() {
         <iframe
           width="100%"
           height="600"
-          src="https://www.youtube.com/embed/${latestVideo}"
+          src="https://www.youtube-nocookie.com/embed/${latestVideo}"
           title="${data.items[0].snippet.title}"
           frameborder="0"
           allow="autoplay; encrypted-media"
-          allowfullscreen>
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin">
         </iframe>
       `;
     } else {
@@ -55,11 +56,12 @@ async function loadVideos() {
             <iframe
               width="360"
               height="215"
-              src="https://www.youtube.com/embed/${id}"
+              src="https://www.youtube-nocookie.com/embed/${id}"
               title="${title}"
               frameborder="0"
               allow="autoplay; encrypted-media"
-              allowfullscreen>
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin">
             </iframe>`
             : "";
         })
