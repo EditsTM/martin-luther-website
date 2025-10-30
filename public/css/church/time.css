@@ -3,11 +3,14 @@
 ============================= */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
 
+/* =============================
+   BASE
+============================= */
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
-  color: #2c3e50;
-  background-color: white;
+  background: #fff;
+  color: #222;
 }
 
 /* =============================
@@ -16,7 +19,7 @@ body {
 .time-hero {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 350px;
   background: url("../../images/Prayer.jpg") no-repeat center center / cover;
   display: flex;
   justify-content: center;
@@ -29,214 +32,413 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.85);
+  background: rgba(30, 42, 87, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .time-overlay h1 {
-  color: white;
+  color: #fff;
   font-size: 50px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2px;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  text-align: center;
+  z-index: 2;
 }
 
 /* =============================
-   WORSHIP SECTION
+   INTRO ABOVE CARDS
 ============================= */
-.worship-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 90px 60px;
-  background-color: #ffffff;
+.times-intro {
+  text-align: center;
+  margin: 70px auto 40px;
 }
 
-.worship-container {
+.times-intro h2 {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #000; /* Black heading */
+}
+
+.times-intro p {
+  font-size: 18px;
+  color: #555;
+}
+
+/* =============================
+   SERVICE TIMES + LOCATION CARDS
+============================= */
+.times-cards-section {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  background: #fff;
+  padding: 20px 20px 80px;
+}
+
+.times-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* Card container */
+.time-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  padding: 35px 30px;
+  flex: 1 1 45%;
+  min-width: 320px;
+  text-align: left;
+}
+
+/* Header with grey circle */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.card-header img {
+  width: 48px;
+  height: 48px;
+  padding: 14px;
+  background: #f0f0f0;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease;
+}
+
+.card-header img:hover {
+  transform: scale(1.08);
+}
+
+.card-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e2a57;
+}
+
+/* Card content */
+.card-body h3 {
+  margin: 8px 0 4px;
+  color: #1e2a57;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card-body p {
+  color: #444;
+  margin: 0 0 10px;
+}
+
+.card-body hr {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  margin: 12px 0;
+}
+
+.small-note {
+  font-style: italic;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ======================================================
+   BUTTON STYLE (matches News & Events)
+====================================================== */
+.directions-btn {
+  display: inline-block;
+  background: #1e2a57;
+  color: white;
+  text-decoration: none;
+  padding: 18px 50px; /* Bigger button */
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 2.5px solid #1e2a57;
+  text-align: center;
+  width: 100%; /* Stretches full width */
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.directions-btn:hover {
+  background: white;
+  color: #1e2a57;
+  transform: scale(1.07);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
+}
+
+/* =============================
+   MAP SECTION
+============================= */
+.map-section {
+  max-width: 1100px;
+  margin: 0 auto 60px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.map-section iframe {
+  width: 100%;
+  height: 450px;
+  border: none;
+}
+
+/* =============================
+   STREAMING CARD
+============================= */
+.stream-card {
+  background: #f5f5f5;
+  max-width: 1100px;
+  margin: 60px auto;
+  border-radius: 14px;
+  padding: 40px;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  max-width: 1500px;
-  width: 100%;
-  background: #fff;
-  border-radius: 14px;
+  gap: 20px;
 
-  /* ✴️ Added black outline + subtle depth */
-  border: 2px solid black;              /* <- crisp outline */
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.1),
-    inset 0 0 4px rgba(0, 0, 0, 0.05);  /* slight inner depth */
-
-  padding: 60px 80px;
-  gap: 80px;
+  /* Black outline for clear separation */
+  border: 2px solid #000;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
-/* --- TEXT SIDE --- */
-.worship-text {
-  flex: 1 1 50%;
-  text-align: center;
-}
-
-.worship-text h2 {
-  color: #282f7f;
-  font-size: 46px;
-  font-weight: 800;
-  margin-bottom: 15px;
-}
-
-.worship-text .note {
-  font-size: 17px;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-.worship-text .schedule {
-  font-size: 24px;
-  font-weight: 500;
-  margin-bottom: 20px;
-  line-height: 1.7;
-}
-
-.worship-text .description {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 40px;
-}
-
-/* =============================
-   BUTTONS — Bold & Dynamic
-============================= */
-.button-group {
+/* Icon in grey circle, same as others */
+.stream-icon {
   display: flex;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 35px;
+  background: #e0e0e0; /* slightly darker grey for contrast */
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.youtube-btn,
-.directions-btn {
-  text-decoration: none;
-  display: inline-block;
-  width: 270px;                   /* same width for both */
-  text-align: center;
-  color: white;
-  font-weight: 800;
+.stream-icon img {
+  width: 38px;
+  height: 38px;
+}
+
+/* Text beside the icon */
+.stream-text {
+  flex: 1;
+  min-width: 250px;
+}
+
+.stream-text h3 {
+  margin: 0 0 8px;
+  color: #1e2a57;
   font-size: 22px;
-  padding: 22px 0;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 1px;
-  transition: all 0.25s ease;
-  transform: translateY(0);
 }
 
-/* --- YouTube Button --- */
+.stream-text p {
+  margin: 0;
+  color: #444;
+}
+
+/* YouTube button */
 .youtube-btn {
   background: linear-gradient(145deg, #ff4040, #cc0000);
-  box-shadow:
-    0 6px 20px rgba(255, 0, 0, 0.35),
-    0 0 12px rgba(255, 255, 255, 0.15) inset;
-}
-
-/* --- Directions Button --- */
-.directions-btn {
-  background: linear-gradient(145deg, #2fe064, #1ea93b);
-  box-shadow:
-    0 6px 20px rgba(46, 204, 64, 0.35),
-    0 0 12px rgba(255, 255, 255, 0.15) inset;
-}
-
-/* --- Hover Effects --- */
-.youtube-btn:hover,
-.directions-btn:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.25),
-    0 0 25px rgba(255, 255, 255, 0.2) inset;
-  filter: brightness(1.1);
-}
-
-/* --- Subtle glowing pulse (breathing effect) --- */
-@keyframes buttonGlow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.12); }
-}
-
-.youtube-btn,
-.directions-btn {
-  animation: buttonGlow 2.8s ease-in-out infinite;
-}
-
-/* =============================
-   MAP + ADDRESS
-============================= */
-.worship-map {
-  flex: 1 1 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.worship-map img {
-  width: 100%;
-  max-width: 850px;
-  border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease;
-}
-
-/* Zoom on hover */
-.worship-map img:hover {
-  transform: scale(1.03);
-}
-
-/* Address text — single line centered */
-.church-address {
-  margin-top: 20px;
-  font-size: 22px;
-  color: #282f7f;
+  color: #fff;
+  padding: 16px 34px;
+  border-radius: 10px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  white-space: nowrap;            /* ✅ keeps text on one line */
+  text-decoration: none;
+  font-size: 18px;
+  transition: 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.youtube-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.15);
 }
 
 /* =============================
-   RESPONSIVE DESIGN
+   INFO CARDS
 ============================= */
-@media (max-width: 950px) {
-  .worship-container {
+.info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 60px auto 100px;
+  padding: 0 20px;
+}
+
+.info-card {
+  background: #fff;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.info-card h4 {
+  color: #1e2a57;
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.info-card p {
+  color: #444;
+  font-size: 15px;
+}
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 850px) {
+  .times-cards {
     flex-direction: column;
-    padding: 50px 30px;
+    align-items: center;
+  }
+
+  .time-card {
+    width: 90%;
+  }
+
+  .stream-card {
     text-align: center;
-  }
-
-  .worship-map {
-    order: -1;
-    margin-bottom: 30px;
-  }
-
-  .worship-text h2 {
-    font-size: 38px;
-  }
-
-  .worship-text .schedule {
-    font-size: 20px;
-  }
-
-  .youtube-btn,
-  .directions-btn {
-    width: 230px;
-    font-size: 20px;
-    padding: 18px 0;
-  }
-
-  .church-address {
-    font-size: 18px;
+    flex-direction: column;
   }
 }
+/* =============================
+   GLOBAL SPACING COMPRESSION
+   (Tightens vertical space between all sections)
+============================= */
+
+/* Hero section slightly shorter */
+.time-hero {
+  height: 280px; /* was 350px */
+}
+
+/* Intro section closer to hero */
+.times-intro {
+  margin: 40px auto 25px; /* was 70px auto 40px */
+}
+
+.times-intro h2 {
+  font-size: 38px; /* slightly smaller to balance tighter layout */
+}
+
+/* Cards section tighter */
+.times-cards-section {
+  padding: 10px 20px 40px; /* reduced top/bottom padding */
+}
+
+.times-cards {
+  gap: 25px; /* was 40px */
+  margin-bottom: 20px;
+}
+
+/* Individual cards */
+.time-card {
+  padding: 28px 25px; /* was 35px 30px */
+}
+
+/* Map section closer below cards */
+.map-section {
+  margin: 20px auto 35px; /* was 0 auto 60px */
+}
+
+/* Streaming section tighter */
+.stream-card {
+  margin: 25px auto; /* was 60px */
+  padding: 25px 30px; /* was 40px */
+  gap: 15px;
+}
+
+/* Info cards (bottom) */
+.info-cards {
+  gap: 20px; /* was 24px */
+  margin: 30px auto 60px; /* was 60px auto 100px */
+}
+
+.info-card {
+  padding: 22px 16px; /* less internal space */
+}
+
+/* Reduce overall shadow softness for a compact look */
+.time-card,
+.info-card,
+.stream-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* RESPONSIVE adjustments for small screens */
+@media (max-width: 850px) {
+  .time-hero {
+    height: 220px;
+  }
+
+  .times-intro {
+    margin: 30px auto 20px;
+  }
+
+  .times-cards-section {
+    padding: 10px 10px 30px;
+  }
+
+  .stream-card {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .info-cards {
+    margin: 20px auto 40px;
+  }
+}
+/* =============================
+   EXTRA SPACING FIX
+   (Reduce gap between cards and map)
+============================= */
+
+/* Tighten spacing below top cards */
+.times-cards-section {
+  padding-bottom: 25px !important; /* was 80px */
+  margin-bottom: 0 !important;     /* eliminate any extra gap */
+}
+
+/* Bring map closer to cards */
+.map-section {
+  margin-top: 10px !important;     /* was larger before */
+  margin-bottom: 35px !important;  /* keep a small bottom gap */
+}
+
+/* Slightly reduce top padding inside the map container */
+.map-section iframe {
+  height: 420px; /* was 450px */
+}
+
+/* Reduce shadow for a cleaner connection between cards and map */
+.time-card,
+.map-section {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Mobile adjustment */
+@media (max-width: 850px) {
+  .times-cards-section {
+    padding-bottom: 20px !important;
+  }
+
+  .map-section {
+    margin-top: 5px !important;
+    margin-bottom: 25px !important;
+  }
+}
+

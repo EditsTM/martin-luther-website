@@ -1,8 +1,3 @@
-/* =============================
-   GLOBAL STYLES
-============================= */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
-
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
@@ -10,20 +5,15 @@ body {
   background-color: white;
 }
 
-/* =============================
-   HERO SECTION
-============================= */
+/* HERO */
 .story-hero {
   position: relative;
   width: 100%;
   height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center;
-  background-size: cover;
+  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .story-overlay {
@@ -32,7 +22,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(66, 121, 188, 0.88); /* 🔵 Consistent transparent blue overlay */
+  background: rgba(30, 42, 87, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,48 +31,279 @@ body {
 .story-overlay h1 {
   color: white;
   font-size: 50px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-weight: 800;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  text-align: center;
 }
 
-/* =============================
-   MAIN CONTENT
-============================= */
-.story-content {
-  max-width: 1100px;
-  margin: 80px auto;
+/* WHO WE ARE */
+.story-section {
+  max-width: 1000px;
+  margin: 80px auto 60px;
+  text-align: center;
   padding: 0 30px;
-  text-align: center;
 }
 
-.story-content h2 {
-  color: #282f7f;
-  font-size: 36px;
+.story-section h2 {
+  font-size: 38px;
+  color: black; /* ✅ black title */
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+
+.story-section p {
+  font-size: 18px;
+  color: #444;
+  line-height: 1.7;
   margin-bottom: 20px;
 }
 
-.story-content p {
+/* CORE TEACHINGS */
+.story-core {
+  background: #f8f8f8;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.story-core h2 {
+  font-size: 36px;
+  color: black; /* ✅ black title */
+}
+
+.story-core .subtitle {
   font-size: 18px;
-  line-height: 1.7;
-  color: #333;
+  color: #555;
   margin-bottom: 40px;
 }
 
-/* =============================
-   RESPONSIVE DESIGN
-============================= */
-@media (max-width: 950px) {
-  .story-overlay h1 {
-    font-size: 38px;
-  }
+/* Gospel Message */
+.core-feature {
+  background: #e9e9e9; /* ✅ distinct light grey */
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 1000px;
+  margin: 0 auto 50px;
+}
 
-  .story-content h2 {
-    font-size: 28px;
-  }
+.core-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
 
-  .story-content p {
-    font-size: 17px;
+.icon-box {
+  background: #f0f0f0; /* ✅ grey square background */
+  padding: 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box img {
+  width: 45px;
+  height: 45px;
+}
+
+.core-header h3 {
+  color: #1e2a57;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* Core grid */
+.core-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.core-card {
+  background: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 25px;
+  text-align: center;
+}
+
+.core-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 15px;
+}
+
+.core-card-header img {
+  width: 42px;
+  height: 42px;
+}
+
+.core-card h4 {
+  color: #1e2a57;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* --- OUR MISSION SECTION --- */
+.story-mission {
+  max-width: 1100px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.story-mission h2 {
+  color: black;
+  font-size: 36px;
+  margin-bottom: 40px;
+  font-weight: 800;
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+/* Each mission card */
+.mission-card {
+  background: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 28px 30px;
+  text-align: left;
+  transition: transform 0.25s ease;
+}
+
+.mission-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Top row inside the card (icon + title) */
+.mission-card-header {
+  display: flex;
+  align-items: center;        /* ✅ vertically centers icon & title */
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+/* Icon container */
+.mission-card .icon-box {
+  background: #f0f0f0;
+  padding: 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ✅ Make world icon black only */
+.mission-card:nth-child(1) .icon-box img {
+  filter: brightness(0) saturate(100%);
+}
+
+.mission-card img {
+  width: 42px;
+  height: 42px;
+}
+
+/* Title text beside icon */
+.mission-card h4 {
+  color: #1e2a57;             /* ✅ consistent dark blue */
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Body text BELOW header row */
+.mission-card p {
+  color: #444;
+  font-size: 16px;
+  line-height: 1.55;
+  margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Text beside icon */
+.mission-card h4 {
+  color: #1e2a57;             /* ✅ Dark blue titles */
+  font-size: 20px;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.mission-card p {
+  color: #444;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+  .mission-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+
+/* LEARN MORE */
+.story-learn {
+  background: #f5f5f5;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.story-learn img {
+  width: 380px;
+  height: auto;
+  display: block;
+  margin: 0 auto 25px;
+}
+
+.learn-btn {
+  display: inline-block;
+  background: #1e2a57;
+  color: white;
+  text-decoration: none;
+  padding: 14px 90px; /* ✅ longer, slightly shorter height */
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 2.5px solid #1e2a57;
+  transition: all 0.3s ease;
+}
+
+.learn-btn:hover {
+  background: white;
+  color: #1e2a57;
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+  .core-header, .core-card-header {
+    flex-direction: column;
   }
 }

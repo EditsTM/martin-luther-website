@@ -3,59 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Service Times | Martin Luther</title>
+  <title>Location & Service Times | Martin Luther</title>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- ✅ Correct CSS paths -->
-  <link rel="stylesheet" href="../../css/header.css">
-  <link rel="stylesheet" href="../../css/footer.css">
-  <link rel="stylesheet" href="../../css/church/time.css">
+  <link rel="stylesheet" href="../../css/header.css" />
+  <link rel="stylesheet" href="../../css/footer.css" />
+  <link rel="stylesheet" href="../../css/church/time.css" />
 </head>
 
 <body>
-  <!-- ✅ Header placeholder -->
+  <!-- Header -->
   <div id="header"></div>
 
-  <!-- Hero Section -->
+  <!-- 🔹 HERO SECTION -->
   <section class="time-hero">
     <div class="time-overlay">
       <h1>Location & Service Times</h1>
     </div>
   </section>
 
-  <!-- ✅ Main Worship Section -->
-  <main class="worship-section">
-    <div class="worship-container">
-      <div class="worship-text">
-        <h2>Join Us For Worship</h2>
-        <p class="note">*Summer hours will differ</p>
+  <!-- 🔹 MAIN INTRO ABOVE CARDS -->
+  <section class="times-intro">
+    <h2>Join Us For Worship</h2>
+    <p>We'd love to see you this week!</p>
+  </section>
 
-        <p class="schedule">
-          Sunday Mornings – 8:00am & 10:30am <br />
-          Monday Evenings – 6:00pm
-        </p>
+  <!-- 🔹 SERVICE TIMES & LOCATION CARDS -->
+  <section class="times-cards-section">
+    <div class="times-cards">
+      <!-- Service Times -->
+      <div class="time-card">
+        <div class="card-header">
+          <img src="/images/time.png" alt="Clock icon" />
+          <h2>Service Times</h2>
+        </div>
+        <div class="card-body">
+          <h3>Sunday Mornings</h3>
+          <p>8:00am & 10:30am</p>
+          <hr />
+          <h3>Monday Evenings</h3>
+          <p>6:00pm</p>
+          <p class="small-note">*Summer hours will differ</p>
+        </div>
+      </div>
 
-        <p class="description">
-          All services are streamed and recorded on the Martin Luther YouTube channel.
-        </p>
-
-        <div class="button-group">
+      <!-- Our Location -->
+      <div class="time-card">
+        <div class="card-header">
+          <img src="/images/location.png" alt="Location icon" />
+          <h2>Our Location</h2>
+        </div>
+        <div class="card-body">
+          <h3>Address</h3>
+          <p>1526 Algoma Blvd<br />Oshkosh, WI 54901</p>
           <a
-            href="https://www.youtube.com/@MartinLutherOshkosh"
-            target="_blank"
-            class="youtube-btn"
-          >
-            YouTube
-          </a>
-          <a
-            href="https://www.google.com/maps/place/Martin+Luther+Church+and+School/@44.0365247,-88.5598194,17z/data=!4m6!3m5!1s0x8803e962354799bd:0x118cae47a56f3332!8m2!3d44.0358199!4d-88.557672!16s%2Fg%2F1td7cqh7?entry=ttu"
+            href="https://www.google.com/maps/place/1526+Algoma+Blvd,+Oshkosh,+WI+54901"
             target="_blank"
             class="directions-btn"
           >
@@ -63,21 +64,56 @@
           </a>
         </div>
       </div>
-
-      <div class="worship-map">
-        <!-- ✅ Correct absolute image path -->
-        <img src="/images/MLLocation.png" alt="Martin Luther Location Map" />
-        <p class="church-address">
-          1526 Algoma Blvd Oshkosh, WI 54901
-        </p>
-      </div>
     </div>
-  </main>
+  </section>
 
-  <!-- ✅ Footer placeholder -->
+  <!-- 🔹 MAP SECTION -->
+  <section class="map-section">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2860.7!2d-88.5556!3d44.0247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8803e3f7e7f7f7f7%3A0x7f7f7f7f7f7f7f7f!2s1526%20Algoma%20Blvd%2C%20Oshkosh%2C%20WI%2054901!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
+
+  <!-- 🔹 STREAMING INFO -->
+  <section class="stream-card">
+    <div class="stream-icon">
+      <img src="/images/video.svg" alt="Video icon" />
+    </div>
+    <div class="stream-text">
+      <h3>Can't Make It In Person?</h3>
+      <p>
+        All services are streamed and recorded on the Martin Luther YouTube channel.
+      </p>
+    </div>
+    <a
+      href="https://www.youtube.com/@MartinLutherOshkosh"
+      target="_blank"
+      class="youtube-btn"
+      >Watch on YouTube</a
+    >
+  </section>
+
+  <!-- 🔹 ADDITIONAL INFO -->
+  <section class="info-cards">
+    <div class="info-card">
+      <h4>What to Expect</h4>
+      <p>Come as you are! We’re a welcoming community.</p>
+    </div>
+    <div class="info-card">
+      <h4>Parking</h4>
+      <p>Free parking available in our lot and on the street.</p>
+    </div>
+    <div class="info-card">
+      <h4>Questions?</h4>
+      <p>Contact us anytime — we’re here to help!</p>
+    </div>
+  </section>
+
   <div id="footer"></div>
 
-  <!-- ✅ Correct JS paths -->
   <script src="../../js/header.js"></script>
   <script src="../../js/footer.js"></script>
 </body>
