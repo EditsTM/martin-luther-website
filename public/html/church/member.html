@@ -8,19 +8,16 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ✅ Correct CSS Paths -->
+  <!-- CSS -->
   <link rel="stylesheet" href="/css/header.css">
   <link rel="stylesheet" href="/css/footer.css">
   <link rel="stylesheet" href="/css/church/member.css">
 </head>
 
 <body>
-  <!-- ✅ Dynamic Header -->
+  <!-- Header -->
   <div id="header"></div>
 
   <!-- HERO SECTION -->
@@ -31,35 +28,75 @@
   </section>
 
   <!-- MAIN CONTENT -->
-  <main class="member-container">
-    <div class="member-text">
-      <h2>Join Our Church Family</h2>
+  <main class="member-wrapper">
+    <!-- Intro -->
+    <section class="member-intro">
+      <h2>How It Works</h2>
       <p>
-        Becoming a member at Martin Luther Church means more than joining a congregation —
-        it’s joining a family of faith that grows, serves, and worships together.
+        Our membership process is designed to help you grow in your understanding of the Lutheran faith 
+        and become fully integrated into our church family.
       </p>
+    </section>
 
-      <ul class="member-list">
-        <li>Learn more about our beliefs and community.</li>
-        <li>Attend a membership orientation session.</li>
-        <li>Meet with our pastors to discuss your faith journey.</li>
-        <li>Get involved in our ministries and service opportunities.</li>
-      </ul>
+    <!-- Two Step Cards -->
+    <section class="member-grid">
+      <div class="member-card">
+        <div class="member-card-header">
+          <div class="member-step">1</div>
+          <h3>12-Week Course</h3>
+        </div>
+        <div class="member-card-body">
+          <p>
+            Our comprehensive course introduces you to Lutheran theology, the teachings of Martin Luther, 
+            and the life of our congregation.
+          </p>
+          <ul>
+            <li>Weekly classes covering essential doctrine and practices</li>
+            <li>Time for questions and meaningful discussions</li>
+            <li>Build relationships with other members</li>
+          </ul>
+        </div>
+      </div>
 
-      <!-- ✅ Corrected link -->
-      <a href="/html/contact.html" class="member-btn">Contact Us to Get Started</a>
-    </div>
+      <div class="member-card">
+        <div class="member-card-header">
+          <div class="member-step">2</div>
+          <h3>Church Confirmation</h3>
+        </div>
+        <div class="member-card-body">
+          <p>
+            After completing the course, you'll be confirmed and officially welcomed as a member 
+            during a special ceremony.
+          </p>
+          <ul>
+            <li>Public affirmation of your faith commitment</li>
+            <li>Blessing and prayer from the congregation</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-    <div class="member-image">
-      <!-- ✅ Corrected image path -->
-      <img src="/images/members.jpg" alt="Martin Luther Church Members" />
-    </div>
+    <!-- Image -->
+    <section class="member-image-section">
+      <img src="/images/members.jpg" alt="Church Community Gathering">
+    </section>
   </main>
 
-  <!-- ✅ Dynamic Footer -->
+  <!-- FULL-WIDTH CTA -->
+  <section class="member-cta-full">
+    <div class="member-cta-inner">
+      <h2>Ready to Take the Next Step?</h2>
+      <p>
+        We'd love to hear from you! Contact us to learn more about upcoming course dates 
+        and get answers to any questions you may have about joining our church.
+      </p>
+      <a href="/html/contact.html" class="expand-toggle">Contact Us Today</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <div id="footer"></div>
 
-  <!-- ✅ Correct JS Paths -->
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
 </body>

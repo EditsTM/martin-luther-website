@@ -13,16 +13,25 @@
 .prayer-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(66, 121, 188, 0.85);
+  background: rgba(30, 42, 87, 0.85); /* match Expectations & Member hero overlay */
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
-  font-size: 64px;
-  font-weight: 800;
-  letter-spacing: 2px;
+  flex-direction: column;
   text-align: center;
+  padding: 0 20px;
 }
+
+.prayer-overlay h1 {
+  color: white;
+  font-size: 50px; /* match others */
+  font-weight: 700; /* same as Become a Member & Beliefs */
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  text-transform: none;
+  margin: 0;
+}
+
 
 /* ------------------ CONTENT BOX ------------------ */
 .prayer-box {

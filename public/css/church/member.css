@@ -1,23 +1,23 @@
 /* =============================
-   GLOBAL STYLES
+   GLOBAL
 ============================= */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
 
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
+  background-color: #fff;
   color: #2c3e50;
-  background-color: white;
 }
 
 /* =============================
-   HERO SECTION
+   HERO
 ============================= */
 .member-hero {
   position: relative;
   width: 100%;
   height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center 70% / cover;
+  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,11 +25,8 @@ body {
 
 .member-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(66, 121, 188, 0.85);
+  inset: 0;
+  background: rgba(30, 42, 87, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,122 +35,216 @@ body {
 .member-overlay h1 {
   color: white;
   font-size: 50px;
-  font-weight: 700;
+  font-weight: 700; /* match other page headers */
   letter-spacing: 2px;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  text-transform: none; /* consistent with Expectations/Beliefs */
+}
+
+
+/* =============================
+   CONTENT WRAPPER
+============================= */
+.member-wrapper {
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 0 20px;
 }
 
 /* =============================
-   MAIN CONTENT SECTION
+   INTRO
 ============================= */
-.member-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1300px;
-  margin: 90px auto;
-  padding: 0 50px;
-  gap: 60px;
+.member-intro {
+  text-align: center;
+  margin-bottom: 70px;
 }
 
-/* --- TEXT SIDE --- */
-.member-text {
-  flex: 1 1 50%;
-}
-
-.member-text h2 {
-  color: #282f7f;
+.member-intro h2 {
   font-size: 42px;
+  color: #000;
   font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.member-intro p {
+  font-size: 18px;
+  color: #333;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* =============================
+   GRID (CARDS)
+============================= */
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 40px;
+  margin-bottom: 70px;
+}
+
+.member-card {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background-color: white;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+
+.member-card-header {
+  background: #1e2a57; /* same as .sunday and .monday cards */
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  border-bottom: 4px solid rgba(255, 255, 255, 0.15); /* subtle accent edge like expectations cards */
+}
+
+
+.member-step {
+  width: 60px;
+  height: 60px;
+  background: white;
+  color: #1e2a57;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 22px;
+  margin: 0 auto 15px;
+}
+
+.member-card-header h3 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.member-card-body {
+  padding: 30px;
+}
+
+.member-card-body p {
+  font-size: 17px;
+  color: #555;
   margin-bottom: 20px;
 }
 
-.member-text p {
-  font-size: 18px;
-  line-height: 1.7;
-  color: #333;
-  margin-bottom: 30px;
-}
-
-.member-list {
-  list-style-type: none;
+.member-card-body ul {
+  list-style: none;
   padding: 0;
-  margin-bottom: 40px;
+  margin: 0;
 }
 
-.member-list li {
-  font-size: 18px;
-  color: #2c3e50;
-  padding: 10px 0;
+.member-card-body li {
   position: relative;
   padding-left: 25px;
+  margin-bottom: 12px;
+  color: #2c3e50;
 }
 
-.member-list li::before {
-  content: "✦";
+.member-card-body li::before {
+  content: "•";
   position: absolute;
   left: 0;
-  color: #4279bc;
-  font-size: 16px;
-}
-
-/* Center button visually under the heading */
-.member-btn {
-  display: inline-block;
-  background: linear-gradient(135deg, #4279bc, #282f7f);
-  color: white;
-  font-weight: 700;
-  text-decoration: none;
+  top: 2px;
   font-size: 20px;
-  padding: 14px 40px;
-  border-radius: 10px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  margin-left: 15%; /* ✅ visually centers it with the heading */
+  color: #4279bc;
 }
 
-
-.member-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(40, 47, 127, 0.3);
-}
-
-
-/* --- IMAGE SIDE --- */
-.member-image {
-  flex: 1 1 50%;
-  display: flex;
-  justify-content: center;
-}
-
-.member-image img {
-  width: 100%;
-  max-width: 800px;
-  aspect-ratio: 10 / 9; /* ✅ makes it a little shorter */
-  object-fit: cover;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
-}
 /* =============================
-   RESPONSIVE DESIGN
+   IMAGE SECTION
 ============================= */
-@media (max-width: 950px) {
-  .member-container {
-    flex-direction: column;
-    padding: 0 30px;
-    text-align: center;
-  }
+.member-image-section {
+  margin-bottom: 0;
+}
 
-  .member-image {
-    order: -1;
-    margin-bottom: 30px;
-  }
+.member-image-section img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
+}
 
-  .member-text h2 {
+/* =============================
+   CTA SECTION (FULL WIDTH)
+============================= */
+.member-cta-full {
+  width: 100vw;
+  background: #f4f6fb;
+  margin: 0;
+  padding: 80px 0;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  box-shadow: inset 0 6px 15px rgba(0,0,0,0.05);
+}
+
+.member-cta-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.member-cta-inner h2 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 15px;
+}
+
+.member-cta-inner p {
+  color: #333;
+  font-size: 18px;
+  max-width: 700px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+/* ✅ Expand-All Button Style — identical to Beliefs page */
+.expand-toggle {
+  display: inline-block;
+  margin: 5px auto 25px;
+  background: #1e2a57 !important;
+  color: white !important;
+  border: 2px solid #1e2a57 !important;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  padding: 10px 22px;
+}
+
+.expand-toggle:hover {
+  background: white !important;
+  color: #1e2a57 !important;
+  border-color: #1e2a57 !important;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
+}
+
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 768px) {
+  .member-intro h2 {
     font-size: 34px;
   }
 
-  .member-btn {
-    font-size: 18px;
-    padding: 12px 32px;
+  .member-cta-inner h2 {
+    font-size: 30px;
   }
 }
