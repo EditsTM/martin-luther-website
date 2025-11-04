@@ -1,0 +1,43 @@
+/* =============================
+   HERO SECTION
+============================= */
+.forms-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.forms-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 42, 87, 0.85); /* Your requested overlay color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.forms-overlay h1 {
+  color: white;
+  font-size: 90px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  margin: 0;
+}
+
+/* =============================
+   MAIN CONTENT
+============================= */
+.forms-content {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 20px;
+  text-align: center;
+  color: #1e2a57;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.6;
+}
