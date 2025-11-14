@@ -1,0 +1,16 @@
+{
+  "principal": {
+    "name": "Name",
+    "subject": "Principal",
+    "image": "images/faculty/Placeholder-1763079419739-qeuf3x.jpg"
+  },
+  "teachers": [
+    {
+      "name": "Name",
+      "subject": "Subject",
+      "image": "/images/faculty/PlaceHolder.jpg"
+    }
+  ],
+  "admins": [],
+  "admin": []
+}

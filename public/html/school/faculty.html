@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Faculty | Martin Luther</title>
+
+  <!-- Shared Header & Footer -->
+  <link rel="stylesheet" href="../../css/header.css" />
+  <link rel="stylesheet" href="../../css/footer.css" />
+
+  <!-- Page-specific CSS -->
+  <link rel="stylesheet" href="../../css/school/faculty.css" />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div id="header"></div>
+
+  <!-- HERO SECTION -->
+  <section class="faculty-hero">
+    <div class="faculty-overlay">
+      <h1>Our Faculty</h1>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="faculty-main">
+    <div class="faculty-inner">
+
+      <!-- =======================
+           ADMINISTRATION
+      ======================== -->
+      <h2 class="faculty-heading">Administration</h2>
+
+      <!-- Centered Add Button for Admin -->
+      <div class="add-btn-wrapper">
+        <button id="add-admin-btn" class="add-teacher-btn admin-only">+</button>
+      </div>
+
+      <!-- Principal / Admin Cards -->
+      <div id="principal-card-container" class="principal-container"></div>
+      <div id="admin-grid" class="faculty-grid"></div>
+
+      <!-- =======================
+           FACULTY
+      ======================== -->
+      <h2 class="faculty-heading" style="margin-top:50px;">Faculty</h2>
+
+      <!-- Centered Add Button for Faculty -->
+      <div class="add-btn-wrapper">
+        <button id="add-teacher-btn" class="add-teacher-btn admin-only">+</button>
+      </div>
+
+      <div id="faculty-grid" class="faculty-grid"></div>
+
+    </div>
+  </main>
+
+  <!-- ✳️ EDIT MODAL (NEW) -->
+  <div id="faculty-edit-modal" class="faculty-modal">
+    <div class="faculty-modal-content">
+      <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+      <h2 class="modal-title">Edit Entry</h2>
+
+      <div class="modal-body">
+        <div class="modal-image-section">
+          <img
+            id="modal-photo-preview"
+            src="/images/faculty/PlaceHolder.jpg"
+            alt="Faculty photo preview"
+          />
+          <label class="upload-label modal-upload-label">
+            Change Photo
+            <input type="file" id="modal-photo-input" accept="image/*" />
+          </label>
+        </div>
+
+        <div class="modal-form-section">
+          <label class="modal-label">
+            Name
+            <input type="text" id="modal-name" />
+          </label>
+
+          <label class="modal-label">
+            Subject / Title
+            <input type="text" id="modal-subject" />
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="modal-delete-btn" class="delete-btn">Delete</button>
+        <button id="modal-save-btn" class="save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+
+  <!-- JS -->
+  <script src="../../js/header.js"></script>
+  <script src="../../js/footer.js"></script>
+  <script src="../../js/faculty.js"></script>
+
+</body>
+</html>

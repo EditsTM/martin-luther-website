@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background: #fff;
+  color: #2c3e50;
+}
+
+/* =============================
+   HERO SECTION
+============================= */
+.child-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.child-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 42, 87, 0.85); /* your standard overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.child-overlay h1 {
+  color: white;
+  font-size: 70px;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* =============================
+   MAIN CONTENT
+============================= */
+.child-main {
+  padding: 80px 0;
+}
+
+.child-inner {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+  text-align: center;
+}
+
+.child-heading {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #282f7f; /* your blue header */
+}
+
+.child-text {
+  font-size: 18px;
+  line-height: 1.7;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #2c3e50;
+}

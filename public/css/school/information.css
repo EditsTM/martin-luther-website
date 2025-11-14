@@ -1,0 +1,926 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  color: #2c3e50;
+  background: #fff;
+}
+
+/* =============================
+   HERO SECTION
+============================= */
+.info-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 42, 87, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-overlay h1 {
+  color: white;
+  font-size: 70px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* =============================
+   MAIN LAYOUT
+============================= */
+.info-main {
+  padding: 80px 0;
+  background-color: #fff;
+}
+
+.section-inner {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* INTRO (not currently used but kept for consistency) */
+.info-intro-section {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 60px;
+}
+
+.info-heading {
+  font-size: 36px;
+  color: #282f7f;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.info-intro {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* =============================
+   SHARED SECTION STYLES
+============================= */
+.section-tag {
+  display: inline-block;
+  background: #282f7f;
+  color: white;
+  padding: 8px 20px;
+  font-size: 15px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.section-description {
+  font-size: 17px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.text-center-block {
+  text-align: center;
+  max-width: 850px;
+  margin: 0 auto 40px;
+}
+
+.text-center-block .section-title {
+  text-align: center;
+}
+
+/* =============================
+   ABOUT SECTION
+============================= */
+.about-section {
+  padding: 60px 0 40px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.about-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.about-feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.about-feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #282f7f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.about-feature-icon img {
+  width: 26px;
+  height: 26px;
+}
+
+.about-feature-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.about-feature-text {
+  font-size: 14px;
+  color: #666;
+}
+
+.about-image-wrapper {
+  position: relative;
+}
+
+.about-main-image img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+  display: block;
+}
+
+.about-wels-badge {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  padding: 16px 18px;
+  max-width: 260px;
+  border-radius: 16px;
+  background: #282f7f;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.about-wels-text {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.about-wels-badge p {
+  font-size: 14px;
+  margin: 0;
+  color: #e2e6ff;
+}
+
+/* About bottom cards */
+.about-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.info-card {
+  border-radius: 14px;
+  border: 2px solid #e6e9f3;
+  padding: 22px 22px 24px;
+  background: #ffffff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  border-color: #ffb347;
+}
+
+.info-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #282f7f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.info-card-icon img {
+  width: 30px;
+  height: 30px;
+}
+
+.info-card h3 {
+  font-size: 18px;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.info-card p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* =============================
+   STATS (moved ABOVE Academics)
+============================= */
+.stats-section {
+  padding: 50px 0;
+  background: #282f7f;
+}
+
+.stats-inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.stat-item {
+  color: white;
+}
+
+.stat-number {
+  font-size: 34px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 15px;
+  color: #d5dbff;
+}
+
+/* =============================
+   ACADEMICS
+============================= */
+.academics-section {
+  padding: 70px 0;
+}
+
+.academics-grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.academic-card {
+  border-radius: 16px;
+  border: 2px solid #e4e7f2;
+  background: linear-gradient(to bottom right, #ffffff, #f7f8fc);
+  padding: 26px 24px 26px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.academic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.card-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: #282f7f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  margin-bottom: 12px;
+}
+
+.card-icon-circle img {
+  width: 32px;
+  height: 32px;
+}
+
+.card-header h3 {
+  font-size: 20px;
+  color: #000;
+  margin: 0;
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #444;
+  font-size: 15px;
+  padding: 6px 0;
+}
+
+/* ==========================================
+   Curriculum icons – FORCE BLACK
+   (Core Curriculum + Special Subjects)
+========================================== */
+.academic-card .card-list img {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  background: none !important;
+  border-radius: 0 !important;
+  /* 🔥 Force icons to render solid BLACK regardless of source color */
+  filter: brightness(0) !important;
+}
+
+/* Grade list */
+.grade-card {
+  background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+}
+
+.grade-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+}
+
+.grade-list li {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.grade-title {
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.grade-subtitle {
+  font-size: 13px;
+  color: #777;
+}
+
+/* =============================
+   MISSION & VALUES
+============================= */
+.mission-section {
+  padding: 70px 0 60px;
+  background: linear-gradient(to bottom, #f5f6fb, #ffffff);
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.2fr);
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.mission-image-wrapper {
+  order: 2;
+}
+
+.mission-image {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+.mission-image img {
+  width: 100%;
+  display: block;
+}
+
+.mission-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 16, 40, 0.8), transparent);
+}
+
+.mission-verse {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  color: white;
+}
+
+.mission-verse-text {
+  font-size: 16px;
+  font-style: italic;
+  margin: 0 0 4px;
+}
+
+.mission-verse-ref {
+  font-size: 14px;
+  margin: 0;
+}
+
+.mission-text {
+  order: 1;
+}
+
+.mission-heading {
+  font-size: 24px;
+  color: #000;
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.mission-body {
+  font-size: 17px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.mission-wels-box {
+  background: #282f7f;
+  border-radius: 14px;
+  padding: 18px 20px;
+  color: white;
+}
+
+.mission-wels-box h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: white;
+}
+
+.mission-wels-box p {
+  margin: 0;
+  font-size: 15px;
+  color: #e0e4ff;
+}
+
+/* Mission Values cards */
+.mission-values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.value-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 18px 20px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #282f7f;
+}
+
+.value-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #282f7f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.value-icon img {
+  width: 26px;
+  height: 26px;
+}
+
+.value-card h4 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  color: #000;
+}
+
+.value-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* =============================
+   BEYOND THE CLASSROOM
+============================= */
+.beyond-section {
+  padding: 80px 0;
+  background: linear-gradient(to bottom right, #282f7f, #1e245f);
+  color: white;
+}
+
+.beyond-inner {
+  max-width: 1200px;
+}
+
+.beyond-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.beyond-image-wrapper img {
+  width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  display: block;
+}
+
+.beyond-heading {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.beyond-text {
+  font-size: 17px;
+  color: #e0e3ff;
+  margin-bottom: 22px;
+}
+
+.beyond-items {
+  display: grid;
+  gap: 16px;
+}
+
+.beyond-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.beyond-item-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.beyond-item-icon img {
+  width: 26px;
+  height: 26px;
+}
+
+.beyond-item-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.beyond-item-text {
+  font-size: 14px;
+  color: #d3d7ff;
+}
+
+/* =============================
+   WHY FAMILIES CHOOSE US
+============================= */
+.why-section {
+  padding: 70px 0 80px;
+  background: linear-gradient(to bottom, #f7f8fc, #ffffff);
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.why-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 18px 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #282f7f;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.why-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #282f7f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.why-icon-circle img {
+  width: 22px;
+  height: 22px;
+}
+
+.why-card h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  color: #000;
+}
+
+.why-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* =============================
+   GLOBAL HEADERS
+============================= */
+h2, h3, h4 {
+  color: #000;
+}
+
+/* HERO stays white */
+.info-overlay h1 {
+  color: white;
+}
+
+/* =============================
+   ICON COLOR LOGIC
+============================= */
+
+/* White icons on navy backgrounds (feature/info/values/beyond/why) */
+.about-feature-icon img,
+.info-card-icon img,
+.card-icon-circle img,
+.value-icon img,
+.beyond-item-icon img,
+.why-icon-circle img {
+  filter: brightness(0) invert(1);
+}
+
+/* REAL photos – never filtered */
+.about-main-image img,
+.mission-image img,
+.beyond-image-wrapper img {
+  filter: none;
+}
+
+/* Header logo lives in header.css – we do NOT touch it here */
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 1100px) {
+  .about-grid,
+  .mission-grid,
+  .beyond-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-image-wrapper {
+    order: 1;
+  }
+
+  .mission-text {
+    order: 2;
+  }
+
+  .about-wels-badge {
+    position: static;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .info-overlay h1 {
+    font-size: 48px;
+    text-align: center;
+    padding: 0 16px;
+  }
+
+  .info-heading {
+    font-size: 28px;
+  }
+
+  .info-intro {
+    font-size: 16px;
+  }
+
+  .section-title {
+    font-size: 26px;
+  }
+
+  .section-description {
+    font-size: 16px;
+  }
+
+  .about-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .beyond-section {
+    padding: 60px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-wels-badge {
+    padding: 12px 14px;
+  }
+}
+/* =============================
+   COLOR UPDATE ONLY
+============================= */
+
+/* Updated ML navy: rgba(41, 46, 124) */
+:root {
+  --ml-navy: rgba(41, 46, 124);
+}
+
+/* INFO HEADING */
+.info-heading {
+  color: var(--ml-navy);
+}
+
+/* Section Tag */
+.section-tag {
+  background: var(--ml-navy);
+}
+
+/* ABOUT ICON BG */
+.about-feature-icon {
+  background: var(--ml-navy);
+}
+
+/* WELS BADGE */
+.about-wels-badge {
+  background: var(--ml-navy);
+}
+
+/* INFO CARDS (icon background) */
+.info-card-icon {
+  background: var(--ml-navy);
+}
+
+/* STATS */
+.stats-section {
+  background: var(--ml-navy);
+}
+
+/* ACADEMIC CARD ICON CIRCLE */
+.card-icon-circle {
+  background: var(--ml-navy);
+}
+
+/* MISSION — WELS BOX */
+.mission-wels-box {
+  background: var(--ml-navy);
+}
+
+/* VALUES ICONS */
+.value-card {
+  border-top: 4px solid var(--ml-navy);
+}
+
+.value-icon {
+  background: var(--ml-navy);
+}
+
+/* BEYOND SECTION */
+.beyond-section {
+  background: linear-gradient(to bottom right, var(--ml-navy), #1e245f);
+}
+
+/* WHY CARDS */
+.why-card {
+  border-left: 4px solid var(--ml-navy);
+}
+
+.why-icon-circle {
+  background: var(--ml-navy);
+}
+
+/* CURRICULUM ICONS (black only — unchanged) */
+.academic-card .card-list img {
+  filter: brightness(0) !important;
+  background: none !important;
+}
+/* =============================
+   COLOR UPDATE ONLY
+   Replace ALL blue tones with #1e2a57
+============================= */
+
+:root {
+  --ml-navy: #1e2a57;
+}
+
+/* HERO OVERLAY */
+.info-overlay {
+  background: rgba(30, 42, 87, 0.85); /* stays same because it's an overlay opacity */
+}
+.info-overlay {
+  background: rgba(30, 42, 87, 0.85);
+}
+.info-overlay {
+  background: rgba(30, 42, 87, 0.85);
+}
+
+/* HEADINGS */
+.info-heading {
+  color: var(--ml-navy);
+}
+
+/* SECTION TAGS */
+.section-tag {
+  background: var(--ml-navy);
+}
+
+/* ABOUT FEATURE ICON */
+.about-feature-icon {
+  background: var(--ml-navy);
+}
+
+/* WELS BADGE BOX */
+.about-wels-badge {
+  background: var(--ml-navy);
+}
+
+/* CARD ICON BG */
+.info-card-icon {
+  background: var(--ml-navy);
+}
+
+/* STATS SECTION */
+.stats-section {
+  background: var(--ml-navy);
+}
+
+/* ACADEMICS - card icon */
+.card-icon-circle {
+  background: var(--ml-navy);
+}
+
+/* MISSION - WELS BOX */
+.mission-wels-box {
+  background: var(--ml-navy);
+}
+
+/* MISSION VALUES */
+.value-card {
+  border-top: 4px solid var(--ml-navy);
+}
+.value-icon {
+  background: var(--ml-navy);
+}
+
+/* BEYOND SECTION - gradient updated */
+.beyond-section {
+  background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57);
+}
+
+/* WHY CARDS */
+.why-card {
+  border-left: 4px solid var(--ml-navy);
+}
+.why-icon-circle {
+  background: var(--ml-navy);
+}

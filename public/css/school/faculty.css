@@ -1,0 +1,414 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background: #fff;
+  color: #2c3e50;
+}
+
+/* HERO */
+.faculty-hero {
+  position: relative;
+  height: 300px;
+  background: url("../../images/Prayer.jpg") no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faculty-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 42, 87, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faculty-overlay h1 {
+  color: white;
+  font-size: 70px;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* MAIN */
+.faculty-main { padding: 80px 0; }
+.faculty-inner { width: 90%; max-width: 1200px; margin: auto; text-align: center; }
+
+.faculty-heading {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000000;   /* 🔹 headers black */
+}
+
+/* CENTER ADD BUTTONS */
+.add-btn-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0 0 25px;
+}
+
+/* PRINCIPAL ROW */
+.principal-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+/* Make principal card same box size as others */
+.principal-container .faculty-card {
+  max-width: 360px;
+}
+
+/* ==================================================
+   GRID — MAX 3 PER ROW + LARGER CARDS
+================================================== */
+.faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+@media (max-width: 900px) {
+  .faculty-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .faculty-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CARD STYLE (SHARED BY ADMIN + FACULTY) */
+.faculty-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  height: 380px;                  /* ✅ FIXED BOX SIZE */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e6e9f3;
+  overflow: hidden;
+  transition: 0.25s;
+}
+
+.faculty-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 35px rgba(0,0,0,0.12);
+}
+
+/* IMAGE */
+.faculty-image-wrapper img {
+  width: 100%;
+  height: 230px;   /* taller inside same box */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Force uniform text area */
+.faculty-name,
+.faculty-subject {
+  height: 26px;
+  overflow: hidden;
+}
+
+/* 🔹 Name = black, Subject = gray */
+.faculty-name {
+  color: #000000;
+  font-weight: 700;
+}
+
+.faculty-subject {
+  color: #6c757d;
+  font-weight: 600;
+}
+
+/* ==================================================
+   ADMIN EDIT CONTROLS — (kept for reuse)
+================================================== */
+.faculty-controls {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e6e9f3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+/* Hide raw input */
+.upload-label input[type="file"] {
+  display: none;
+}
+
+.upload-label {
+  background: #1e2a57;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  width: 80%;
+}
+
+.save-btn,
+.delete-btn {
+  width: 80%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: white;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.save-btn { background: #4279bc; }
+.delete-btn { background: #b30000; }
+.delete-btn:hover { background: #d00000; }
+
+/* Admin buttons hidden by default */
+.add-teacher-btn {
+  display: none;
+}
+
+body.admin-mode .add-teacher-btn {
+  display: inline-block;
+  background: #ff9f45;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.admin-only { display: none; }
+body.admin-mode .admin-only { display: block; }
+
+.editable { border-bottom: 1px dashed transparent; }
+body.admin-mode .editable:hover { border-color: #ff9f45; }
+
+/* Admin grid spacing */
+#admin-grid {
+  margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .faculty-overlay h1 { font-size: 50px; }
+}
+
+/* ==================================================
+   🔽 EXTRA CHANGES (REQUESTED) – OVERRIDES ONLY
+================================================== */
+
+.faculty-grid:has(.faculty-card:only-child) {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+#admin-grid:has(.faculty-card:only-child) {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* 4️⃣ Make admin cards guaranteed same width as faculty */
+#admin-grid .faculty-card,
+.principal-container .faculty-card {
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 5️⃣ EDIT BUTTON ON CARD */
+.edit-btn {
+  border: none;
+  border-radius: 999px;
+  background: #4279bc;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 18px;
+  cursor: pointer;
+  align-self: center;
+  margin-top: auto;
+}
+
+.edit-btn:hover {
+  background: #285b94;
+}
+
+/* ==================================================
+   6️⃣ MODAL STYLES
+================================================== */
+
+.faculty-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.faculty-modal.open {
+  display: flex;
+}
+
+.faculty-modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 720px;
+  width: 100%;
+  padding: 24px 28px;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-title {
+  margin: 0 0 18px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #000000;  /* 🔹 modal header black */
+  text-align: left;
+}
+
+.modal-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Image side */
+.modal-image-section {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.modal-image-section img {
+  width: 220px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+/* Reuse upload-label but allow full width here */
+.modal-upload-label {
+  width: 220px !important;
+  background: #1e2a57;
+  padding: 10px 14px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  color: white;
+  font-weight: 700;
+}
+
+/* Form side */
+.modal-form-section {
+  flex: 1 1 50%;
+  text-align: left;
+}
+
+.modal-label {
+  display: block;
+  margin-bottom: 14px;
+  font-weight: 600;
+  color: #000000; /* label text dark */
+}
+
+.modal-label input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccd3e4;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Actions */
+.modal-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Reuse save/delete-btn but make width auto in modal */
+.modal-actions .save-btn,
+.modal-actions .delete-btn {
+  width: auto;
+  min-width: 110px;
+}
+
+/* Mobile modal tweaks */
+@media (max-width: 600px) {
+  .faculty-modal-content {
+    padding: 20px;
+  }
+
+  .modal-body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .modal-image-section,
+  .modal-form-section {
+    flex: 1 1 100%;
+  }
+
+  .modal-title {
+    text-align: center;
+  }
+}
+/* (Everything you already had above — unchanged) */
+
+/* ==================================================
+   🔽 EXTRA CHANGES (REQUESTED) – OVERRIDES ONLY
+================================================== */
+
+.faculty-grid:has(.faculty-card:only-child) {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* 🔥 FIX #3 — prevent single faculty card from becoming massive */
+.faculty-grid:has(.faculty-card:only-child) .faculty-card {
+  max-width: 360px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Keep admin grid consistent */
+#admin-grid .faculty-card,
+.principal-container .faculty-card {
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
