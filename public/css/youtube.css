@@ -39,7 +39,7 @@
 }
 
 .youtube-heading {
-  background-color: rgba(41, 46, 124);
+  background-color: #1e2a57;
   color: white;
   font-size: 32px;
   text-align: center;
@@ -58,7 +58,7 @@
 }
 
 .youtube-videos iframe {
-  border: 2px solid rgba(41, 46, 124);
+  border: 2px solid #1e2a57;
   border-radius: 8px;
 }
 
@@ -78,14 +78,14 @@
   width: 100%;
   height: 480px;
   margin: 0;
-  border-top: 4px solid rgba(41, 46, 124);
-  border-bottom: 4px solid rgba(41, 46, 124);
+  border-top: 4px solid #1e2a57;
+  border-bottom: 4px solid #1e2a57;
   overflow: hidden;
 }
 
 .divider {
   width: 4px;
-  background-color: rgba(41, 46, 124);
+  background-color: #1e2a57;
   margin: 0;
   padding: 0;
 }
@@ -116,7 +116,7 @@
 }
 
 .youtube-left h3 {
-  color: black; /* ✅ changed from #282f7f to black */
+  color: black;
   font-size: 48px;
   font-weight: 900;
   margin: 0 0 24px 0;
@@ -199,8 +199,8 @@
   width: 100%;
   height: 100%;
   border: none;
-  border-left: 3px solid rgba(41, 46, 124);
-  border-right: 3px solid rgba(41, 46, 124);
+  border-left: 3px solid #1e2a57;
+  border-right: 3px solid #1e2a57;
   border-radius: 0;
   object-fit: cover;
 }
@@ -212,12 +212,12 @@
   background: #eaf0fa;
   margin: 0;
   padding: 0;
-  border-top: 4px solid rgba(41, 46, 124);
-  border-bottom: 4px solid rgba(41, 46, 124);
+  border-top: 4px solid #1e2a57;
+  border-bottom: 4px solid #1e2a57;
 }
 
 .youtube-section.past-livestreams .youtube-heading {
-  background-color: rgba(41, 46, 124);
+  background-color: #1e2a57;
   color: white;
   font-size: 32px;
   text-align: center;
@@ -243,7 +243,7 @@
   flex: 1;
   width: 100%;
   height: 100%;
-  border: 3px solid rgba(41, 46, 124);
+  border: 3px solid #1e2a57;
   border-left: none;
   border-right: none;
   border-radius: 0;
@@ -252,9 +252,9 @@
   padding: 0;
 }
 
-/* ✅ subtle divider between iframes */
+/* Divider */
 .past-livestreams .youtube-videos iframe + iframe {
-  border-left: 4px solid rgba(41, 46, 124);
+  border-left: 4px solid #1e2a57;
 }
 
 /* =============================
@@ -290,7 +290,7 @@
     height: 340px;
     border-left: none;
     border-right: none;
-    border-top: 4px solid rgba(41, 46, 124);
+    border-top: 4px solid #1e2a57;
   }
 
   .past-livestreams .youtube-videos iframe:first-child {
