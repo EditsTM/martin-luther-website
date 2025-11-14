@@ -20,8 +20,10 @@ async function loadFacultyData() {
     if (!res.ok) throw new Error("Failed to fetch faculty.json");
     const data = await res.json();
 
-    // 🔥 FIX #1 — FORCE correct admin array
-    data.admins = Array.isArray(data.admin) ? data.admin : [];
+// 🔥 FIX #1 — FORCE correct admin array (backend uses "admin", frontend uses "admins")
+data.admin = Array.isArray(data.admin) ? data.admin : [];
+data.admins = data.admin; 
+
 
     if (!data.teachers) data.teachers = [];
 

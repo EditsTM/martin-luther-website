@@ -222,13 +222,32 @@ router.post("/upload-image", upload.single("image"), (req, res) => {
     if (!data.events[index])
       return res.status(404).json({ error: "Event not found" });
 
-    const rel = `images/events/${req.file.filename}`;
+    const rel = `/images/events/${req.file.filename}`;
     data.events[index].image = rel;
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     res.json({ success: true, image: rel });
   } catch (err) {
     res.status(500).json({ error: "Failed to upload image" });
+  }
+});
+/* ------------------------------------------------------
+   📥 Serve events.json for homepage
+------------------------------------------------------ */
+router.get("/events.json", (req, res) => {
+  const filePath = path.resolve(process.cwd(), "server/content/events.json");
+
+  try {
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "events.json not found" });
+    }
+
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    res.set("Cache-Control", "no-store");
+    res.json(data);
+  } catch (err) {
+    console.error("Failed to load events.json:", err);
+    res.status(500).json({ error: "Failed to load events.json" });
   }
 });
 

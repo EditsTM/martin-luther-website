@@ -25,6 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       .map((ev, index) => {
         const isEven = index % 2 === 0;
 
+        // ⭐ FIX: Normalize image path so it ALWAYS has exactly ONE leading slash
+        const imgPath = ev.image.startsWith("/") ? ev.image : "/" + ev.image;
+
         // Admin-only buttons for title/date
         const adminTextButtons =
           isAdmin && grid
@@ -63,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               </div>
 
               <div class="grid-item white" style="position:relative;">
-                <img src="/${ev.image}" 
+                <img src="${imgPath}" 
                      alt="${ev.title}" 
                      id="event-image-${index}"
                      class="event-img"
@@ -77,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // 🏠 Homepage cards
         return `
           <div class="event-card">
-            <img src="/${ev.image}" alt="${ev.title}">
+            <img src="${imgPath}" alt="${ev.title}">
             <h3>${ev.title}</h3>
             <p>${ev.date}</p>
           </div>
@@ -111,83 +114,75 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-// 🖼️ Step 6: Hook up image overlay for file upload
-document.querySelectorAll(".image-edit-overlay").forEach((overlay) => {
-  const fileInput = overlay.querySelector(".hidden-file");
+    // 🖼️ Step 6: Hook up image overlay for file upload
+    document.querySelectorAll(".image-edit-overlay").forEach((overlay) => {
+      const fileInput = overlay.querySelector(".hidden-file");
 
-  // 🟢 Prevent browser default behavior globally
-  ["dragenter", "dragover", "dragleave", "drop"].forEach(evtName => {
-    overlay.addEventListener(evtName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-  });
-
-  // ✅ When overlay is clicked
-  overlay.addEventListener("click", () => fileInput.click());
-
-  // ✅ Highlight overlay when dragging over
-  overlay.addEventListener("dragover", () => {
-    overlay.classList.add("dragover");
-    overlay.style.background = "rgba(66,121,188,0.95)";
-  });
-
-  // ✅ Remove highlight when leaving
-  overlay.addEventListener("dragleave", () => {
-    overlay.classList.remove("dragover");
-    overlay.style.background = "rgba(66,121,188,0.85)";
-  });
-
-  // ✅ Handle actual drop of local file
-  overlay.addEventListener("drop", async (e) => {
-    overlay.classList.remove("dragover");
-    overlay.style.background = "rgba(66,121,188,0.85)";
-
-    // 🟢 Get dropped file safely
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    if (!files || files.length === 0) {
-      console.warn("⚠️ No file detected in drop event");
-      return;
-    }
-
-    const file = files[0];
-    await uploadImage(fileInput.dataset.index, file);
-  });
-
-  // ✅ Fallback: clicking and choosing file
-  fileInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    await uploadImage(fileInput.dataset.index, file);
-  });
-
-  // ✅ Upload + update the image immediately
-  async function uploadImage(index, file) {
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("index", index);
-    try {
-      const res = await fetch("/admin/upload-image", {
-        method: "POST",
-        body: formData,
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((evtName) => {
+        overlay.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        });
       });
-      const result = await res.json();
-      if (result.success) {
-        const img = document.getElementById(`event-image-${index}`);
-        if (img) {
-          img.src = "/" + result.image + "?t=" + Date.now(); // bust cache and update instantly
+
+      overlay.addEventListener("click", () => fileInput.click());
+
+      overlay.addEventListener("dragover", () => {
+        overlay.classList.add("dragover");
+        overlay.style.background = "rgba(66,121,188,0.95)";
+      });
+
+      overlay.addEventListener("dragleave", () => {
+        overlay.classList.remove("dragover");
+        overlay.style.background = "rgba(66,121,188,0.85)";
+      });
+
+      overlay.addEventListener("drop", async (e) => {
+        overlay.classList.remove("dragover");
+        overlay.style.background = "rgba(66,121,188,0.85)";
+
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (!files || files.length === 0) {
+          console.warn("⚠️ No file detected in drop event");
+          return;
         }
-        alert("✅ Image updated successfully!");
-      } else {
-        alert("❌ Upload failed: " + (result.error || "Unknown error"));
+
+        const file = files[0];
+        await uploadImage(fileInput.dataset.index, file);
+      });
+
+      fileInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        await uploadImage(fileInput.dataset.index, file);
+      });
+
+      async function uploadImage(index, file) {
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("index", index);
+        try {
+          const res = await fetch("/admin/upload-image", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await res.json();
+          if (result.success) {
+            const img = document.getElementById(`event-image-${index}`);
+            if (img) {
+              img.src = "/" + result.image + "?t=" + Date.now();
+            }
+            alert("✅ Image updated successfully!");
+          } else {
+            alert("❌ Upload failed: " + (result.error || "Unknown error"));
+          }
+        } catch (err) {
+          console.error("❌ Upload error:", err);
+          alert("❌ Failed to upload image.");
+        }
       }
-    } catch (err) {
-      console.error("❌ Upload error:", err);
-      alert("❌ Failed to upload image.");
-    }
-  }
-});
+    });
 
     // 🔁 Step 7: Unified update function for title/date
     async function updateEvent(index, title, date, image) {
