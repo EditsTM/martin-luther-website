@@ -26,12 +26,16 @@ body {
   justify-content: center;
 }
 
+/* MATCH CHURCH PAGE HERO HEADER */
 .faculty-overlay h1 {
   color: white;
-  font-size: 70px;
+  font-size: 50px;
   font-weight: 800;
+  letter-spacing: 2px;
   margin: 0;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
+
 
 /* MAIN */
 .faculty-main { padding: 80px 0; }

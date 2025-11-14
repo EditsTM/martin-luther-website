@@ -29,13 +29,16 @@ body {
   align-items: center;
 }
 
+/* MATCH CHURCH PAGE HERO TITLE */
 .info-overlay h1 {
   color: white;
-  font-size: 70px;
+  font-size: 50px;
   font-weight: 800;
   letter-spacing: 2px;
   margin: 0;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
+
 
 /* =============================
    MAIN LAYOUT
@@ -924,3 +927,5 @@ h2, h3, h4 {
 .why-icon-circle {
   background: var(--ml-navy);
 }
+
+
