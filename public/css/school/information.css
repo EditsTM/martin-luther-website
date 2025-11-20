@@ -117,6 +117,7 @@ body {
 ============================= */
 .about-section {
   padding: 60px 0 40px;
+  background: #f3f3f3; /* light grey */
 }
 
 .about-grid {
@@ -203,12 +204,13 @@ body {
   color: #e2e6ff;
 }
 
-/* About bottom cards */
 .about-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
+  width: 100%;            /* NEW → ensures full-width stretch */
 }
+
 
 .info-card {
   border-radius: 14px;
@@ -358,19 +360,17 @@ body {
 
 /* ==========================================
    Curriculum icons – FORCE BLACK
-   (Core Curriculum + Special Subjects)
 ========================================== */
 .academic-card .card-list img {
   width: 22px;
   height: 22px;
-  display: inline-block;
-  background: none !important;
-  border-radius: 0 !important;
-  /* 🔥 Force icons to render solid BLACK regardless of source color */
   filter: brightness(0) !important;
+  background: none !important;
 }
 
-/* Grade list */
+/* =============================
+   GRADE LIST — NEW LAYOUT FIX
+============================= */
 .grade-card {
   background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
 }
@@ -381,23 +381,48 @@ body {
   margin: 10px 0 0;
 }
 
+/* ⭐ Each opportunity box */
 .grade-list li {
   background: #ffffff;
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
 
+/* ⭐ Icon on the left */
+.grade-list li img {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: #1e2a57;
+  padding: 8px;
+  border-radius: 12px;
+  filter: brightness(0) invert(1);
+}
+
+/* ⭐ Text container */
+.grade-text-block {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ⭐ Black title at the top */
 .grade-title {
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 2px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 4px;
 }
 
+/* ⭐ Subtitle text */
 .grade-subtitle {
-  font-size: 13px;
-  color: #777;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
 }
 
 /* =============================
@@ -685,8 +710,6 @@ h2, h3, h4 {
 /* =============================
    ICON COLOR LOGIC
 ============================= */
-
-/* White icons on navy backgrounds (feature/info/values/beyond/why) */
 .about-feature-icon img,
 .info-card-icon img,
 .card-icon-circle img,
@@ -702,8 +725,6 @@ h2, h3, h4 {
 .beyond-image-wrapper img {
   filter: none;
 }
-
-/* Header logo lives in header.css – we do NOT touch it here */
 
 /* =============================
    RESPONSIVE
@@ -770,56 +791,46 @@ h2, h3, h4 {
     padding: 12px 14px;
   }
 }
+
 /* =============================
    COLOR UPDATE ONLY
 ============================= */
-
-/* Updated ML navy: rgba(41, 46, 124) */
 :root {
   --ml-navy: rgba(41, 46, 124);
 }
 
-/* INFO HEADING */
 .info-heading {
   color: var(--ml-navy);
 }
 
-/* Section Tag */
 .section-tag {
   background: var(--ml-navy);
 }
 
-/* ABOUT ICON BG */
 .about-feature-icon {
   background: var(--ml-navy);
 }
 
-/* WELS BADGE */
 .about-wels-badge {
   background: var(--ml-navy);
 }
 
-/* INFO CARDS (icon background) */
 .info-card-icon {
   background: var(--ml-navy);
 }
 
-/* STATS */
 .stats-section {
   background: var(--ml-navy);
 }
 
-/* ACADEMIC CARD ICON CIRCLE */
 .card-icon-circle {
   background: var(--ml-navy);
 }
 
-/* MISSION — WELS BOX */
 .mission-wels-box {
   background: var(--ml-navy);
 }
 
-/* VALUES ICONS */
 .value-card {
   border-top: 4px solid var(--ml-navy);
 }
@@ -828,12 +839,10 @@ h2, h3, h4 {
   background: var(--ml-navy);
 }
 
-/* BEYOND SECTION */
 .beyond-section {
-  background: linear-gradient(to bottom right, var(--ml-navy), #1e245f);
+  background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57);
 }
 
-/* WHY CARDS */
 .why-card {
   border-left: 4px solid var(--ml-navy);
 }
@@ -847,85 +856,252 @@ h2, h3, h4 {
   filter: brightness(0) !important;
   background: none !important;
 }
-/* =============================
-   COLOR UPDATE ONLY
-   Replace ALL blue tones with #1e2a57
-============================= */
 
+/* =============================
+   FINAL COLOR UPDATE
+============================= */
 :root {
   --ml-navy: #1e2a57;
 }
 
-/* HERO OVERLAY */
-.info-overlay {
-  background: rgba(30, 42, 87, 0.85); /* stays same because it's an overlay opacity */
-}
-.info-overlay {
-  background: rgba(30, 42, 87, 0.85);
-}
 .info-overlay {
   background: rgba(30, 42, 87, 0.85);
 }
 
-/* HEADINGS */
 .info-heading {
   color: var(--ml-navy);
 }
 
-/* SECTION TAGS */
 .section-tag {
   background: var(--ml-navy);
 }
 
-/* ABOUT FEATURE ICON */
 .about-feature-icon {
   background: var(--ml-navy);
 }
 
-/* WELS BADGE BOX */
 .about-wels-badge {
   background: var(--ml-navy);
 }
 
-/* CARD ICON BG */
 .info-card-icon {
   background: var(--ml-navy);
 }
 
-/* STATS SECTION */
 .stats-section {
   background: var(--ml-navy);
 }
 
-/* ACADEMICS - card icon */
 .card-icon-circle {
   background: var(--ml-navy);
 }
 
-/* MISSION - WELS BOX */
 .mission-wels-box {
   background: var(--ml-navy);
 }
 
-/* MISSION VALUES */
 .value-card {
   border-top: 4px solid var(--ml-navy);
 }
+
 .value-icon {
   background: var(--ml-navy);
 }
 
-/* BEYOND SECTION - gradient updated */
 .beyond-section {
   background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57);
 }
 
-/* WHY CARDS */
 .why-card {
   border-left: 4px solid var(--ml-navy);
 }
+
 .why-icon-circle {
   background: var(--ml-navy);
 }
+/* =============================
+   FIX FOR STUDENT OPPORTUNITIES ICONS
+   (Stops them from disappearing)
+============================= */
+
+.grade-list li img {
+  filter: none !important;
+  background: none !important;
+}
+
+/* =============================
+   TRIANGLE BADGE LAYOUT
+============================= */
+.about-triangle-container {
+  position: relative;
+  width: 100%;
+  max-width: 380px;          /* same feel as original badge */
+  margin: 40px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Base style for all three badges */
+.triangle-badge {
+  position: absolute;
+  width: 210px;
+  text-align: center;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ml-navy);
+  color: white;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+}
+
+/* Top badge */
+.top-badge {
+  top: -20px;
+}
+
+/* Bottom-left */
+.bottom-left {
+  left: -160px;
+  bottom: -140px;
+}
+
+/* Bottom-right */
+.bottom-right {
+  right: -160px;
+  bottom: -140px;
+}
+
+/* Badge Title */
+.triangle-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+/* Badge Text */
+.triangle-badge p {
+  font-size: 14px;
+  margin: 0;
+  color: #e2e6ff;
+}
+
+/* =============================
+   RESPONSIVE FIXES
+============================= */
+@media (max-width: 1100px) {
+  .about-triangle-container {
+    max-width: 300px;
+  }
+
+  .bottom-left,
+  .bottom-right {
+    bottom: -120px;
+  }
+
+  .bottom-left { left: -120px; }
+  .bottom-right { right: -120px; }
+}
+
+@media (max-width: 700px) {
+  .about-triangle-container {
+    display: grid;
+    gap: 16px;
+    position: static;
+    max-width: 100%;
+  }
+
+  .triangle-badge {
+    position: static;
+  }
+}
+
+/* =============================
+   PERFECT TRIANGLE LAYOUT (FIXED)
+============================= */
+
+.triangle-area {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.triangle-wrapper {
+  position: relative;
+  width: 600px;    /* wide enough for perfect spacing */
+  height: 450px;   /* creates natural triangle height */
+  margin: 0 auto;
+}
+
+/* All three boxes: identical */
+.triangle-box {
+  position: absolute;
+  width: 230px;                /* slightly wider for consistent wrapping */
+  min-height: 160px;           /* NEW: identical height for all */
+  padding: 18px 20px;
+  text-align: center;
+  background: var(--ml-navy);
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+  z-index: 2;
+
+  display: flex;               /* NEW → equal height + centered content */
+  flex-direction: column;
+  justify-content: center;     /* vertically center */
+  align-items: center;
+}
 
 
+/* Top center */
+.triangle-top {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Bottom-left */
+.triangle-left {
+  bottom: 0;
+  left: 0;
+}
+
+/* Bottom-right */
+.triangle-right {
+  bottom: 0;
+  right: 0;
+}
+
+.triangle-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+/* connecting lines */
+.triangle-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.triangle-lines line {
+  stroke: var(--ml-navy);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+/* Responsive stacking */
+@media (max-width: 700px) {
+  .triangle-wrapper {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+    height: auto;
+  }
+  .triangle-box { position: static; }
+  .triangle-lines { display: none; }
+}
+/* Make Field Trips & Experiences globe icon black */
+.grade-list li img[src*="world.svg"] {
+  filter: brightness(0) !important;
+  background: none !important;
+}
