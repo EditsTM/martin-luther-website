@@ -2,13 +2,20 @@
   "principal": {
     "name": "Name",
     "subject": "Principal",
-    "image": "images/faculty/PlaceHolder.jpg"
+    "image": "/images/PlaceHolder.jpg"
   },
-  "admins": [],
+  "admin": [],
   "teachers": [
     {
       "name": "Name",
       "subject": "Subject",
+      "image": "/images/faculty/PlaceHolder.jpg"
+    }
+  ],
+  "staff": [
+    {
+      "name": "Name",
+      "subject": "Staff",
       "image": "/images/faculty/PlaceHolder.jpg"
     }
   ]

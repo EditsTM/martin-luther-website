@@ -231,6 +231,7 @@ router.post("/upload-image", upload.single("image"), (req, res) => {
     res.status(500).json({ error: "Failed to upload image" });
   }
 });
+
 /* ------------------------------------------------------
    📥 Serve events.json for homepage
 ------------------------------------------------------ */
@@ -266,10 +267,14 @@ function readFacultyFile() {
         image: "/images/PlaceHolder.jpg",
       },
 
-      // ⭐ ADDED
+      // ⭐ ADMIN
       admin: [],
 
+      // ⭐ FACULTY (TEACHERS)
       teachers: [],
+
+      // ⭐ STAFF (NEW)
+      staff: [],
     };
     fs.writeFileSync(facultyFilePath, JSON.stringify(defaultData, null, 2));
     return defaultData;
@@ -324,7 +329,7 @@ router.post("/faculty/add", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   ⭐ ADD ADMIN MEMBER (NEW)
+   ⭐ ADD ADMIN MEMBER
 ------------------------------------------------------ */
 router.post("/faculty/add-admin", (req, res) => {
   if (!req.session.loggedIn)
@@ -354,7 +359,37 @@ router.post("/faculty/add-admin", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   ✏️ Update Teacher / Principal
+   ⭐ ADD STAFF MEMBER (NEW)
+------------------------------------------------------ */
+router.post("/faculty/add-staff", (req, res) => {
+  if (!req.session.loggedIn)
+    return res.status(403).json({ error: "Unauthorized" });
+
+  try {
+    const data = readFacultyFile();
+
+    const newStaff = {
+      name: "Name",
+      subject: "Staff",
+      image: "/images/faculty/PlaceHolder.jpg",
+    };
+
+    if (!data.staff) data.staff = [];
+    data.staff.push(newStaff);
+    writeFacultyFile(data);
+
+    res.json({
+      success: true,
+      index: data.staff.length - 1,
+      staff: newStaff,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add staff" });
+  }
+});
+
+/* ------------------------------------------------------
+   ✏️ Update Teacher / Principal / Staff
 ------------------------------------------------------ */
 router.post("/faculty/update", (req, res) => {
   if (!req.session.loggedIn)
@@ -365,6 +400,7 @@ router.post("/faculty/update", (req, res) => {
   try {
     const data = readFacultyFile();
 
+    // PRINCIPAL
     if (role === "principal") {
       if (name) data.principal.name = name;
       if (subject) data.principal.subject = subject;
@@ -374,6 +410,7 @@ router.post("/faculty/update", (req, res) => {
       return res.json({ success: true, principal: data.principal });
     }
 
+    // TEACHER
     if (role === "teacher") {
       const i = Number(index);
       if (!data.teachers[i])
@@ -391,6 +428,24 @@ router.post("/faculty/update", (req, res) => {
       });
     }
 
+    // STAFF (NEW)
+    if (role === "staff") {
+      const i = Number(index);
+      if (!data.staff || !data.staff[i])
+        return res.status(404).json({ error: "Staff not found" });
+
+      if (name) data.staff[i].name = name;
+      if (subject) data.staff[i].subject = subject;
+      if (image) data.staff[i].image = image;
+
+      writeFacultyFile(data);
+      return res.json({
+        success: true,
+        staff: data.staff[i],
+        index: i,
+      });
+    }
+
     res.status(400).json({ error: "Invalid role" });
   } catch (err) {
     res.status(500).json({ error: "Failed to update faculty" });
@@ -398,7 +453,7 @@ router.post("/faculty/update", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   ⭐ UPDATE ADMIN MEMBER (NEW)
+   ⭐ UPDATE ADMIN MEMBER
 ------------------------------------------------------ */
 router.post("/faculty/update-admin", (req, res) => {
   if (!req.session.loggedIn)
@@ -424,7 +479,7 @@ router.post("/faculty/update-admin", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   ❌ DELETE TEACHER (already exists)
+   ❌ DELETE TEACHER
 ------------------------------------------------------ */
 router.post("/faculty/delete", (req, res) => {
   if (!req.session.loggedIn)
@@ -447,7 +502,7 @@ router.post("/faculty/delete", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   ⭐ DELETE ADMIN MEMBER (NEW)
+   ⭐ DELETE ADMIN MEMBER
 ------------------------------------------------------ */
 router.post("/faculty/delete-admin", (req, res) => {
   if (!req.session.loggedIn)
@@ -470,6 +525,29 @@ router.post("/faculty/delete-admin", (req, res) => {
 });
 
 /* ------------------------------------------------------
+   ⭐ DELETE STAFF MEMBER (NEW)
+------------------------------------------------------ */
+router.post("/faculty/delete-staff", (req, res) => {
+  if (!req.session.loggedIn)
+    return res.status(403).json({ error: "Unauthorized" });
+
+  const { index } = req.body;
+
+  try {
+    const data = readFacultyFile();
+    if (!data.staff || !data.staff[index])
+      return res.status(404).json({ error: "Staff not found" });
+
+    data.staff.splice(index, 1);
+    writeFacultyFile(data);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete staff" });
+  }
+});
+
+/* ------------------------------------------------------
    📸 Faculty image upload
 ------------------------------------------------------ */
 const facultyUploadDir = path.resolve(process.cwd(), "public/images/faculty");
@@ -487,50 +565,63 @@ const facultyStorage = multer.diskStorage({
 });
 const uploadFaculty = multer({ storage: facultyStorage });
 
-router.post("/faculty/upload-image", uploadFaculty.single("image"), (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
+router.post(
+  "/faculty/upload-image",
+  uploadFaculty.single("image"),
+  (req, res) => {
+    if (!req.session.loggedIn)
+      return res.status(403).json({ error: "Unauthorized" });
 
-  const { role, index } = req.body;
+    const { role, index } = req.body;
 
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
-  try {
-    const data = readFacultyFile();
-    const rel = `images/faculty/${req.file.filename}`;
+    try {
+      const data = readFacultyFile();
+      const rel = `images/faculty/${req.file.filename}`;
 
-    if (role === "principal") {
-      data.principal.image = rel;
-      writeFacultyFile(data);
-      return res.json({ success: true, image: rel });
+      if (role === "principal") {
+        data.principal.image = rel;
+        writeFacultyFile(data);
+        return res.json({ success: true, image: rel });
+      }
+
+      if (role === "teacher") {
+        const i = Number(index);
+        if (!data.teachers[i])
+          return res.status(404).json({ error: "Teacher not found" });
+
+        data.teachers[i].image = rel;
+        writeFacultyFile(data);
+        return res.json({ success: true, image: rel });
+      }
+
+      if (role === "admin") {
+        const i = Number(index);
+        if (!data.admin || !data.admin[i])
+          return res.status(404).json({ error: "Admin not found" });
+
+        data.admin[i].image = rel;
+        writeFacultyFile(data);
+        return res.json({ success: true, image: rel });
+      }
+
+      if (role === "staff") {
+        const i = Number(index);
+        if (!data.staff || !data.staff[i])
+          return res.status(404).json({ error: "Staff not found" });
+
+        data.staff[i].image = rel;
+        writeFacultyFile(data);
+        return res.json({ success: true, image: rel });
+      }
+
+      res.status(400).json({ error: "Invalid role" });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to upload faculty image" });
     }
-
-    if (role === "teacher") {
-      const i = Number(index);
-      if (!data.teachers[i])
-        return res.status(404).json({ error: "Teacher not found" });
-
-      data.teachers[i].image = rel;
-      writeFacultyFile(data);
-      return res.json({ success: true, image: rel });
-    }
-
-    // ⭐ ADDED — admin image upload
-    if (role === "admin") {
-      const i = Number(index);
-      if (!data.admin[i])
-        return res.status(404).json({ error: "Admin not found" });
-
-      data.admin[i].image = rel;
-      writeFacultyFile(data);
-      return res.json({ success: true, image: rel });
-    }
-
-    res.status(400).json({ error: "Invalid role" });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to upload faculty image" });
   }
-});
+);
 
 /* ------------------------------------------------------
    EXPORT ROUTER

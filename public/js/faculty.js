@@ -20,12 +20,12 @@ async function loadFacultyData() {
     if (!res.ok) throw new Error("Failed to fetch faculty.json");
     const data = await res.json();
 
-// 🔥 FIX #1 — FORCE correct admin array (backend uses "admin", frontend uses "admins")
-data.admin = Array.isArray(data.admin) ? data.admin : [];
-data.admins = data.admin; 
-
+    // 🔥 FIX #1 — FORCE correct admin array (backend uses "admin", frontend uses "admins")
+    data.admin = Array.isArray(data.admin) ? data.admin : [];
+    data.admins = data.admin;
 
     if (!data.teachers) data.teachers = [];
+    if (!data.staff) data.staff = []; // ⭐ NEW — ensure staff array exists
 
     return data;
   } catch (e) {
@@ -37,7 +37,8 @@ data.admins = data.admin;
         image: "/images/faculty/PlaceHolder.jpg"
       },
       admins: [],
-      teachers: []
+      teachers: [],
+      staff: [] // ⭐ NEW — fallback staff array
     };
   }
 }
@@ -102,7 +103,11 @@ function setupEditModal() {
     let payload = { role, name, subject };
 
     if (role === "principal") {
+      // principal uses /faculty/update with no index
     } else if (role === "teacher") {
+      payload.index = index;
+    } else if (role === "staff") {
+      // ⭐ STAFF behaves like teacher for update
       payload.index = index;
     } else if (role === "admin") {
       url = "/admin/faculty/update-admin";
@@ -149,6 +154,9 @@ function setupEditModal() {
       url = "/admin/faculty/delete";
     } else if (role === "admin") {
       url = "/admin/faculty/delete-admin";
+    } else if (role === "staff") {
+      // ⭐ NEW — delete staff
+      url = "/admin/faculty/delete-staff";
     } else {
       return;
     }
@@ -168,6 +176,7 @@ function setupEditModal() {
 
       cardElement.remove();
 
+      // Re-index remaining cards for this role
       document
         .querySelectorAll(`.faculty-card[data-role="${role}"]`)
         .forEach((c, newIndex) => {
@@ -275,7 +284,8 @@ function createFacultyCard(person, options) {
   const subjEl = document.createElement("h4");
   subjEl.className = "faculty-subject";
   subjEl.textContent =
-    person.subject || (role === "principal" ? "Principal" : "Subject");
+  person.subject || (role === "principal" ? "Principal" : "Subject");
+
 
   card.appendChild(imgWrapper);
   card.appendChild(nameEl);
@@ -316,8 +326,10 @@ async function initFacultyPage() {
   );
   const adminGrid = document.getElementById("admin-grid");
   const facultyGrid = document.getElementById("faculty-grid");
+  const staffGrid = document.getElementById("staff-grid"); // ⭐ NEW
   const addAdminBtn = document.getElementById("add-admin-btn");
   const addTeacherBtn = document.getElementById("add-teacher-btn");
+  const addStaffBtn = document.getElementById("add-staff-btn"); // ⭐ NEW
 
   setupEditModal();
 
@@ -342,6 +354,16 @@ async function initFacultyPage() {
       createFacultyCard(t, { role: "teacher", index: idx, isAdmin })
     );
   });
+
+  // STAFF (NEW)
+  if (staffGrid) {
+    staffGrid.innerHTML = "";
+    (data.staff || []).forEach((s, idx) => {
+      staffGrid.appendChild(
+        createFacultyCard(s, { role: "staff", index: idx, isAdmin })
+      );
+    });
+  }
 
   // ADD ADMIN
   if (isAdmin && addAdminBtn) {
@@ -393,6 +415,33 @@ async function initFacultyPage() {
       } catch (err) {
         console.error("Add teacher error:", err);
         alert("Error adding teacher.");
+      }
+    });
+  }
+
+  // ADD STAFF (NEW)
+  if (isAdmin && addStaffBtn) {
+    addStaffBtn.style.display = "inline-block";
+    addStaffBtn.addEventListener("click", async () => {
+      try {
+        const res = await fetch("/admin/faculty/add-staff", {
+          method: "POST"
+        });
+        const out = await res.json();
+        if (!out.success) return alert("Failed to add staff.");
+
+        const newCard = createFacultyCard(out.staff, {
+          role: "staff",
+          index: out.index,
+          isAdmin: true,
+        });
+        if (staffGrid) {
+          staffGrid.appendChild(newCard);
+          newCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      } catch (err) {
+        console.error("Add staff error:", err);
+        alert("Error adding staff.");
       }
     });
   }
