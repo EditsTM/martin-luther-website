@@ -92,30 +92,37 @@
 }
 
 /* =============================
-   PRAYER REQUEST BUTTON
+   PRAYER REQUEST / CONNECT BUTTON
+   Longer (wider), not taller
 ============================= */
 .footer .btn {
-  display: block;
-  margin: 25px auto 0 auto;
-  background: linear-gradient(135deg, #8b0000, #b22222);
-  color: white;
-  padding: 12px 80px;
-  text-decoration: none;
-  font-weight: 700;
+  position: relative;              /* for shine effect */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 👉 Wider left-to-right, shorter top-to-bottom */
+  min-width: 260px;
+  padding: 6px 0;                  /* small vertical padding = not tall */
+
+  background: #1e2a57 !important;
+  color: white !important;
   border-radius: 6px;
-  font-size: 20px;
-  letter-spacing: 1px;
-  width: 100%;
-  max-width: 500px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 600;
+  border: 2px solid #1e2a57 !important;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  overflow: hidden;                /* keep shine inside */
   text-align: center;
 }
 
 .footer .btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  background: white !important;
+  color: #1e2a57 !important;
+  border-color: #1e2a57 !important;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
 }
 
 /* Shine effect */
@@ -132,10 +139,6 @@
     rgba(255, 255, 255, 0) 100%
   );
   transform: skewX(-20deg);
-}
-
-.footer .btn:hover::after {
-  animation: shine 0.8s forwards;
 }
 
 @keyframes shine {
@@ -210,8 +213,9 @@
   }
 
   .footer .btn {
-    font-size: 18px;
-    padding: 12px 50px;
+    font-size: 16px;
+    min-width: 240px;     /* still nice and wide */
+    padding: 6px 0;       /* keep it short */
   }
 }
 
@@ -242,8 +246,15 @@
   }
 
   .footer .btn {
-    font-size: 16px;
-    padding: 10px 40px;
+    font-size: 15px;
+    min-width: 220px;     /* still wider than default */
+    padding: 6px 0;       /* not tall */
     max-width: 280px;
   }
+}
+/* FORCE footer button to be wider */
+footer .footer-text-group .btn {
+  width: 500px !important;
+  padding: 10px 0 !important;  /* keeps it same height, not taller */
+  display: inline-block !important;
 }

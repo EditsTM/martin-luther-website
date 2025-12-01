@@ -534,3 +534,34 @@ body {
   font-weight: 700;
 }
 
+/* FULL-WIDTH CENTERED GOOD-ITEM */
+.full-width-center {
+  grid-column: 1 / -1;        /* span across both columns */
+  justify-content: center;    /* center horizontally */
+  text-align: center;
+}
+
+.full-width-center .good-icon {
+  margin: 0 auto;             /* center the icon */
+}
+
+.full-width-center div {
+  text-align: center;         /* make text centered */
+}
+/* Hearing Assistance — centered full-width row */
+.good-item-hearing {
+  grid-column: 1 / -1;     /* span both columns */
+  display: flex;           /* same layout as other items */
+  justify-content: center; /* centers left-to-right */
+  align-items: flex-start; /* aligns icon + header top like others */
+  gap: 18px;               /* consistent spacing */
+  text-align: left;        /* keeps text to the right of icon */
+  margin-top: 20px;
+}
+
+.good-item-hearing .good-icon {
+  margin-top: 4px;         /* matches other icons */
+}
+
+
+
