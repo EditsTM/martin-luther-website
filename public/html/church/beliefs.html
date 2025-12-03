@@ -21,15 +21,50 @@
   <div id="header"></div>
 
   <!-- HERO -->
-<section class="beliefs-hero">
-  <div class="beliefs-overlay">
-    <h1>What We Believe</h1>
-  </div>
-</section>
-
+  <section class="beliefs-hero">
+    <div class="beliefs-overlay">
+      <h1>What We Believe</h1>
+    </div>
+  </section>
 
   <!-- MAIN -->
   <main class="beliefs-content">
+    <!-- ============================================
+         CONFESSION TABS SECTION (NOW AT THE TOP)
+         Only Salvation + 3 boxes
+    =============================================== -->
+    <section class="confession-tabs">
+      <div class="tabs">
+        <div class="tab-buttons">
+          <!-- 🔹 Only Salvation tab now -->
+          <button class="tab-btn active" data-tab="salvation">Salvation</button>
+        </div>
+
+        <div class="tab-content-wrapper">
+          <!-- 🔹 Only Salvation content (3 cards) -->
+          <div id="salvation" class="tab-content active">
+            <div class="confession-card">
+              <h3>The Problem</h3>
+              <p>God made everything perfect. But through human disobedience came sin and death. Because of sin, our relationship with God was broken, and we are powerless to repair it on our own.</p>
+            </div>
+
+            <div class="confession-card">
+              <h3>The Solution</h3>
+              <p>Out of love, God sent His Son Jesus to live the perfect life we never could, to suffer and die in our place, and to rise again in victory over sin and death. His resurrection is the guarantee of our forgiveness and eternal life.</p>
+            </div>
+
+            <div class="confession-card">
+              <h3>The Good News</h3>
+              <p>God loves you deeply. Through Jesus, He offers full forgiveness and eternal life as a free gift. Nothing is required—nothing but faith that trusts in Christ’s finished work. This is the gospel. This is good news. Believe it!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================
+         OUR BELIEFS CAROUSEL (BELOW)
+    ============================== -->
     <section class="beliefs-carousel">
       <h3 class="beliefs-carousel__title">Our Beliefs</h3>
 
@@ -111,84 +146,6 @@
         <button id="expandToggle" class="expand-toggle">Expand All</button>
       </div>
     </section>
-
-    <!-- ============================================
-         CONFESSION TABS SECTION (Below Beliefs)
-    =============================================== -->
-    <section class="confession-tabs">
-      <div class="tabs">
-        <div class="tab-buttons">
-          <button class="tab-btn active" data-tab="scripture">Scripture</button>
-          <button class="tab-btn" data-tab="salvation">Salvation</button>
-          <button class="tab-btn" data-tab="faith">Faith & Church</button>
-        </div>
-
-        <div class="tab-content-wrapper">
-          <!-- Scripture -->
-          <div id="scripture" class="tab-content active">
-            <div class="confession-card">
-              <h3>The Word of God</h3>
-              <p>We believe the Holy Scriptures are the inspired and inerrant Word of God. They are His perfect revelation and the only foundation for faith and life.</p>
-              <ul>
-                <li>God speaks through Scripture—His law convicts, His gospel comforts.</li>
-                <li>The Bible alone tells us who God is, what He has done, and how we are saved.</li>
-                <li>All teaching in the Church must agree with this Word of truth.</li>
-              </ul>
-            </div>
-
-            <div class="confession-card">
-              <h3>The Triune God</h3>
-              <p>There is one eternal God—Father, Son, and Holy Spirit—three persons, yet one divine being, equal in power, glory, and majesty.</p>
-              <ul>
-                <li>The Father is our Creator and sustainer of all things.</li>
-                <li>The Son, Jesus Christ, is true God and true man, our Redeemer.</li>
-                <li>The Holy Spirit creates and strengthens saving faith through the Word and Sacraments.</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Salvation -->
-          <div id="salvation" class="tab-content">
-            <div class="confession-card">
-              <h3>The Problem</h3>
-              <p>God made everything perfect. But through human disobedience came sin and death. Because of sin, our relationship with God was broken, and we are powerless to repair it on our own.</p>
-            </div>
-
-            <div class="confession-card">
-              <h3>The Solution</h3>
-              <p>Out of love, God sent His Son Jesus to live the perfect life we never could, to suffer and die in our place, and to rise again in victory over sin and death. His resurrection is the guarantee of our forgiveness and eternal life.</p>
-            </div>
-
-            <div class="confession-card">
-              <h3>The Good News</h3>
-              <p>God loves you deeply. Through Jesus, He offers full forgiveness and eternal life as a free gift. Nothing is required—nothing but faith that trusts in Christ’s finished work. This is the gospel. This is good news. Believe it!</p>
-            </div>
-          </div>
-
-          <!-- Faith & Church -->
-          <div id="faith" class="tab-content">
-            <div class="confession-card">
-              <h3>Faith Alone</h3>
-              <p>We are justified by grace through faith alone—not by works. Faith is not our doing but the gift of God, created by the Holy Spirit through the Word.</p>
-              <ul>
-                <li>Faith receives the righteousness of Christ as our own.</li>
-                <li>Good works flow naturally from faith as fruits of gratitude.</li>
-              </ul>
-            </div>
-
-            <div class="confession-card">
-              <h3>The Church</h3>
-              <p>The Church is all believers in Christ throughout the world, gathered around the Word and Sacraments. It exists to proclaim the gospel and to serve in love.</p>
-              <ul>
-                <li>We gather to worship, learn, and encourage one another.</li>
-                <li>Through Baptism and the Lord’s Supper, God assures us of His grace.</li>
-                <li>The Church’s mission is to make disciples of all nations.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- ✅ Footer -->
@@ -254,7 +211,7 @@
       });
     })();
 
-    // ✅ Tab switching logic for Confession section
+    // ✅ Tab switching logic (still safe with 1 tab)
     document.querySelectorAll('.tab-btn').forEach(button => {
       button.addEventListener('click', () => {
         const tab = button.getAttribute('data-tab');

@@ -1,7 +1,7 @@
 /* ==================== BASE FONT CONSISTENCY ==================== */
 :root {
-  --blue: #282f7f;
-  --light-blue: #4279bc;
+  --blue: rgb(30, 42, 87);
+  --light-blue: rgb(30, 42, 87);
   --grey: #eaf0fa;
   --orange: #ff9f45;
   --orange-hover: #ffb366;
@@ -21,7 +21,7 @@ body, input, select, textarea, button {
 
 /* ==================== CONTACT SECTION BACKGROUND ==================== */
 .contact-section {
-  background: rgba(66, 121, 188, 0.85);
+  background: rgb(30, 42, 87);
   min-height: auto;
   padding: 0; /* touches header */
   display: flex;
@@ -68,7 +68,7 @@ body, input, select, textarea, button {
 /* ==================== HEADERS ==================== */
 .contact-info h2,
 .contact-form h2 {
-  background: #282f7f;
+  background: rgb(30, 42, 87);
   color: white;
   margin: 0;
   padding: 18px;
@@ -108,7 +108,7 @@ body, input, select, textarea, button {
 .info-item h3 {
   font-size: 22px;
   margin: 8px 0;
-  color: #282f7f;
+  color: rgb(30, 42, 87);
   font-weight: 700;
 }
 
@@ -150,7 +150,7 @@ body, input, select, textarea, button {
   background: white;
   color: #2c3e50;
   appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23282f7f' height='24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%231e2a57' height='24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 20px;
@@ -159,7 +159,7 @@ body, input, select, textarea, button {
 
 .form-row select:focus {
   outline: none;
-  border-color: #282f7f;
+  border-color: rgb(30, 42, 87);
 }
 
 /* RESPONSIVE INPUT LAYOUT */
@@ -195,37 +195,66 @@ textarea {
   box-sizing: border-box;
 }
 
-/* ==================== SUBMIT BUTTON (Now Matches Orange Steps Button) ==================== */
+/* ==================== SUBMIT BUTTON (EXACTLY LIKE FOOTER CONNECT BUTTON) ==================== */
 .contact-form .btn {
-  background: var(--orange);
-  color: #fff;
-  padding: 16px 36px;
-  border: none;
+  position: relative;              /* for shine effect */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* match footer width/height behavior */
+  width: 500px;
+  padding: 10px 0;
+
+  background: #1e2a57 !important;
+  color: white !important;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
+  border: 2px solid #1e2a57 !important;
+  text-decoration: none;
   transition: all 0.3s ease;
-  width: 100%;
+  font-size: 16px;
+  overflow: hidden;                /* keep shine inside */
+  text-align: center;
+
   margin-top: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-left: auto;
+  margin-right: auto;              /* centers the button in the form */
 }
 
 .contact-form .btn:hover {
-  background: var(--orange-hover);
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(255, 159, 69, 0.5);
+  background: white !important;
+  color: #1e2a57 !important;
+  border-color: #1e2a57 !important;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
 }
 
-/* ==================== INFO ICONS ==================== */
+/* Shine effect (same as footer) */
+.contact-form .btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+}
+
+/* ==================== INFO ICONS (BACK TO ORIGINAL LOOK) ==================== */
 .info-item .info-icon {
-  width: 40px;
-  height: 40px;
+  width: 40px !important;
+  height: 40px !important;
   margin-bottom: 8px;
   object-fit: contain;
   display: block;
-  filter: brightness(0) saturate(100%) invert(14%) sepia(44%)
-          saturate(2000%) hue-rotate(210deg) brightness(92%) contrast(90%);
+  /* no color filter so they use their original colors */
+  filter: none !important;
 }
 
 /* ==================== RATE LIMIT MESSAGE ==================== */
@@ -242,7 +271,7 @@ textarea {
   width: 36px;
   height: 36px;
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-top: 4px solid #282f7f;
+  border-top: 4px solid rgb(30, 42, 87);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
