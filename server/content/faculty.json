@@ -1,10 +1,21 @@
 {
   "principal": {
-    "name": "Name",
+    "name": "Steve Hennig",
     "subject": "Principal",
-    "image": "/images/Placeholder.jpg"
+    "image": "/images/faculty/Steve.jpg"
   },
-  "admin": [],
+  "admin": [
+    {
+      "name": "Tom Voss",
+      "subject": "Pastor",
+      "image": "/images/faculty/Tom.jpg"
+    },
+     {
+      "name": "Tom Voss",
+      "subject": "Pastor",
+      "image": "/images/faculty/Tom.jpg"
+    }
+  ],
   "teachers": [
     {
       "name": "Name",
@@ -13,6 +24,11 @@
     }
   ],
   "staff": [
+    {
+      "name": "Josh Arndt",
+      "subject": "Athletic Director",
+      "image": "/images/faculty/Josh.jpg"
+    },
     {
       "name": "Name",
       "subject": "Staff",

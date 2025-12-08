@@ -55,17 +55,6 @@ body {
   margin: 0 0 25px;
 }
 
-/* PRINCIPAL ROW */
-.principal-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-/* Make principal card same box size as others */
-.principal-container .faculty-card {
-  max-width: 360px;
-}
 
 /* ==================================================
    GRID — MAX 3 PER ROW + LARGER CARDS
@@ -94,7 +83,7 @@ body {
   border-radius: 16px;
   padding: 24px;
   width: 100%;
-  height: 380px;                  /* ✅ FIXED BOX SIZE */
+  height: 420px;                  /* ✅ FIXED BOX SIZE */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -109,13 +98,24 @@ body {
   box-shadow: 0 16px 35px rgba(0,0,0,0.12);
 }
 
-/* IMAGE */
+.faculty-image-wrapper {
+  height: 360px;                /* 🔼 more of the card height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  overflow: hidden;             /* just in case */
+}
+
+/* Image fills as much as possible but shows the FULL picture */
 .faculty-image-wrapper img {
-  width: 100%;
-  height: 230px;   /* taller inside same box */
-  object-fit: cover;
+  width: 100%;      /* 🔥 Forces full width */
+  height: 100%;     /* Fits the wrapper height */
+  object-fit: cover; /* 🔥 Fills width completely */
   border-radius: 12px;
 }
+
+
 
 /* Force uniform text area */
 .faculty-name,

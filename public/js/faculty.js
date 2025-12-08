@@ -34,11 +34,11 @@ async function loadFacultyData() {
       principal: {
         name: "Name",
         subject: "Principal",
-        image: "/images/faculty/PlaceHolder.jpg"
+        image: "/images/faculty/PlaceHolder.jpg",
       },
       admins: [],
       teachers: [],
-      staff: [] // ⭐ NEW — fallback staff array
+      staff: [], // ⭐ NEW — fallback staff array
     };
   }
 }
@@ -284,8 +284,7 @@ function createFacultyCard(person, options) {
   const subjEl = document.createElement("h4");
   subjEl.className = "faculty-subject";
   subjEl.textContent =
-  person.subject || (role === "principal" ? "Principal" : "Subject");
-
+    person.subject || (role === "principal" ? "Principal" : "Subject");
 
   card.appendChild(imgWrapper);
   card.appendChild(nameEl);
@@ -321,9 +320,6 @@ async function initFacultyPage() {
 
   const data = await loadFacultyData();
 
-  const principalContainer = document.getElementById(
-    "principal-card-container"
-  );
   const adminGrid = document.getElementById("admin-grid");
   const facultyGrid = document.getElementById("faculty-grid");
   const staffGrid = document.getElementById("staff-grid"); // ⭐ NEW
@@ -333,21 +329,22 @@ async function initFacultyPage() {
 
   setupEditModal();
 
-  // PRINCIPAL
-  principalContainer.innerHTML = "";
-  principalContainer.appendChild(
+  // ✅ ADMINISTRATION: principal + admins in SAME GRID
+  adminGrid.innerHTML = "";
+
+  // 1) Principal first
+  adminGrid.appendChild(
     createFacultyCard(data.principal, { role: "principal", isAdmin })
   );
 
-  // ADMINS
-  adminGrid.innerHTML = "";
+  // 2) Then admins
   data.admins.forEach((a, idx) => {
     adminGrid.appendChild(
       createFacultyCard(a, { role: "admin", index: idx, isAdmin })
     );
   });
 
-  // TEACHERS
+  // ✅ FACULTY
   facultyGrid.innerHTML = "";
   data.teachers.forEach((t, idx) => {
     facultyGrid.appendChild(
@@ -355,7 +352,7 @@ async function initFacultyPage() {
     );
   });
 
-  // STAFF (NEW)
+  // ✅ STAFF (NEW)
   if (staffGrid) {
     staffGrid.innerHTML = "";
     (data.staff || []).forEach((s, idx) => {
@@ -425,7 +422,7 @@ async function initFacultyPage() {
     addStaffBtn.addEventListener("click", async () => {
       try {
         const res = await fetch("/admin/faculty/add-staff", {
-          method: "POST"
+          method: "POST",
         });
         const out = await res.json();
         if (!out.success) return alert("Failed to add staff.");
