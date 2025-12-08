@@ -1,0 +1,20 @@
+{
+  "team": [
+    {
+      "name": "Tom Voss",
+      "subject": "Pastor",
+      "image": "/images/Placeholder.jpg",
+      "bio": [
+        "Pastor Tom Voss arrived at Martin Luther in the fall of 2020. Tom was born in Milwaukee, WI, then born again into God’s family by Baptism on February 27, 1984. After spending the early years of his childhood at Mt. Olive in Lincoln, NE, his family moved to Christ Our Redeemer in Aurora, CO, being confirmed there on May 3, 1998. His pastoral training began in high school at Luther Prep School in Watertown, WI. He graduated from Martin Luther College in 2006. Tom served as a vicar (pastoral intern) in Ottawa, Ontario in 2008–09, before graduating from Wisconsin Lutheran Seminary with a Master of Divinity in May of 2010.",
+        "Tom was assigned to serve at Holy Trinity Lutheran Church and School in the Seattle, WA area, and was ordained and installed as pastor in July of 2010. In August of 2020, Pastor accepted the call to serve at Martin Luther. In his ministry, he enjoys meeting new people, looking for every opportunity to connect people to the Word of God, and challenging God’s people to consider the true mission of the Church and how they might carry out their discipleship.",
+        "Tom and his wife Kendalyn have four young children: Josefine, Levi, Leora, and Violet. Kendalyn did her undergraduate work at UW–Madison, running track as a Badger, and obtained her Master’s in Speech–Language Pathology. She currently works in that field, doing in-home health and enjoys helping adults recover. Tom loves to golf, Kendalyn enjoys running, and the family looks for every opportunity to explore new adventures. They are excited to live and serve in Oshkosh."
+      ]
+    },
+    {
+      "name": "John Steinbrenner",
+      "subject": "Pastor",
+      "image": "/images/Placeholder.jpg",
+      "bio": []
+    }
+  ]
+}

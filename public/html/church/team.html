@@ -8,7 +8,10 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet"
+  >
 
   <!-- CSS -->
   <link rel="stylesheet" href="../../css/header.css">
@@ -27,56 +30,81 @@
     </div>
   </section>
 
-  <!-- TEAM SECTION -->
-  <section class="team-section">
-    <div class="team-grid">
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- TEAM SECTION -->
+    <section class="team-section">
+      <div class="team-inner">
+        <!-- Centered Add Button for Admin -->
+        <div class="add-btn-wrapper">
+          <button id="add-team-btn" class="add-teacher-btn admin-only">+</button>
+        </div>
 
-      <!-- Person 1 -->
-      <div class="team-member">
-            <img src="/images/Placeholder.jpg" alt="Tom Voss">
-        <h3>Tom Voss</h3>
-        <h4>Pastor</h4>
-        <div class="bio-text">
-          <p>
-            Pastor Tom Voss arrived at Martin Luther in the fall of 2020. Tom was born in Milwaukee, WI, 
-            then born again into God’s family by Baptism on February 27, 1984. After spending the early years 
-            of his childhood at Mt. Olive in Lincoln, NE, his family moved to Christ Our Redeemer in Aurora, CO, 
-            being confirmed there on May 3, 1998. His pastoral training began in high school at Luther Prep School 
-            in Watertown, WI. He graduated from Martin Luther College in 2006. Tom served as a vicar (pastoral intern) 
-            in Ottawa, Ontario in 2008–09, before graduating from Wisconsin Lutheran Seminary with a Master of Divinity 
-            in May of 2010.
-          </p>
-          <p>
-            Tom was assigned to serve at Holy Trinity Lutheran Church and School in the Seattle, WA area, and was 
-            ordained and installed as pastor in July of 2010. In August of 2020, Pastor accepted the call to serve 
-            at Martin Luther. In his ministry, he enjoys meeting new people, looking for every opportunity to connect 
-            people to the Word of God, and challenging God’s people to consider the true mission of the Church and how 
-            they might carry out their discipleship.
-          </p>
-          <p>
-            Tom and his wife Kendalyn have four young children: Josefine, Levi, Leora, and Violet. Kendalyn did her 
-            undergraduate work at UW–Madison, running track as a Badger, and obtained her Master’s in Speech–Language 
-            Pathology. She currently works in that field, doing in-home health and enjoys helping adults recover. Tom 
-            loves to golf, Kendalyn enjoys running, and the family looks for every opportunity to explore new adventures. 
-            They are excited to live and serve in Oshkosh.
-          </p>
+        <!-- Team cards -->
+        <div class="team-grid" id="teamGrid">
+          <!-- JS injects cards -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ✳️ TEAM EDIT MODAL (same style as faculty, with extra Bio box) -->
+  <div id="team-edit-modal" class="team-modal">
+    <div class="team-modal-content">
+      <button id="team-modal-close-btn" class="modal-close-btn">&times;</button>
+      <h2 class="modal-title">Edit Team Member</h2>
+
+      <div class="modal-body">
+        <!-- Image side -->
+        <div class="modal-image-section">
+          <img
+            id="team-modal-photo-preview"
+            src="/images/Placeholder.jpg"
+            alt="Team member photo preview"
+          />
+          <label class="upload-label modal-upload-label">
+            Change Photo
+            <input type="file" id="team-modal-photo-input" accept="image/*" />
+          </label>
+        </div>
+
+        <!-- Form side -->
+        <div class="modal-form-section">
+          <label class="modal-label">
+            Name
+            <input type="text" id="team-modal-name" />
+          </label>
+
+          <label class="modal-label">
+            Role / Title
+            <input type="text" id="team-modal-subject" />
+          </label>
+
+          <!-- ✅ Extra box for Bio -->
+          <label class="modal-label">
+            Bio (use blank lines for new paragraphs)
+            <textarea
+              id="team-modal-bio"
+              rows="6"
+              style="
+                width: 100%;
+                margin-top: 6px;
+                padding: 8px 10px;
+                border-radius: 6px;
+                border: 1px solid #ccd3e4;
+                font-family: 'Open Sans', sans-serif;
+              "
+            ></textarea>
+          </label>
         </div>
       </div>
 
-      <!-- Person 2 -->
-      <div class="team-member">
-          <img src="/images/Placeholder.jpg" alt="John Steinbrenner">
-        <h3>John Steinbrenner</h3>
-        <h4>Pastor</h4>
-        <div class="bio-text">
-          <p>
-            text
-          </p>
-        </div>
+      <div class="modal-actions">
+        <button id="team-modal-delete-btn" class="delete-btn">Delete</button>
+        <button id="team-modal-save-btn" class="save-btn">Save</button>
       </div>
-
     </div>
-  </section>
+  </div>
 
   <!-- ✅ Dynamic Footer -->
   <div id="footer"></div>
@@ -84,5 +112,6 @@
   <!-- JS -->
   <script src="../../js/header.js"></script>
   <script src="../../js/footer.js"></script>
+  <script src="../../js/team.js"></script>
 </body>
 </html>

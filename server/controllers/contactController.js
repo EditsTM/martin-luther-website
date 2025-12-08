@@ -10,17 +10,32 @@ export const sendContactEmail = async (req, res) => {
     return res.status(400).json({ ok: false, errors: errors.array() });
   }
 
-  // ✅ added reason
   const { firstName, lastName, email, phone, reason, message } = req.body;
+
+  // 🔑 Use ONLY SMTP_* (matches your .env)
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+
+  console.log("🔐 Contact SMTP user:", smtpUser);
+  console.log("🔐 Contact SMTP user len:", smtpUser ? smtpUser.length : 0);
+  console.log("🔐 Contact SMTP pass defined:", !!smtpPass);
+  console.log("🔐 Contact SMTP pass len:", smtpPass ? smtpPass.length : 0);
+
+  if (!smtpUser || !smtpPass) {
+    console.error("❌ Missing SMTP_USER / SMTP_PASS in env (contact).");
+    return res
+      .status(500)
+      .json({ ok: false, error: "Email is not configured on the server." });
+  }
 
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port: Number(process.env.SMTP_PORT) || 465,
       secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: smtpUser,
+        pass: smtpPass,
       },
     });
 
@@ -28,7 +43,7 @@ export const sendContactEmail = async (req, res) => {
     const subject = `📬 New Contact Message from ${fullName || "Visitor"}`;
 
     await transporter.sendMail({
-      from: `"ML Website" <${process.env.EMAIL_USER}>`,
+      from: `"ML Website" <${smtpUser}>`,
       to: process.env.CONTACT_TO,
       replyTo: email,
       subject,

@@ -7,32 +7,92 @@
   "admin": [
     {
       "name": "Tom Voss",
-      "subject": "Pastor",
+      "subject": "Lead Pastor",
       "image": "/images/faculty/Tom.jpg"
     },
-     {
-      "name": "Tom Voss",
+    {
+      "name": "John Steinbrenner",
       "subject": "Pastor",
-      "image": "/images/faculty/Tom.jpg"
+      "image": "/images/faculty/John.jpg"
     }
   ],
   "teachers": [
     {
-      "name": "Name",
-      "subject": "Subject",
-      "image": "/images/faculty/Placeholder.jpg"
+      "name": "Amy Busse",
+      "subject": "Kindergarten Teacher",
+      "image": "/images/faculty/Amy.jpg"
+    },
+    {
+      "name": "Becky Huagglund",
+      "subject": "5th Grade Teacher",
+      "image": "/images/faculty/BeckyH.jpg"
+    },
+    {
+      "name": "Becky Korthals",
+      "subject": "Resource Teacher",
+      "image": "/images/faculty/BeckyK.jpg"
+    },
+     {
+      "name": "Kate Schroeder",
+      "subject": "3rd Grade Teacher",
+      "image": "/images/faculty/Kate.jpg"
+    },
+    {
+      "name": "Maggie Brock",
+      "subject": "Pre-K3 Aide",
+      "image": "/images/faculty/Maggie.jpg"
+    },
+    {
+      "name": "Megan Clark",
+      "subject": "Kindergarten Aide",
+      "image": "/images/faculty/Megan.jpg"
+    },
+    {
+      "name": "Michelle Grobe",
+      "subject": "Pre-K4 Teacher",
+      "image": "/images/faculty/Michelle.jpg"
+    },
+    {
+      "name": "Penny Lecker",
+      "subject": "Pre-K3 Teacher + Early Childhood Director",
+      "image": "/images/faculty/Penny.jpg"
+    },
+    {
+      "name": "Shannan Borchardt",
+      "subject": "2nd Grade Teacher",
+      "image": "/images/faculty/Shannan.jpg"
+    },
+    {
+      "name": "Todd LaPoint",
+      "subject": "4th Grade Teacher",
+      "image": "/images/faculty/Todd.jpg"
     }
   ],
   "staff": [
+    {
+      "name": "Aaron Butkovich",
+      "subject": "Technologoy Director",
+      "image": "/images/faculty/Aaron.jpg"
+    },
+     {
+      "name": "Daniel Westphal",
+      "subject": "Maintenance",
+      "image": "/images/faculty/Daniel.jpg"
+    },
+    {
+      "name": "Heidi Pethan",
+      "subject": "Office Admin",
+      "image": "/images/faculty/Heidi.jpg"
+    },
     {
       "name": "Josh Arndt",
       "subject": "Athletic Director",
       "image": "/images/faculty/Josh.jpg"
     },
     {
-      "name": "Name",
-      "subject": "Staff",
-      "image": "/images/faculty/Placeholder.jpg"
+      "name": "Kristine LaPoint",
+      "subject": "Music Coordinator",
+      "image": "/images/faculty/Kristine.jpg"
     }
   ]
 }

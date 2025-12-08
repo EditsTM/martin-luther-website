@@ -83,7 +83,7 @@ body {
   border-radius: 16px;
   padding: 24px;
   width: 100%;
-  height: 420px;                  /* ✅ FIXED BOX SIZE */
+  height: 430px;                  /* ✅ FIXED BOX SIZE */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -117,11 +117,13 @@ body {
 
 
 
-/* Force uniform text area */
 .faculty-name,
 .faculty-subject {
-  height: 26px;
-  overflow: hidden;
+  margin: 6px 0 0;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;   /* allows wrapping */
+  overflow: visible;     /* ensures nothing is hidden */
 }
 
 /* 🔹 Name = black, Subject = gray */
@@ -130,7 +132,9 @@ body {
   font-weight: 700;
 }
 
+/* Optional: slightly smaller font for long titles */
 .faculty-subject {
+  font-size: 0.95rem;
   color: #6c757d;
   font-weight: 600;
 }

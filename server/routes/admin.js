@@ -126,6 +126,10 @@ router.get("/dashboard", (req, res) => {
 
         <a href="/html/school/faculty.html" class="btn">Manage Faculty</a>
         <br><br>
+        <a href="/html/church/team.html" class="btn">Manage Pastors</a>
+        <br><br>
+        <a href="/html/church/events.html" class="btn">Manage Events</a>
+        <br><br>
         <a href="/admin/logout" class="btn logout-btn">Logout</a>
 
       </div>

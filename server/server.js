@@ -13,11 +13,21 @@ import contactRoutes from "./routes/contactRoutes.js";
 import prayerRoutes from "./routes/prayerRoutes.js";
 import adminRoutes from "./routes/admin.js";
 import contentRoutes from "./routes/contentRoutes.js";
+import teamRoutes from "./routes/teamRoutes.js";
 
-dotenv.config();
-
+// ------------------------------------------------------
+// 🔐 Resolve __dirname and load .env from project root
+// ------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// 👇 SIMPLE: load default .env from project root
+// (same way it was working earlier)
+dotenv.config();
+
+// 🔍 Debug – SHOW SMTP_* (the ones you actually use)
+console.log("ENV SMTP_USER:", process.env.SMTP_USER);
+console.log("ENV SMTP_PASS defined:", !!process.env.SMTP_PASS);
 
 console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
@@ -53,7 +63,7 @@ app.use(
       maxAge: 15 * 60 * 1000, // 🕒 15 minutes
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production", // secure only in production (false locally)
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );
@@ -62,7 +72,7 @@ app.use(
 app.use((req, res, next) => {
   if (req.session && req.session.loggedIn) {
     req.session._garbage = Date();
-    req.session.touch(); // refresh expiry timer
+    req.session.touch();
   }
   next();
 });
@@ -105,6 +115,7 @@ app.use("/contact", contactRoutes);
 app.use("/prayer", prayerRoutes);
 app.use("/admin", adminRoutes);
 app.use("/content", contentRoutes);
+app.use("/api/team", teamRoutes);
 
 /* ------------------------------------------------------
    🎥 YouTube Proxy
@@ -136,7 +147,6 @@ app.get("/api/youtube", async (req, res) => {
 /* ------------------------------------------------------
    🌐 STATIC FILES
 ------------------------------------------------------ */
-// 🟢 Added line to ensure uploads always resolve correctly
 app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(__dirname, "../public")));
 
@@ -145,6 +155,13 @@ app.use(express.static(path.join(__dirname, "../public")));
 ------------------------------------------------------ */
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/html/index.html"));
+});
+
+/* ------------------------------------------------------
+   👤 Simple Admin Session Check
+------------------------------------------------------ */
+app.get("/api/admin-session", (req, res) => {
+  res.json({ loggedIn: !!req.session.loggedIn });
 });
 
 /* ------------------------------------------------------
