@@ -562,6 +562,21 @@ body {
 .good-item-hearing .good-icon {
   margin-top: 4px;         /* matches other icons */
 }
+/* Slightly more breathing room for Bible Study card */
+.bible {
+  padding-bottom: 36px; /* was effectively ~32px via .card */
+}
+
+/* Slightly increase Bible Study icons */
+.bible-icon-small {
+  width: 20px !important;   /* was 18px */
+  height: 20px !important;
+  filter: none !important;
+}
+/* Make ONLY the Bible Study card slightly taller so the last row doesn't touch the border */
+.card.bible {
+  height: 315px;   /* try 315; bump to 320 if you want a touch more */
+}
 
 
 

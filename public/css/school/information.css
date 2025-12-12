@@ -34,7 +34,7 @@ body {
   background-size: contain;
 
   /* horizontal-only stretch */
-  transform: scaleX(1.08);   /* <<< adjust here: was 1.04 → now more */
+  transform: scaleX(1.08);
 
   /* keep image centered after scaling */
   transform-origin: center;
@@ -66,7 +66,6 @@ body {
   margin: 0;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
-
 
 /* =============================
    MAIN LAYOUT
@@ -145,7 +144,7 @@ body {
 ============================= */
 .about-section {
   padding: 60px 0 40px;
-  background: #f3f3f3; /* light grey */
+  background: #f3f3f3;
 }
 
 .about-grid {
@@ -154,6 +153,19 @@ body {
   gap: 40px;
   align-items: center;
   margin-bottom: 40px;
+}
+
+/* ✅ NEW: Triangle column always centers itself in its grid cell */
+.about-main-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ✅ NEW: Prevent any clipping inside the triangle column */
+.about-main-image,
+.triangle-area {
+  overflow: visible;
 }
 
 .about-feature-grid {
@@ -236,9 +248,8 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
-  width: 100%;            /* NEW → ensures full-width stretch */
+  width: 100%;
 }
-
 
 .info-card {
   border-radius: 14px;
@@ -282,9 +293,27 @@ body {
   color: #666;
   line-height: 1.6;
 }
+/* =============================
+   CENTER ABOUT OUR SCHOOL TAG
+   (size locked)
+============================= */
+.about-text .section-tag {
+  display: inline-block; /* same as everywhere else */
+  margin: 0 auto 12px;
+  text-align: center;
+}
+
+.about-text {
+  text-align: center;
+}
+
+.about-text .section-title {
+  text-align: center;
+}
+
 
 /* =============================
-   STATS (moved ABOVE Academics)
+   STATS
 ============================= */
 .stats-section {
   padding: 50px 0;
@@ -300,28 +329,14 @@ body {
   text-align: center;
 }
 
-.stat-item {
-  color: white;
-}
-
-.stat-number {
-  font-size: 34px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-
-.stat-label {
-  font-size: 15px;
-  color: #d5dbff;
-}
+.stat-item { color: white; }
+.stat-number { font-size: 34px; font-weight: 800; margin-bottom: 4px; }
+.stat-label { font-size: 15px; color: #d5dbff; }
 
 /* =============================
    ACADEMICS
 ============================= */
-.academics-section {
-  padding: 70px 0;
-}
-
+.academics-section { padding: 70px 0; }
 .academics-grid {
   display: grid;
   gap: 32px;
@@ -342,11 +357,7 @@ body {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
 }
 
-.card-header {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
+.card-header { display: flex; flex-direction: column; margin-bottom: 16px; }
 
 .card-icon-circle {
   width: 56px;
@@ -360,23 +371,10 @@ body {
   margin-bottom: 12px;
 }
 
-.card-icon-circle img {
-  width: 32px;
-  height: 32px;
-}
+.card-icon-circle img { width: 32px; height: 32px; }
+.card-header h3 { font-size: 20px; color: #000; margin: 0; }
 
-.card-header h3 {
-  font-size: 20px;
-  color: #000;
-  margin: 0;
-}
-
-.card-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
+.card-list { list-style: none; padding: 0; margin: 0; }
 .card-list li {
   display: flex;
   align-items: center;
@@ -386,9 +384,6 @@ body {
   padding: 6px 0;
 }
 
-/* ==========================================
-   Curriculum icons – FORCE BLACK
-========================================== */
 .academic-card .card-list img {
   width: 22px;
   height: 22px;
@@ -397,19 +392,11 @@ body {
 }
 
 /* =============================
-   GRADE LIST — NEW LAYOUT FIX
+   GRADE LIST
 ============================= */
-.grade-card {
-  background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
-}
+.grade-card { background: linear-gradient(to bottom right, #f8f9fa, #e9ecef); }
+.grade-list { list-style: none; padding: 0; margin: 10px 0 0; }
 
-.grade-list {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0;
-}
-
-/* ⭐ Each opportunity box */
 .grade-list li {
   background: #ffffff;
   border-radius: 12px;
@@ -421,7 +408,6 @@ body {
   gap: 14px;
 }
 
-/* ⭐ Icon on the left */
 .grade-list li img {
   width: 40px;
   height: 40px;
@@ -432,26 +418,9 @@ body {
   filter: brightness(0) invert(1);
 }
 
-/* ⭐ Text container */
-.grade-text-block {
-  display: flex;
-  flex-direction: column;
-}
-
-/* ⭐ Black title at the top */
-.grade-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: #000;
-  margin-bottom: 4px;
-}
-
-/* ⭐ Subtitle text */
-.grade-subtitle {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.5;
-}
+.grade-text-block { display: flex; flex-direction: column; }
+.grade-title { font-size: 17px; font-weight: 800; color: #000; margin-bottom: 4px; }
+.grade-subtitle { font-size: 14px; color: #555; line-height: 1.5; }
 
 /* =============================
    MISSION & VALUES
@@ -469,9 +438,7 @@ body {
   margin-bottom: 40px;
 }
 
-.mission-image-wrapper {
-  order: 2;
-}
+.mission-image-wrapper { order: 2; }
 
 .mission-image {
   position: relative;
@@ -480,53 +447,16 @@ body {
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
 }
 
-.mission-image img {
-  width: 100%;
-  display: block;
-}
+.mission-image img { width: 100%; display: block; }
+.mission-image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10, 16, 40, 0.8), transparent); }
 
-.mission-image-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(10, 16, 40, 0.8), transparent);
-}
+.mission-verse { position: absolute; left: 18px; right: 18px; bottom: 18px; color: white; }
+.mission-verse-text { font-size: 16px; font-style: italic; margin: 0 0 4px; }
+.mission-verse-ref { font-size: 14px; margin: 0; }
 
-.mission-verse {
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  bottom: 18px;
-  color: white;
-}
-
-.mission-verse-text {
-  font-size: 16px;
-  font-style: italic;
-  margin: 0 0 4px;
-}
-
-.mission-verse-ref {
-  font-size: 14px;
-  margin: 0;
-}
-
-.mission-text {
-  order: 1;
-}
-
-.mission-heading {
-  font-size: 24px;
-  color: #000;
-  margin-bottom: 12px;
-  font-weight: 800;
-}
-
-.mission-body {
-  font-size: 17px;
-  color: #555;
-  line-height: 1.7;
-  margin-bottom: 18px;
-}
+.mission-text { order: 1; }
+.mission-heading { font-size: 24px; color: #000; margin-bottom: 12px; font-weight: 800; }
+.mission-body { font-size: 17px; color: #555; line-height: 1.7; margin-bottom: 18px; }
 
 .mission-wels-box {
   background: #282f7f;
@@ -535,19 +465,9 @@ body {
   color: white;
 }
 
-.mission-wels-box h4 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  color: white;
-}
+.mission-wels-box h4 { margin: 0 0 8px; font-size: 18px; color: white; }
+.mission-wels-box p { margin: 0; font-size: 15px; color: #e0e4ff; }
 
-.mission-wels-box p {
-  margin: 0;
-  font-size: 15px;
-  color: #e0e4ff;
-}
-
-/* Mission Values cards */
 .mission-values-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -573,22 +493,9 @@ body {
   margin-bottom: 10px;
 }
 
-.value-icon img {
-  width: 26px;
-  height: 26px;
-}
-
-.value-card h4 {
-  margin: 0 0 6px;
-  font-size: 17px;
-  color: #000;
-}
-
-.value-card p {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
-}
+.value-icon img { width: 26px; height: 26px; }
+.value-card h4 { margin: 0 0 6px; font-size: 17px; color: #000; }
+.value-card p { margin: 0; font-size: 14px; color: #666; }
 
 /* =============================
    BEYOND THE CLASSROOM
@@ -599,9 +506,7 @@ body {
   color: white;
 }
 
-.beyond-inner {
-  max-width: 1200px;
-}
+.beyond-inner { max-width: 1200px; }
 
 .beyond-grid {
   display: grid;
@@ -617,29 +522,11 @@ body {
   display: block;
 }
 
-.beyond-heading {
-  font-size: 28px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  color: white;
-}
+.beyond-heading { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: white; }
+.beyond-text { font-size: 17px; color: #e0e3ff; margin-bottom: 22px; }
 
-.beyond-text {
-  font-size: 17px;
-  color: #e0e3ff;
-  margin-bottom: 22px;
-}
-
-.beyond-items {
-  display: grid;
-  gap: 16px;
-}
-
-.beyond-item {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-}
+.beyond-items { display: grid; gap: 16px; }
+.beyond-item { display: flex; gap: 14px; align-items: flex-start; }
 
 .beyond-item-icon {
   width: 46px;
@@ -652,21 +539,9 @@ body {
   flex-shrink: 0;
 }
 
-.beyond-item-icon img {
-  width: 26px;
-  height: 26px;
-}
-
-.beyond-item-title {
-  font-size: 17px;
-  font-weight: 700;
-  margin-bottom: 2px;
-}
-
-.beyond-item-text {
-  font-size: 14px;
-  color: #d3d7ff;
-}
+.beyond-item-icon img { width: 26px; height: 26px; }
+.beyond-item-title { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+.beyond-item-text { font-size: 14px; color: #d3d7ff; }
 
 /* =============================
    WHY FAMILIES CHOOSE US
@@ -706,34 +581,15 @@ body {
   flex-shrink: 0;
 }
 
-.why-icon-circle img {
-  width: 22px;
-  height: 22px;
-}
-
-.why-card h4 {
-  margin: 0 0 4px;
-  font-size: 16px;
-  color: #000;
-}
-
-.why-card p {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
-}
+.why-icon-circle img { width: 22px; height: 22px; }
+.why-card h4 { margin: 0 0 4px; font-size: 16px; color: #000; }
+.why-card p { margin: 0; font-size: 14px; color: #666; }
 
 /* =============================
    GLOBAL HEADERS
 ============================= */
-h2, h3, h4 {
-  color: #000;
-}
-
-/* HERO stays white */
-.info-overlay h1 {
-  color: white;
-}
+h2, h3, h4 { color: #000; }
+.info-overlay h1 { color: white; }
 
 /* =============================
    ICON COLOR LOGIC
@@ -747,7 +603,6 @@ h2, h3, h4 {
   filter: brightness(0) invert(1);
 }
 
-/* REAL photos – never filtered */
 .about-main-image img,
 .mission-image img,
 .beyond-image-wrapper img {
@@ -757,25 +612,28 @@ h2, h3, h4 {
 /* =============================
    RESPONSIVE
 ============================= */
+
+/* ✅ NEW: Wrap triangle UNDER text BEFORE it ever gets cut off */
+@media (max-width: 1250px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-main-image {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 1100px) {
-  .about-grid,
   .mission-grid,
   .beyond-grid {
     grid-template-columns: 1fr;
   }
 
-  .mission-image-wrapper {
-    order: 1;
-  }
+  .mission-image-wrapper { order: 1; }
+  .mission-text { order: 2; }
 
-  .mission-text {
-    order: 2;
-  }
-
-  .about-wels-badge {
-    position: static;
-    margin-top: 12px;
-  }
+  .about-wels-badge { position: static; margin-top: 12px; }
 }
 
 @media (max-width: 900px) {
@@ -785,39 +643,18 @@ h2, h3, h4 {
     padding: 0 16px;
   }
 
-  .info-heading {
-    font-size: 28px;
-  }
+  .info-heading { font-size: 28px; }
+  .info-intro { font-size: 16px; }
+  .section-title { font-size: 26px; }
+  .section-description { font-size: 16px; }
 
-  .info-intro {
-    font-size: 16px;
-  }
-
-  .section-title {
-    font-size: 26px;
-  }
-
-  .section-description {
-    font-size: 16px;
-  }
-
-  .about-feature-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .beyond-section {
-    padding: 60px 0;
-  }
+  .about-feature-grid { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: 1fr; }
+  .beyond-section { padding: 60px 0; }
 }
 
 @media (max-width: 600px) {
-  .about-wels-badge {
-    padding: 12px 14px;
-  }
+  .about-wels-badge { padding: 12px 14px; }
 }
 
 /* =============================
@@ -827,59 +664,20 @@ h2, h3, h4 {
   --ml-navy: rgba(41, 46, 124);
 }
 
-.info-heading {
-  color: var(--ml-navy);
-}
+.info-heading { color: var(--ml-navy); }
+.section-tag { background: var(--ml-navy); }
+.about-feature-icon { background: var(--ml-navy); }
+.about-wels-badge { background: var(--ml-navy); }
+.info-card-icon { background: var(--ml-navy); }
+.stats-section { background: var(--ml-navy); }
+.card-icon-circle { background: var(--ml-navy); }
+.mission-wels-box { background: var(--ml-navy); }
+.value-card { border-top: 4px solid var(--ml-navy); }
+.value-icon { background: var(--ml-navy); }
+.beyond-section { background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57); }
+.why-card { border-left: 4px solid var(--ml-navy); }
+.why-icon-circle { background: var(--ml-navy); }
 
-.section-tag {
-  background: var(--ml-navy);
-}
-
-.about-feature-icon {
-  background: var(--ml-navy);
-}
-
-.about-wels-badge {
-  background: var(--ml-navy);
-}
-
-.info-card-icon {
-  background: var(--ml-navy);
-}
-
-.stats-section {
-  background: var(--ml-navy);
-}
-
-.card-icon-circle {
-  background: var(--ml-navy);
-}
-
-.mission-wels-box {
-  background: var(--ml-navy);
-}
-
-.value-card {
-  border-top: 4px solid var(--ml-navy);
-}
-
-.value-icon {
-  background: var(--ml-navy);
-}
-
-.beyond-section {
-  background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57);
-}
-
-.why-card {
-  border-left: 4px solid var(--ml-navy);
-}
-
-.why-icon-circle {
-  background: var(--ml-navy);
-}
-
-/* CURRICULUM ICONS (black only — unchanged) */
 .academic-card .card-list img {
   filter: brightness(0) !important;
   background: none !important;
@@ -892,205 +690,93 @@ h2, h3, h4 {
   --ml-navy: #1e2a57;
 }
 
-.info-overlay {
-  background: rgba(30, 42, 87, 0.85);
-}
+.info-overlay { background: rgba(30, 42, 87, 0.85); }
+.info-heading { color: var(--ml-navy); }
+.section-tag { background: var(--ml-navy); }
+.about-feature-icon { background: var(--ml-navy); }
+.about-wels-badge { background: var(--ml-navy); }
+.info-card-icon { background: var(--ml-navy); }
+.stats-section { background: var(--ml-navy); }
+.card-icon-circle { background: var(--ml-navy); }
+.mission-wels-box { background: var(--ml-navy); }
+.value-card { border-top: 4px solid var(--ml-navy); }
+.value-icon { background: var(--ml-navy); }
+.beyond-section { background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57); }
+.why-card { border-left: 4px solid var(--ml-navy); }
+.why-icon-circle { background: var(--ml-navy); }
 
-.info-heading {
-  color: var(--ml-navy);
-}
-
-.section-tag {
-  background: var(--ml-navy);
-}
-
-.about-feature-icon {
-  background: var(--ml-navy);
-}
-
-.about-wels-badge {
-  background: var(--ml-navy);
-}
-
-.info-card-icon {
-  background: var(--ml-navy);
-}
-
-.stats-section {
-  background: var(--ml-navy);
-}
-
-.card-icon-circle {
-  background: var(--ml-navy);
-}
-
-.mission-wels-box {
-  background: var(--ml-navy);
-}
-
-.value-card {
-  border-top: 4px solid var(--ml-navy);
-}
-
-.value-icon {
-  background: var(--ml-navy);
-}
-
-.beyond-section {
-  background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57);
-}
-
-.why-card {
-  border-left: 4px solid var(--ml-navy);
-}
-
-.why-icon-circle {
-  background: var(--ml-navy);
-}
 /* =============================
    FIX FOR STUDENT OPPORTUNITIES ICONS
-   (Stops them from disappearing)
 ============================= */
-
 .grade-list li img {
   filter: none !important;
   background: none !important;
 }
 
-/* =============================
-   TRIANGLE BADGE LAYOUT
-============================= */
-.about-triangle-container {
-  position: relative;
-  width: 100%;
-  max-width: 380px;          /* same feel as original badge */
-  margin: 40px auto 0;
-  display: flex;
-  justify-content: center;
-}
-
-/* Base style for all three badges */
-.triangle-badge {
-  position: absolute;
-  width: 210px;
-  text-align: center;
-  padding: 16px 18px;
-  border-radius: 16px;
-  background: var(--ml-navy);
-  color: white;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
-}
-
-/* Top badge */
-.top-badge {
-  top: -20px;
-}
-
-/* Bottom-left */
-.bottom-left {
-  left: -160px;
-  bottom: -140px;
-}
-
-/* Bottom-right */
-.bottom-right {
-  right: -160px;
-  bottom: -140px;
-}
-
-/* Badge Title */
-.triangle-title {
-  font-size: 26px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-
-/* Badge Text */
-.triangle-badge p {
-  font-size: 14px;
-  margin: 0;
-  color: #e2e6ff;
+.grade-list li img[src*="world.svg"] {
+  filter: brightness(0) !important;
+  background: none !important;
 }
 
 /* =============================
-   RESPONSIVE FIXES
+   PERFECT TRIANGLE LAYOUT
+   ✅ Fluid sizing — NO transforms, NO clipping
+   ✅ Animations restored
 ============================= */
-@media (max-width: 1100px) {
-  .about-triangle-container {
-    max-width: 300px;
-  }
 
-  .bottom-left,
-  .bottom-right {
-    bottom: -120px;
-  }
-
-  .bottom-left { left: -120px; }
-  .bottom-right { right: -120px; }
+/* Responsive sizing variables */
+:root {
+  --triangle-width: clamp(320px, 70vw, 600px);
+  --triangle-height: clamp(260px, 55vw, 450px);
+  --triangle-box-w: clamp(170px, 32vw, 230px);
+  --triangle-box-h: clamp(120px, 26vw, 170px);
 }
-
-@media (max-width: 700px) {
-  .about-triangle-container {
-    display: grid;
-    gap: 16px;
-    position: static;
-    max-width: 100%;
-  }
-
-  .triangle-badge {
-    position: static;
-  }
-}
-
-/* =============================
-   PERFECT TRIANGLE LAYOUT (FIXED)
-============================= */
 
 .triangle-area {
   margin-top: 40px;
   display: flex;
   justify-content: center;
-}
-
-/* Visible gradient shimmer (no movement of the box itself) */
-@keyframes triangleGlow {
-  0% {
-    background-position: 0% 0%;
-    filter: brightness(1);
-  }
-  50% {
-    background-position: 100% 100%;
-    filter: brightness(1.18);
-  }
-  100% {
-    background-position: 0% 0%;
-    filter: brightness(1);
-  }
-}
-
-/* Pulse the shadow */
-@keyframes triangleShadowPulse {
-  0%, 100% {
-    box-shadow: 0 10px 28px rgba(0,0,0,0.35);
-  }
-  50% {
-    box-shadow: 0 22px 55px rgba(0,0,0,0.55);
-  }
+  width: 100%;
 }
 
 .triangle-wrapper {
   position: relative;
-  width: 600px;    /* wide enough for perfect spacing */
-  height: 450px;   /* triangle height */
+  width: var(--triangle-width);
+  height: var(--triangle-height);
   margin: 0 auto;
 }
 
-/* All three boxes: identical size + animated background */
+/* ✅ animations (restored) */
+@keyframes triangleGlow {
+  0% { background-position: 0% 0%; filter: brightness(1); }
+  50% { background-position: 100% 100%; filter: brightness(1.18); }
+  100% { background-position: 0% 0%; filter: brightness(1); }
+}
+
+@keyframes triangleShadowPulse {
+  0%, 100% { box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
+  50% { box-shadow: 0 22px 55px rgba(0,0,0,0.55); }
+}
+
+/* Connecting lines */
+.triangle-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.triangle-lines line {
+  stroke: #000;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+/* Triangle boxes */
 .triangle-box {
   position: absolute;
-  width: 230px;
-  height: 170px;   /* FIXED height → WELS / WLA / FVL match */
-  padding: 18px 20px;
+  width: var(--triangle-box-w);
+  height: var(--triangle-box-h);
+  padding: 16px;
   text-align: center;
 
   background-image: linear-gradient(
@@ -1106,7 +792,7 @@ h2, h3, h4 {
     triangleShadowPulse 3s ease-in-out infinite;
 
   border-radius: 16px;
-  border: 2px solid #000;   /* black outline */
+  border: 2px solid #000;
   color: white;
   z-index: 2;
   box-sizing: border-box;
@@ -1118,58 +804,73 @@ h2, h3, h4 {
 }
 
 .triangle-title {
-  font-size: 26px;
+  font-size: clamp(18px, 3.5vw, 26px);
   font-weight: 800;
   margin-bottom: 6px;
 }
 
-/* Top center */
+.triangle-box p {
+  font-size: clamp(12px, 2.6vw, 14px);
+  margin: 0;
+  color: #e2e6ff;
+  line-height: 1.35;
+}
+
+/* Positions */
 .triangle-top {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
 }
 
-/* Bottom-left */
 .triangle-left {
   bottom: 0;
   left: 0;
 }
 
-/* Bottom-right */
 .triangle-right {
   bottom: 0;
   right: 0;
 }
-
-/* connecting lines */
-.triangle-lines {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+/* ✅ Prevent overlap on small screens */
+.triangle-area{
+  margin-bottom: 28px; /* keeps it from crashing into stuff below */
 }
 
-.triangle-lines line {
-  stroke: #000;        /* black lines */
-  stroke-width: 5;
-  stroke-linecap: round;
+/* ✅ Make the SVG always fill the wrapper */
+.triangle-lines{
+  width: 100%;
+  height: 100%;
 }
 
-/* Responsive stacking */
-@media (max-width: 700px) {
-  .triangle-wrapper {
-    display: grid;
-    gap: 16px;
-    width: 100%;
-    height: auto;
+/* ✅ Tighten everything up under 500px */
+@media (max-width: 500px){
+  :root{
+    --triangle-width: clamp(280px, 92vw, 420px);
+    --triangle-height: clamp(240px, 78vw, 360px);
+
+    --triangle-box-w: clamp(120px, 38vw, 170px);
+    --triangle-box-h: clamp(92px, 28vw, 130px);
   }
-  .triangle-box { position: static; }
-  .triangle-lines { display: none; }
+
+  .triangle-box{
+    padding: 10px 10px;
+    border-radius: 14px;
+  }
+
+  .triangle-title{
+    margin-bottom: 4px;
+  }
 }
 
-/* Make Field Trips & Experiences globe icon black */
-.grade-list li img[src*="world.svg"] {
-  filter: brightness(0) !important;
-  background: none !important;
-}
+/* ✅ Even tighter for tiny phones */
+@media (max-width: 380px){
+  :root{
+    --triangle-box-w: clamp(110px, 40vw, 150px);
+    --triangle-box-h: clamp(86px, 30vw, 120px);
+  }
 
+  .triangle-box{
+    padding: 8px 8px;
+  }
+}

@@ -30,10 +30,14 @@ body {
 
 .story-overlay h1 {
   color: white;
-  font-size: 50px;
+  font-size: clamp(28px, 5vw, 50px); /* ✅ scales cleanly on small screens */
   font-weight: 800;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;               /* ✅ force center */
+  max-width: 1000px;                /* ✅ prevents weird wrapping */
+  padding: 0 20px;                  /* ✅ breathing room on mobile */
 }
+
 
 /* WHO WE ARE */
 .story-section {
@@ -306,4 +310,21 @@ body {
   .core-header, .core-card-header {
     flex-direction: column;
   }
+}
+/* Keep hero title white */
+.story-overlay h1 {
+  color: #fff !important;
+}
+
+/* =============================
+   FORCE ALL SECTION HEADERS BLACK
+   (EXCEPT HERO TITLE)
+============================= */
+.story-section h2,
+.story-core h2,
+.story-mission h2,
+.core-header h3,
+.core-card h4,
+.mission-card h4 {
+  color: #000 !important;
 }
