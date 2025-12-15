@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
 :root {
-  --blue: #282f7f;
+  --ml-blue: #1e2a57;      /* ✅ your standard ML blue */
   --light-blue: #4279bc;
   --grey: #eaf0fa;
   --orange: #ff9f45;
@@ -30,11 +30,8 @@ body {
 
 .financial-hero .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(66, 121, 188, 0.75);
+  inset: 0;
+  background: rgba(30, 42, 87, 0.85); /* ✅ match other pages */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,67 +39,63 @@ body {
 
 .financial-hero h1 {
   color: #fff;
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 50px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0;
   z-index: 1;
   text-align: center;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
 }
 
 /* =============================
-   MAIN CONTENT LAYOUT
+   MAIN CONTENT (FAQ ONLY, CENTERED)
 ============================= */
 .financial-info {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  gap: 260px;
-  padding: 80px 40px;
-  background-color: white; /* ✅ changed from var(--grey) to white */
-  flex-wrap: wrap;
+  padding: 80px 16px;
+  background-color: white;
 }
 
-/* =============================
-   FAQ SECTION
-============================= */
 .faq-container {
-  flex: 1;
-  min-width: 380px;
-  max-width: 650px;
+  width: 100%;
+  max-width: 850px; /* ✅ centered single column */
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
 .faq-container h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #4279bc;
-  margin-bottom: 30px;
-  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: #000000; /* ✅ black */
+  margin: 0 0 35px;
 }
 
+/* =============================
+   BIGGER FAQ DROPDOWNS
+============================= */
 .faq-item {
-  background: var(--grey); /* ✅ changed from white to light grey */
-  border-radius: 8px;
-  margin-bottom: 18px;
+  background: var(--grey);
+  border-radius: 12px;
+  margin-bottom: 22px;
   overflow: hidden;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.10);
   text-align: left;
   width: 100%;
-  max-width: 600px;
 }
 
 .faq-question {
   width: 100%;
   text-align: left;
-  padding: 22px 28px;
+  padding: 26px 30px;      /* ✅ bigger */
   background: none;
   border: none;
   outline: none;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;         /* ✅ bigger */
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -111,7 +104,7 @@ body {
 
 .faq-question::after {
   content: "▼";
-  font-size: 16px;
+  font-size: 18px;
   transition: transform 0.3s ease;
 }
 
@@ -124,55 +117,49 @@ body {
   overflow: hidden;
   transition: max-height 0.3s ease;
   background: #f9f9f9;
-  padding: 0 28px;
+  padding: 0 30px;
 }
 
 .faq-item.active .faq-answer {
-  max-height: 400px;
-  padding: 18px 28px;
+  max-height: 800px;     /* ✅ more room */
+  padding: 20px 30px 26px;
 }
 
-/* =============================
-   FINANCIAL AID SECTION
-============================= */
-.aid-container {
-  flex: 1;
-  min-width: 380px;
-  max-width: 650px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.aid-container h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #4279bc;
-  margin-bottom: 25px;
-}
-
-.aid-container p {
+.faq-answer p {
   font-size: 17px;
-  line-height: 1.8;
-  margin-bottom: 22px;
-  text-align: left;
-  width: 100%;
-  max-width: 620px;
+  line-height: 1.75;
+  margin: 0 0 14px;
+}
+
+.faq-answer ul {
+  margin: 10px 0 18px 28px;
+  padding: 0;
+  list-style-type: disc;
+}
+
+.faq-answer li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+.faq-link {
+  color: var(--ml-blue);
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 /* =============================
-   ELIGIBILITY TABLE STYLES
+   ELIGIBILITY TABLE
 ============================= */
 .eligibility-table-container {
-  margin-top: 20px;
+  margin-top: 18px;
   text-align: center;
 }
 
 .eligibility-table {
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   border-collapse: collapse;
   margin: 0 auto 10px auto;
   background: rgba(66, 121, 188, 0.15);
@@ -182,14 +169,14 @@ body {
 .eligibility-table th {
   background-color: #4279bc;
   color: white;
-  font-weight: 700;
-  padding: 10px;
+  font-weight: 800;
+  padding: 12px;
   border: 1px solid #ffffff33;
 }
 
 .eligibility-table td {
   border: 1px solid #4279bc;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   background-color: rgba(255, 255, 255, 0.9);
 }
@@ -208,65 +195,184 @@ body {
 }
 
 /* =============================
-   FAQ LIST INDENT FIX
-============================= */
-.faq-answer ul {
-  margin: 10px 0 20px 35px;
-  padding: 0;
-  list-style-type: disc;
-}
-
-.faq-answer li {
-  margin-bottom: 8px;
-  line-height: 1.6;
-  color: #2c3e50;
-}
-
-/* =============================
-   TOUR BUTTON
+   BUTTON
+   ✅ Updated to match footer "Connect with us" button
 ============================= */
 .tour-button-container {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 26px;
 }
 
-/* 🔶 Brighter Orange Button Variant (same as enrollment page) */
+/* Replaces .btn-orange styling */
 .btn-orange {
-  background: var(--orange);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 700;
+  position: relative;              /* for shine effect */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 260px;
+  padding: 6px 0;
+
+  background: #1e2a57 !important;
+  color: white !important;
   border-radius: 6px;
-  padding: 14px 36px;
-  font-size: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  border: 2px solid #1e2a57 !important;
+  text-decoration: none;
   transition: all 0.3s ease;
-  display: inline-block;
+  font-size: 16px;
+  overflow: hidden;
+  text-align: center;
 }
 
 .btn-orange:hover {
-  background: var(--orange-hover);
-  color: #fff;
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(255, 159, 69, 0.5);
+  background: white !important;
+  color: #1e2a57 !important;
+  border-color: #1e2a57 !important;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
+}
+
+/* Shine effect */
+.btn-orange::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+}
+
+.btn-orange:hover::after {
+  animation: shine 0.9s ease;
+}
+
+@keyframes shine {
+  0% { left: -75%; }
+  100% { left: 125%; }
 }
 
 /* =============================
-   RESPONSIVE DESIGN
+   EARLY CHILDHOOD PROGRAMS TABLE SECTION
+   (HTML/CSS version of your React block)
 ============================= */
+.ec-section {
+  padding: 70px 16px 90px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 50%, #fdf2f8 100%);
+}
+
+.ec-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ec-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.14);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.ec-titlebar {
+  background: var(--ml-blue);
+  padding: 26px 18px;
+  text-align: center;
+}
+
+.ec-titlebar h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.ec-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(0,0,0,0.10);
+}
+
+.ec-header-cell {
+  background: #f3f4f6;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.ec-header-cell h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.ec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ec-col {
+  background: #ffffff;
+}
+
+.ec-border-right {
+  border-right: 1px solid rgba(0,0,0,0.10);
+}
+
+.ec-col-inner {
+  padding: 22px 22px 10px;
+}
+
+.ec-row {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.10);
+}
+
+.ec-row-last {
+  border-bottom: none;
+}
+
+.ec-row h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.ec-muted {
+  margin: 0 0 8px;
+  color: #6b7280;
+}
+
+.ec-unavailable {
+  margin: 0;
+  color: #b91c1c;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.ec-price {
+  margin: 0;
+  color: #0f7a2a;
+  font-weight: 800;
+}
+
+/* Responsive for the programs table */
 @media (max-width: 900px) {
-  .financial-info {
-    flex-direction: column;
-    align-items: center;
-    gap: 60px;
+  .ec-headers,
+  .ec-grid {
+    grid-template-columns: 1fr;
   }
 
-  .faq-container,
-  .aid-container {
-    max-width: 600px;
-  }
-
-  .faq-item {
-    max-width: 100%;
+  .ec-border-right {
+    border-right: none;
+    border-bottom: 1px solid rgba(0,0,0,0.10);
   }
 }
