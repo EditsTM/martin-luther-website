@@ -1,11 +1,35 @@
 // ✅ public/js/header.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const res = await fetch("/html/header.html");
+    const headerEl = document.getElementById("header");
+    if (!headerEl) return; // prevents runtime errors on pages without #header
+
+    // Fetch the static header include (same-origin)
+    const res = await fetch("/html/header.html", { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
-    document.getElementById("header").innerHTML = html;
 
+    // SECURITY NOTE:
+    // innerHTML is safe ONLY if /html/header.html is trusted static HTML.
+    // If it ever becomes user-editable or server-templated with untrusted data,
+    // you must sanitize more robustly or avoid injecting raw HTML.
+    const tpl = document.createElement("template");
+    tpl.innerHTML = html;
+
+    // Basic hardening: remove <script> tags from the injected fragment
+    tpl.content.querySelectorAll("script").forEach((s) => s.remove());
+
+    // Basic hardening: remove inline event handlers like onclick="..."
+    tpl.content.querySelectorAll("*").forEach((el) => {
+      [...el.attributes].forEach((attr) => {
+        if (attr.name.toLowerCase().startsWith("on")) el.removeAttribute(attr.name);
+      });
+    });
+
+    // Insert the cleaned header HTML
+    headerEl.replaceChildren(tpl.content);
+
+    // Post-insert tweaks
     const logo = document.querySelector(".logo-link");
     if (logo) logo.href = "/html/index.html";
 
@@ -25,6 +49,7 @@ function setupDropdownMenu() {
   let activeDropdown = null;
   let timeout;
 
+  // Closes all dropdowns and clears "menu-open" body state
   const closeAll = () => {
     dropdowns.forEach((d) => d.classList.remove("open"));
     activeDropdown = null;
@@ -39,16 +64,22 @@ function setupDropdownMenu() {
     dropdown.addEventListener("mouseenter", () => {
       if (window.innerWidth <= 770) return;
       clearTimeout(timeout);
-      if (activeDropdown && activeDropdown !== dropdown)
+
+      // Only one open dropdown at a time
+      if (activeDropdown && activeDropdown !== dropdown) {
         activeDropdown.classList.remove("open");
+      }
+
       dropdown.classList.add("open");
       activeDropdown = dropdown;
       document.body.classList.add("menu-open");
-      lockMegaMenuToHeader();
+      lockMegaMenuToHeader(); // keeps mega-menu aligned under header
     });
 
-    dropdown.addEventListener("mouseleave", (e) => {
+    dropdown.addEventListener("mouseleave", () => {
       if (window.innerWidth <= 770) return;
+
+      // Small delay prevents flicker when moving cursor between trigger/menu
       timeout = setTimeout(() => {
         dropdown.classList.remove("open");
         if (activeDropdown === dropdown) activeDropdown = null;
@@ -59,31 +90,34 @@ function setupDropdownMenu() {
     /* ---------- 📱 MOBILE TAP LOGIC ---------- */
     if (trigger) {
       let tappedOnce = false;
+
       trigger.addEventListener("click", (e) => {
         if (window.innerWidth > 770) return; // only on small screens
 
         const isOpen = dropdown.classList.contains("open");
 
-        // Second tap (menu already open) → follow link
+        // If already tapped once and menu is open, allow default link navigation
         if (tappedOnce && isOpen) return true;
 
-        // First tap → open menu
+        // First tap opens the menu instead of navigating
         e.preventDefault();
         e.stopPropagation();
+
         closeAll();
         dropdown.classList.add("open");
         activeDropdown = dropdown;
         document.body.classList.add("menu-open");
         lockMegaMenuToHeader();
-        tappedOnce = true;
 
-        // Reset tap state after 1.5s to prevent stale behavior
+        // Prevent "sticky" tap state
+        tappedOnce = true;
         setTimeout(() => (tappedOnce = false), 1500);
       });
     }
 
     /* ---------- Inside Menu Links ---------- */
     if (menu) {
+      // Clicking any link inside the menu closes everything
       menu.addEventListener("click", (ev) => {
         if (ev.target.tagName === "A") closeAll();
       });
@@ -92,8 +126,9 @@ function setupDropdownMenu() {
 
   /* ---------- Click Outside Closes ---------- */
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".dropdown") && !e.target.closest(".mega-menu"))
+    if (!e.target.closest(".dropdown") && !e.target.closest(".mega-menu")) {
       closeAll();
+    }
   });
 
   /* ---------- ESC Key Closes ---------- */
@@ -108,8 +143,12 @@ function setupDropdownMenu() {
 function lockMegaMenuToHeader() {
   const header = document.querySelector(".main-header");
   if (!header) return;
+
+  // Compute the bottom of the header in document coordinates
   const rect = header.getBoundingClientRect();
   const top = Math.round(rect.bottom + window.scrollY);
+
+  // Expose it to CSS as a variable so mega-menu can position itself
   document.documentElement.style.setProperty("--menu-top", `${top}px`);
 }
 
@@ -118,9 +157,15 @@ function lockMegaMenuToHeader() {
 ------------------------------------------------------ */
 function setupMenuReflowWatchers() {
   const update = () => lockMegaMenuToHeader();
+
+  // Passive listeners = better scroll performance
   window.addEventListener("resize", update, { passive: true });
   window.addEventListener("scroll", update, { passive: true });
+
+  // Re-run once fonts load (header height can change after font swap)
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+
+  // If header resizes (responsive layout), keep menu aligned
   if ("ResizeObserver" in window) {
     const header = document.querySelector(".main-header");
     if (header) new ResizeObserver(update).observe(header);

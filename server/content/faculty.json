@@ -18,6 +18,11 @@
   ],
   "teachers": [
     {
+      "name": "Aaron Butkovich",
+      "subject": "6th Grade Teacher + Technologoy Director",
+      "image": "/images/faculty/Aaron.jpg"
+    },
+    {
       "name": "Amy Busse",
       "subject": "Kindergarten Teacher",
       "image": "/images/faculty/Amy.jpg"
@@ -28,24 +33,19 @@
       "image": "/images/faculty/BeckyH.jpg"
     },
     {
-      "name": "Becky Korthals",
-      "subject": "Resource Teacher",
-      "image": "/images/faculty/BeckyK.jpg"
+      "name": "Josh Arndt",
+      "subject": "7th & 8th Grade Teacher + Athletic Director",
+      "image": "/images/faculty/Josh.jpg"
     },
-     {
+    {
       "name": "Kate Schroeder",
       "subject": "3rd Grade Teacher",
       "image": "/images/faculty/Kate.jpg"
     },
     {
-      "name": "Maggie Brock",
-      "subject": "Pre-K3 Aide",
-      "image": "/images/faculty/Maggie.jpg"
-    },
-    {
-      "name": "Megan Clark",
-      "subject": "Kindergarten Aide",
-      "image": "/images/faculty/Megan.jpg"
+      "name": "Kristine LaPoint",
+      "subject": "1st Grade Teacher + Music Coordinator",
+      "image": "/images/faculty/Kristine.jpg"
     },
     {
       "name": "Michelle Grobe",
@@ -70,11 +70,11 @@
   ],
   "staff": [
     {
-      "name": "Aaron Butkovich",
-      "subject": "Technologoy Director",
-      "image": "/images/faculty/Aaron.jpg"
+      "name": "Becky Korthals",
+      "subject": "Resource Teacher",
+      "image": "/images/faculty/BeckyK.jpg"
     },
-     {
+    {
       "name": "Daniel Westphal",
       "subject": "Maintenance",
       "image": "/images/faculty/Daniel.jpg"
@@ -85,14 +85,14 @@
       "image": "/images/faculty/Heidi.jpg"
     },
     {
-      "name": "Josh Arndt",
-      "subject": "Athletic Director",
-      "image": "/images/faculty/Josh.jpg"
+      "name": "Maggie Brock",
+      "subject": "Pre-K3 Aide",
+      "image": "/images/faculty/Maggie.jpg"
     },
     {
-      "name": "Kristine LaPoint",
-      "subject": "Music Coordinator",
-      "image": "/images/faculty/Kristine.jpg"
+      "name": "Megan Clark",
+      "subject": "Kindergarten Aide",
+      "image": "/images/faculty/Megan.jpg"
     }
   ]
 }

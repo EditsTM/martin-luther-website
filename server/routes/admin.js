@@ -144,6 +144,18 @@ router.get("/dashboard", (req, res) => {
 </html>
   `);
 });
+/* ------------------------------------------------------
+   🚪 Logout (POST) — for fetch() / idle timeout
+------------------------------------------------------ */
+router.post("/logout", (req, res) => {
+  if (!req.session) return res.status(200).json({ ok: true });
+
+  req.session.destroy(() => {
+    // If you set the session cookie name differently, keep as-is.
+    res.clearCookie("connect.sid");
+    res.json({ ok: true });
+  });
+});
 
 /* ------------------------------------------------------
    🚪 Logout

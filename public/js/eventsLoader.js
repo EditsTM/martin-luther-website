@@ -1,34 +1,67 @@
 // ✅ public/js/eventsLoader.js
+// Loads events from events.json and renders them.
+// If the user is an admin, it also enables inline editing + image uploads.
+
 document.addEventListener("DOMContentLoaded", async () => {
   try {
+    // Escapes user-controlled strings before injecting into innerHTML.
+    // This helps prevent XSS when building HTML as strings.
+    const escapeHTML = (v) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
     // 🧩 Step 1: Verify admin session
-    const sessionRes = await fetch("/admin/check", { cache: "no-store" });
+    // credentials: "same-origin" ensures your session cookie is included.
+    // cache: "no-store" avoids stale admin status being cached.
+    const sessionRes = await fetch("/admin/check", {
+      cache: "no-store",
+      credentials: "same-origin",
+    });
     const sessionData = await sessionRes.json();
     const isAdmin = sessionData.loggedIn === true;
-    console.log("🔑 Admin logged in:", isAdmin);
 
     // 🧩 Step 2: Load events.json
-    const res = await fetch("/admin/events.json", { cache: "no-store" });
+    // This is your source of truth for event list content.
+    const res = await fetch("/admin/events.json", {
+      cache: "no-store",
+      credentials: "same-origin",
+    });
     if (!res.ok) throw new Error("Failed to load events.json");
     const data = await res.json();
 
+    // Supports two layouts:
+    // - grid layout (#events-grid) for your main Events page
+    // - card layout (.events-cards) for a smaller list/section
     const grid = document.getElementById("events-grid");
     const cards = document.querySelector(".events-cards");
+    if (!grid && !cards) return;
 
-    if (!grid && !cards) {
-      console.warn("⚠️ No events container found on this page.");
-      return;
-    }
-
-    // 🧩 Step 3: Build event HTML
-    const eventHTML = data.events
+    // 🧩 Step 3: Build event HTML (escaped)
+    // NOTE: Because we inject via innerHTML, we escape text fields and sanitize image paths.
+    const eventHTML = (data.events || [])
       .map((ev, index) => {
         const isEven = index % 2 === 0;
 
-        // ⭐ FIX: Normalize image path so it ALWAYS has exactly ONE leading slash
-        const imgPath = ev.image.startsWith("/") ? ev.image : "/" + ev.image;
+        // Escape all text content that will land inside HTML
+        const title = escapeHTML(ev.title);
+        const date = escapeHTML(ev.date);
+        const desc = escapeHTML(ev.description || "");
 
-        // Admin-only buttons for title/date
+        // Normalize image path to always start with "/"
+        let imgPathRaw = String(ev.image || "");
+        imgPathRaw = imgPathRaw.startsWith("/") ? imgPathRaw : "/" + imgPathRaw;
+
+        // Basic safety allowlist: only accept site-relative images under /images/
+        // Falls back to a placeholder if the path looks unexpected.
+        const imgPath = imgPathRaw.startsWith("/images/")
+          ? imgPathRaw
+          : "/images/Placeholder.jpg";
+
+        // Admin-only text edit controls (only rendered on the grid page)
         const adminTextButtons =
           isAdmin && grid
             ? `
@@ -39,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
             : "";
 
-        // 🖼️ Centered overlay with hidden file input (admin only)
+        // Admin-only overlay used to trigger file input for image upload
         const imageOverlayButton =
           isAdmin && grid
             ? `
@@ -50,24 +83,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
             : "";
 
-        // 🧱 Events Page layout
+        // Grid layout markup (full events page)
         if (grid) {
           return `
             <div class="event-row ${isEven ? "even" : "odd"}">
               <div class="grid-item grey">
                 <div class="text-box">
                   <div class="event-header">
-                    <h2 id="event-title-${index}">${ev.title}</h2>
-                    <p id="event-date-${index}" class="event-date">${ev.date}</p>
+                    <h2 id="event-title-${index}">${title}</h2>
+                    <p id="event-date-${index}" class="event-date">${date}</p>
                   </div>
-                  <p>${ev.description || ""}</p>
+                  <p>${desc}</p>
                   ${adminTextButtons}
                 </div>
               </div>
 
               <div class="grid-item white" style="position:relative;">
-                <img src="${imgPath}" 
-                     alt="${ev.title}" 
+                <img src="${imgPath}"
+                     alt="${title}"
                      id="event-image-${index}"
                      class="event-img"
                      style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -77,101 +110,100 @@ document.addEventListener("DOMContentLoaded", async () => {
           `;
         }
 
-        // 🏠 Homepage cards
+        // Card layout markup (smaller events section)
         return `
           <div class="event-card">
-            <img src="${imgPath}" alt="${ev.title}">
-            <h3>${ev.title}</h3>
-            <p>${ev.date}</p>
+            <img src="${imgPath}" alt="${title}">
+            <h3>${title}</h3>
+            <p>${date}</p>
           </div>
         `;
       })
       .join("");
 
-    // 🧩 Step 4: Inject markup
+    // Render HTML into whichever container exists
     if (grid) grid.innerHTML = eventHTML;
     if (cards) cards.innerHTML = eventHTML;
 
-    // 🚫 Stop here if not admin
+    // If not admin, stop here (no edit wiring needed).
+    // Also: edits are only enabled on the grid version of the page.
     if (!isAdmin || !grid) return;
 
-    // 🧠 Step 5: Hook up all edit buttons
+    // 🧠 Step 5: Hook up edit buttons
+    // We rely on data-index to map each button to an event index in events.json
     document.querySelectorAll(".edit-title-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const i = btn.dataset.index;
+        const i = Number(btn.dataset.index);
+
+        // Defensive checks: ensure index is a valid non-negative integer
+        if (!Number.isInteger(i) || i < 0) return;
+
         const newTitle = prompt("Enter new event title:");
         if (!newTitle) return;
+
+        // Only update the title; leave other fields unchanged (null)
         await updateEvent(i, newTitle, null, null);
       });
     });
 
     document.querySelectorAll(".edit-date-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const i = btn.dataset.index;
+        const i = Number(btn.dataset.index);
+        if (!Number.isInteger(i) || i < 0) return;
+
         const newDate = prompt("Enter new event date:");
         if (!newDate) return;
+
+        // Only update the date; leave other fields unchanged (null)
         await updateEvent(i, null, newDate, null);
       });
     });
 
     // 🖼️ Step 6: Hook up image overlay for file upload
+    // Clicking the overlay triggers the hidden file input.
     document.querySelectorAll(".image-edit-overlay").forEach((overlay) => {
       const fileInput = overlay.querySelector(".hidden-file");
 
-      ["dragenter", "dragover", "dragleave", "drop"].forEach((evtName) => {
-        overlay.addEventListener(evtName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        });
-      });
-
       overlay.addEventListener("click", () => fileInput.click());
 
-      overlay.addEventListener("dragover", () => {
-        overlay.classList.add("dragover");
-        overlay.style.background = "rgba(66,121,188,0.95)";
-      });
+      fileInput.addEventListener("change", async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-      overlay.addEventListener("dragleave", () => {
-        overlay.classList.remove("dragover");
-        overlay.style.background = "rgba(66,121,188,0.85)";
-      });
-
-      overlay.addEventListener("drop", async (e) => {
-        overlay.classList.remove("dragover");
-        overlay.style.background = "rgba(66,121,188,0.85)";
-
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        if (!files || files.length === 0) {
-          console.warn("⚠️ No file detected in drop event");
+        // Quick client-side guard (server must still enforce type/size validation)
+        if (!file.type.startsWith("image/")) {
+          alert("Please upload an image file.");
           return;
         }
 
-        const file = files[0];
-        await uploadImage(fileInput.dataset.index, file);
-      });
-
-      fileInput.addEventListener("change", async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        await uploadImage(fileInput.dataset.index, file);
+        await uploadImage(Number(fileInput.dataset.index), file);
       });
 
       async function uploadImage(index, file) {
+        if (!Number.isInteger(index) || index < 0) return;
+
         const formData = new FormData();
         formData.append("image", file);
         formData.append("index", index);
+
         try {
+          // credentials ensures admin session cookie is included.
           const res = await fetch("/admin/upload-image", {
             method: "POST",
             body: formData,
+            credentials: "same-origin",
           });
+
           const result = await res.json();
           if (result.success) {
+            // Cache-bust so the browser immediately shows the new upload
             const img = document.getElementById(`event-image-${index}`);
             if (img) {
-              img.src = "/" + result.image + "?t=" + Date.now();
+              img.src =
+                "/" +
+                String(result.image).replace(/^\/+/, "") +
+                "?t=" +
+                Date.now();
             }
             alert("✅ Image updated successfully!");
           } else {
@@ -184,17 +216,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // 🔁 Step 7: Unified update function for title/date
     async function updateEvent(index, title, date, image) {
+      // Sends an update request to the server.
+      // NOTE: The server should verify admin permissions (UI checks are not security).
       try {
         const res = await fetch("/admin/update-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
           body: JSON.stringify({ index, title, date, image }),
         });
 
         const result = await res.json();
         if (result.success) {
+          // Simple approach: reload to re-render from updated events.json
           alert("✅ Event updated successfully!");
           location.reload();
         } else {
@@ -206,6 +241,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   } catch (err) {
+    // Catch-all so the page doesn’t die silently if JSON/network fails
     console.error("❌ Error loading events:", err);
   }
 });

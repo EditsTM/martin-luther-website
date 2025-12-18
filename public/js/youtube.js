@@ -1,6 +1,20 @@
 // ✅ public/js/youtube.js
 // Safely fetch and render latest and past YouTube videos
 
+function escapeHTML(v) {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function isValidYouTubeId(id) {
+  // Typical YouTube video IDs are 11 chars: letters, numbers, _ and -
+  return /^[A-Za-z0-9_-]{11}$/.test(String(id || ""));
+}
+
 async function loadVideos() {
   const latestContainer = document.getElementById("latest-stream");
   const pastContainer = document.getElementById("past-streams");
@@ -12,67 +26,74 @@ async function loadVideos() {
 
   try {
     console.log("📡 Fetching /api/youtube...");
-    const response = await fetch("/api/youtube");
-
+    const response = await fetch("/api/youtube", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const data = await response.json();
     console.log("✅ YouTube data received:", data);
 
     if (!data.items || data.items.length === 0) {
-      latestContainer.innerHTML = "<p>No videos found.</p>";
-      pastContainer.innerHTML = "<p>No past videos found.</p>";
+      latestContainer.textContent = "No videos found.";
+      pastContainer.textContent = "No past videos found.";
       return;
     }
 
     // 🎥 First = latest video
-    const latestVideo = data.items[0]?.snippet?.resourceId?.videoId;
-    if (latestVideo) {
+    const latestId = data.items[0]?.snippet?.resourceId?.videoId;
+    const latestTitle = data.items[0]?.snippet?.title || "Latest Video";
+
+    if (isValidYouTubeId(latestId)) {
       latestContainer.innerHTML = `
         <iframe
           width="100%"
           height="600"
-          src="https://www.youtube-nocookie.com/embed/${latestVideo}"
-          title="${data.items[0].snippet.title}"
+          src="https://www.youtube-nocookie.com/embed/${latestId}"
+          title="${escapeHTML(latestTitle)}"
           frameborder="0"
           allow="autoplay; encrypted-media"
           allowfullscreen
+          sandbox="allow-scripts allow-same-origin allow-presentation"
           referrerpolicy="strict-origin-when-cross-origin">
         </iframe>
       `;
     } else {
-      latestContainer.innerHTML = "<p>Could not load latest video.</p>";
+      latestContainer.textContent = "Could not load latest video.";
     }
 
     // 🕐 Past videos
     const pastVideos = data.items.slice(1, 4);
-    if (pastVideos.length > 0) {
-      pastContainer.innerHTML = pastVideos
-        .map((item) => {
-          const id = item?.snippet?.resourceId?.videoId;
-          const title = item?.snippet?.title || "Untitled Video";
-          return id
-            ? `
-            <iframe
-              width="360"
-              height="215"
-              src="https://www.youtube-nocookie.com/embed/${id}"
-              title="${title}"
-              frameborder="0"
-              allow="autoplay; encrypted-media"
-              allowfullscreen
-              referrerpolicy="strict-origin-when-cross-origin">
-            </iframe>`
-            : "";
-        })
-        .join("");
+    const pastHtml = pastVideos
+      .map((item) => {
+        const id = item?.snippet?.resourceId?.videoId;
+        const title = item?.snippet?.title || "Untitled Video";
+
+        if (!isValidYouTubeId(id)) return "";
+
+        return `
+          <iframe
+            width="360"
+            height="215"
+            src="https://www.youtube-nocookie.com/embed/${id}"
+            title="${escapeHTML(title)}"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            sandbox="allow-scripts allow-same-origin allow-presentation"
+            referrerpolicy="strict-origin-when-cross-origin">
+          </iframe>
+        `;
+      })
+      .join("");
+
+    if (pastHtml) {
+      pastContainer.innerHTML = pastHtml;
     } else {
-      pastContainer.innerHTML = "<p>No past videos found.</p>";
+      pastContainer.textContent = "No past videos found.";
     }
   } catch (err) {
     console.error("💥 Error fetching YouTube videos:", err);
-    latestContainer.innerHTML = "<p>Could not load videos.</p>";
-    pastContainer.innerHTML = "<p>Could not load videos.</p>";
+    latestContainer.textContent = "Could not load videos.";
+    pastContainer.textContent = "Could not load videos.";
   }
 }
 

@@ -1,11 +1,101 @@
 // public/js/team.js
+/* =========================================================
+   SECURITY IMPROVEMENTS (front-end only)
+   - Send cookies reliably with credentials: "same-origin"
+   - Disable caching on admin/session-ish requests (no-store)
+   - Consistent JSON fetch + error handling
+   - Optional CSRF header support (won't break if server ignores it)
+   - Client-side file checks for uploads (server must still validate)
+   - Basic image-path allowlisting to avoid weird paths being stored
+   ========================================================= */
 
-// ---------- ADMIN CHECK (same pattern as faculty.js) ----------
+// ---------- SECURITY HELPERS ----------
+function getCsrfToken() {
+  // Supports: <meta name="csrf-token" content="..."> (optional)
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  return meta?.getAttribute("content") || "";
+}
+
+async function fetchJson(url, options = {}) {
+  const res = await fetch(url, {
+    credentials: "same-origin",
+    cache: "no-store",
+    ...options,
+  });
+
+  if (!res.ok) {
+    let msg = `Request failed (${res.status})`;
+    try {
+      const ct = res.headers.get("content-type") || "";
+      if (ct.includes("application/json")) {
+        const err = await res.json();
+        if (err?.message) msg = err.message;
+      }
+    } catch (_) {}
+    throw new Error(msg);
+  }
+
+  const ct = res.headers.get("content-type") || "";
+  if (!ct.includes("application/json")) throw new Error("Expected JSON response.");
+
+  return res.json();
+}
+
+async function postJson(url, payload, method = "POST") {
+  const csrf = getCsrfToken();
+  const headers = { "Content-Type": "application/json" };
+  if (csrf) headers["X-CSRF-Token"] = csrf;
+
+  return fetchJson(url, {
+    method,
+    headers,
+    body: JSON.stringify(payload),
+  });
+}
+
+async function deleteJson(url) {
+  const csrf = getCsrfToken();
+  const headers = {};
+  if (csrf) headers["X-CSRF-Token"] = csrf;
+
+  return fetchJson(url, {
+    method: "DELETE",
+    headers,
+  });
+}
+
+async function postFormData(url, formData) {
+  const csrf = getCsrfToken();
+  const headers = {};
+  if (csrf) headers["X-CSRF-Token"] = csrf;
+
+  return fetchJson(url, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+}
+
+function normalizeImagePath(path, fallback = "/images/Placeholder.jpg") {
+  // Allow only site-relative images under /images/
+  // (Prevents accidental storage of odd/unsafe paths.)
+  const p = String(path || "").trim();
+  if (!p) return fallback;
+
+  // Strip origin if somehow present
+  const noOrigin = p.replace(/^https?:\/\/[^/]+/i, "");
+
+  // Ensure starts with /
+  const rel = noOrigin.startsWith("/") ? noOrigin : "/" + noOrigin;
+
+  return rel.startsWith("/images/") ? rel : fallback;
+}
+
+// ---------- ADMIN CHECK ----------
+// NOTE: UI-only. Backend must still enforce admin permissions on /api/team routes.
 async function isAdminLoggedIn() {
   try {
-    const res = await fetch("/admin/check");
-    if (!res.ok) return false;
-    const data = await res.json();
+    const data = await fetchJson("/admin/check");
     return !!data.loggedIn;
   } catch (e) {
     console.error("Failed admin check:", e);
@@ -16,7 +106,7 @@ async function isAdminLoggedIn() {
 let teamData = [];
 let isAdmin = false;
 
-// Modal state
+// Modal state (cached DOM elements + current editing context)
 let teamModalEl;
 let teamModalNameInput;
 let teamModalSubjectInput;
@@ -27,8 +117,8 @@ let teamModalSaveBtn;
 let teamModalDeleteBtn;
 let teamModalCloseBtn;
 
-let currentEditIndex = null; // null = new, number = existing
-let currentEditCard = null;
+let currentEditIndex = null; // null = new member, number = existing member index
+let currentEditCard = null;  // reference to the card being edited (for instant UI updates)
 
 // ---------- MODAL SETUP ----------
 function setupTeamModal() {
@@ -58,46 +148,43 @@ function setupTeamModal() {
     return;
   }
 
-  // Close handlers
+  // Close modal via "X" or clicking the overlay background
   teamModalCloseBtn.addEventListener("click", closeTeamModal);
   teamModalEl.addEventListener("click", (e) => {
     if (e.target === teamModalEl) closeTeamModal();
   });
 
-  // SAVE
+  // SAVE (create or update)
   teamModalSaveBtn.addEventListener("click", async () => {
     const name = teamModalNameInput.value.trim() || "Name";
     const subject = teamModalSubjectInput.value.trim() || "Pastor";
     const bioRaw = teamModalBioTextarea.value || "";
-    const imageSrc = teamModalPhotoPreview.src || "/images/Placeholder.jpg";
+
+    // Only store allowlisted /images/... paths (prevents weird paths being saved)
+    const imageSrc = normalizeImagePath(
+      teamModalPhotoPreview.src || "/images/Placeholder.jpg"
+    );
 
     const body = {
       name,
       subject,
-      image: imageSrc.replace(/^https?:\/\/[^/]+/, ""), // strip origin if present
+      image: imageSrc,
       bio: bioRaw,
     };
 
     try {
       if (currentEditIndex === null) {
-        // CREATE
-        const res = await fetch("/api/team", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Failed to add team member");
+        // CREATE new member
+        const out = await postJson("/api/team", body, "POST");
+        // If your backend returns {success:false}, handle it
+        if (out && out.success === false) throw new Error(out.message || "Failed to add team member");
       } else {
-        // UPDATE
-        const res = await fetch(`/api/team/${currentEditIndex}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Failed to update team member");
+        // UPDATE existing member by index
+        const out = await postJson(`/api/team/${currentEditIndex}`, body, "PUT");
+        if (out && out.success === false) throw new Error(out.message || "Failed to update team member");
       }
 
-      await loadTeam(); // refresh cards
+      await loadTeam();
       closeTeamModal();
     } catch (err) {
       console.error(err);
@@ -115,10 +202,9 @@ function setupTeamModal() {
     if (!confirm("Are you sure you want to delete this team member?")) return;
 
     try {
-      const res = await fetch(`/api/team/${currentEditIndex}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete team member");
+      const out = await deleteJson(`/api/team/${currentEditIndex}`);
+      if (out && out.success === false) throw new Error(out.message || "Failed to delete team member");
+
       await loadTeam();
       closeTeamModal();
     } catch (err) {
@@ -138,25 +224,37 @@ function setupTeamModal() {
     const file = teamModalPhotoInput.files[0];
     if (!file) return;
 
+    // Client-side guardrails (server must still enforce type/size!)
+    const MAX_BYTES = 5 * 1024 * 1024; // 5MB
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowed.includes(file.type)) {
+      alert("Please upload a JPG, PNG, WEBP, or GIF image.");
+      teamModalPhotoInput.value = "";
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      alert("Image is too large (max 5MB).");
+      teamModalPhotoInput.value = "";
+      return;
+    }
+
     const formData = new FormData();
     formData.append("image", file);
     formData.append("index", currentEditIndex);
 
     try {
-      const res = await fetch("/api/team/upload-image", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+      const data = await postFormData("/api/team/upload-image", formData);
       if (!data.success) {
         alert("Failed to upload image.");
         return;
       }
 
-      const newSrc = "/" + data.image.replace(/^\/+/, "") + "?t=" + Date.now();
+      // Only accept a safe /images/... relative path coming back from server
+      const safeImg = normalizeImagePath("/" + String(data.image || "").replace(/^\/+/, ""));
+      const newSrc = safeImg + "?t=" + Date.now();
+
       teamModalPhotoPreview.src = newSrc;
 
-      // Update card image if we still have a reference
       if (currentEditCard) {
         const img = currentEditCard.querySelector("img");
         if (img) img.src = newSrc;
@@ -178,7 +276,6 @@ function openTeamModal(index, cardElement) {
   currentEditCard = cardElement || null;
 
   if (index === null) {
-    // new entry
     teamModalNameInput.value = "";
     teamModalSubjectInput.value = "";
     teamModalBioTextarea.value = "";
@@ -186,6 +283,7 @@ function openTeamModal(index, cardElement) {
     teamModalDeleteBtn.style.display = "none";
   } else {
     const member = teamData[index];
+
     const bioArray = Array.isArray(member.bio)
       ? member.bio
       : (member.bio || "")
@@ -196,8 +294,9 @@ function openTeamModal(index, cardElement) {
     teamModalNameInput.value = member.name || "";
     teamModalSubjectInput.value = member.subject || "";
     teamModalBioTextarea.value = bioArray.join("\n\n");
-    teamModalPhotoPreview.src =
-      member.image || "/images/Placeholder.jpg";
+
+    // Normalize image so preview can't point somewhere unexpected
+    teamModalPhotoPreview.src = normalizeImagePath(member.image);
 
     teamModalDeleteBtn.style.display = "inline-block";
   }
@@ -234,7 +333,7 @@ function renderTeam() {
     card.dataset.index = index;
 
     const img = document.createElement("img");
-    img.src = member.image || "/images/Placeholder.jpg";
+    img.src = normalizeImagePath(member.image);
     img.alt = member.name ? `${member.name} photo` : "Team member photo";
 
     const h3 = document.createElement("h3");
@@ -255,7 +354,7 @@ function renderTeam() {
 
     bioArray.forEach((pText) => {
       const p = document.createElement("p");
-      p.textContent = pText;
+      p.textContent = pText; // safe against HTML injection
       bioDiv.appendChild(p);
     });
 
@@ -264,7 +363,6 @@ function renderTeam() {
     card.appendChild(h4);
     card.appendChild(bioDiv);
 
-    // ✅ Admin Edit button, just like faculty page
     if (isAdmin) {
       const editBtn = document.createElement("button");
       editBtn.className = "edit-btn admin-only";
@@ -284,9 +382,8 @@ function renderTeam() {
 // ---------- LOAD TEAM DATA ----------
 async function loadTeam() {
   try {
-    const res = await fetch("/api/team");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    // Use helper so cookies are included + no caching
+    const data = await fetchJson("/api/team");
     teamData = data.team || [];
     renderTeam();
   } catch (err) {
@@ -307,12 +404,11 @@ async function initTeamPage() {
   setupTeamModal();
   await loadTeam();
 
-  // Add button
   const addBtn = document.getElementById("add-team-btn");
   if (isAdmin && addBtn) {
     addBtn.style.display = "inline-block";
     addBtn.addEventListener("click", () => {
-      openTeamModal(null, null); // new member
+      openTeamModal(null, null);
     });
   }
 }

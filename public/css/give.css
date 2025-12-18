@@ -27,7 +27,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(66, 121, 188, 0.7); /* ✅ transparent blue overlay */
+  background: rgba(30, 42, 87, 0.85); 
   z-index: 1;
 }
 
