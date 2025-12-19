@@ -1,9 +1,10 @@
-// server/routes/teamRoutes.js
+// ✅ server/routes/teamRoutes.js
 import express from "express";
 import fs from "fs";
+import { promises as fsp } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import multer from "multer"; // ✅ requires `npm install multer`
+import multer from "multer";
 
 const router = express.Router();
 
@@ -21,28 +22,149 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// ✅ Multer storage config
+/* ======================================================
+   ✅ SECURITY HARDENING (keeps same endpoints/behavior)
+   1) Require admin session for all write routes
+   2) Same-origin check for CSRF-hardening (cookie sessions)
+   3) Input validation + length caps to reduce abuse/XSS risk
+   4) Multer file type + size limits (blocks SVG/HTML/etc.)
+   5) Atomic JSON writes to avoid corruption
+====================================================== */
+
+// ✅ Admin guard (same concept as your other routes)
+function requireAdmin(req, res, next) {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+  next();
+}
+
+// ✅ Same-origin check (helps block CSRF without changing your frontend)
+function requireSameOrigin(req, res, next) {
+  const origin = req.get("origin");
+  const host = req.get("host");
+  if (!origin) return next(); // allow non-browser clients
+
+  let originHost;
+  try {
+    originHost = new URL(origin).host;
+  } catch {
+    return res.status(403).json({ error: "Bad origin" });
+  }
+
+  if (originHost !== host) {
+    return res.status(403).json({ error: "Cross-site request blocked" });
+  }
+  next();
+}
+
+const LIMITS = {
+  name: 80,
+  subject: 120,
+  bioTotal: 4000, // total combined text across bio paragraphs
+  bioParagraphs: 25,
+  bioParagraphLen: 500,
+};
+
+// ✅ Normalize/validate strings (prevents huge payloads + downstream XSS risk)
+function cleanString(v, max) {
+  if (v === undefined || v === null) return undefined;
+  const s = String(v).trim();
+  if (s.length === 0) return "";
+  return s.length > max ? s.slice(0, max) : s;
+}
+
+function normalizeBio(bio) {
+  if (bio === undefined) return undefined;
+
+  let parts = [];
+  if (Array.isArray(bio)) {
+    parts = bio.map((p) => String(p ?? "").trim());
+  } else {
+    parts = String(bio ?? "")
+      .split("\n\n")
+      .map((p) => p.trim());
+  }
+
+  parts = parts.filter((p) => p.length > 0).slice(0, LIMITS.bioParagraphs);
+  parts = parts.map((p) =>
+    p.length > LIMITS.bioParagraphLen ? p.slice(0, LIMITS.bioParagraphLen) : p
+  );
+
+  const total = parts.reduce((sum, p) => sum + p.length, 0);
+  if (total > LIMITS.bioTotal) {
+    // Trim from the end until within total limit
+    let remaining = LIMITS.bioTotal;
+    const trimmed = [];
+    for (const p of parts) {
+      if (remaining <= 0) break;
+      const take = Math.min(p.length, remaining);
+      trimmed.push(p.slice(0, take));
+      remaining -= take;
+    }
+    return trimmed.filter((p) => p.length > 0);
+  }
+
+  return parts;
+}
+
+// ✅ Atomic JSON write to avoid partial/corrupt file
+async function atomicWriteJson(filePath, dataObj) {
+  const dir = path.dirname(filePath);
+  const tmpPath = path.join(
+    dir,
+    `.tmp-${path.basename(filePath)}-${process.pid}-${Date.now()}`
+  );
+  const json = JSON.stringify(dataObj, null, 2);
+  await fsp.writeFile(tmpPath, json, "utf8");
+  await fsp.rename(tmpPath, filePath);
+}
+
+// ✅ Read team.json safely
+function readTeam() {
+  const raw = fs.readFileSync(TEAM_PATH, "utf8");
+  const parsed = JSON.parse(raw);
+  // Ensure shape doesn't explode your code
+  if (!parsed || typeof parsed !== "object") return { team: [] };
+  if (!Array.isArray(parsed.team)) parsed.team = [];
+  return parsed;
+}
+
+// ✅ Multer storage config (safe filenames)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
-    const safeName = file.originalname
+    const safeName = String(file.originalname || "upload")
       .toLowerCase()
-      .replace(/[^a-z0-9.\-_]/g, "_");
+      .replace(/[^a-z0-9.\-_]/g, "_")
+      .slice(0, 120);
+
     const timestamp = Date.now();
     cb(null, `${timestamp}_${safeName}`);
   },
 });
 
-const upload = multer({ storage });
+// ✅ Upload restrictions (blocks dangerous types + disk fill)
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB
+    files: 1,
+  },
+  fileFilter: (req, file, cb) => {
+    // Block SVG (common stored XSS vector) + only allow common raster formats
+    const allowed = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+    if (!allowed.has(file.mimetype)) {
+      return cb(new Error("Invalid file type"));
+    }
+    cb(null, true);
+  },
+});
 
-// Helpers
-function readTeam() {
-  const raw = fs.readFileSync(TEAM_PATH, "utf8");
-  return JSON.parse(raw);
-}
-
-function writeTeam(data) {
-  fs.writeFileSync(TEAM_PATH, JSON.stringify(data, null, 2), "utf8");
+// ✅ Friendly multer error handler (so invalid files don't crash / leak stack)
+function multerErrorHandler(err, req, res, next) {
+  if (!err) return next();
+  return res.status(400).json({ success: false, error: err.message || "Upload failed" });
 }
 
 /* =========================
@@ -64,31 +186,28 @@ router.get("/", (req, res) => {
    POST /api/team
    body: { name, subject, image, bio }
 ========================= */
-router.post("/", (req, res) => {
+router.post("/", requireSameOrigin, requireAdmin, async (req, res) => {
   try {
-    const { name, subject, image, bio } = req.body;
+    const name = cleanString(req.body?.name, LIMITS.name);
+    const subject = cleanString(req.body?.subject, LIMITS.subject);
+    const image = cleanString(req.body?.image, 300);
+    const bio = normalizeBio(req.body?.bio);
 
     if (!name || !subject) {
-      return res
-        .status(400)
-        .json({ error: "name and subject are required fields" });
+      return res.status(400).json({ error: "name and subject are required fields" });
     }
 
     const data = readTeam();
+
     const newMember = {
       name,
       subject,
       image: image || "/images/Placeholder.jpg",
-      bio: Array.isArray(bio)
-        ? bio
-        : (bio || "")
-            .split("\n\n")
-            .map((p) => p.trim())
-            .filter((p) => p.length > 0),
+      bio: bio ?? [],
     };
 
     data.team.push(newMember);
-    writeTeam(data);
+    await atomicWriteJson(TEAM_PATH, data);
 
     res.json(data);
   } catch (err) {
@@ -101,11 +220,9 @@ router.post("/", (req, res) => {
    ADMIN: UPDATE MEMBER
    PUT /api/team/:index
 ========================= */
-router.put("/:index", (req, res) => {
+router.put("/:index", requireSameOrigin, requireAdmin, async (req, res) => {
   try {
     const idx = parseInt(req.params.index, 10);
-    const { name, subject, image, bio } = req.body;
-
     const data = readTeam();
 
     if (Number.isNaN(idx) || idx < 0 || idx >= data.team.length) {
@@ -114,19 +231,23 @@ router.put("/:index", (req, res) => {
 
     const member = data.team[idx];
 
-    if (name !== undefined) member.name = name;
-    if (subject !== undefined) member.subject = subject;
-    if (image !== undefined) member.image = image;
-    if (bio !== undefined) {
-      member.bio = Array.isArray(bio)
-        ? bio
-        : (bio || "")
-            .split("\n\n")
-            .map((p) => p.trim())
-            .filter((p) => p.length > 0);
+    if (req.body?.name !== undefined) member.name = cleanString(req.body.name, LIMITS.name);
+    if (req.body?.subject !== undefined) member.subject = cleanString(req.body.subject, LIMITS.subject);
+
+    // Only allow local image paths (prevents javascript: / weird schemes)
+    if (req.body?.image !== undefined) {
+      const img = cleanString(req.body.image, 300);
+      if (img && !img.startsWith("/images/")) {
+        return res.status(400).json({ error: "Invalid image path" });
+      }
+      member.image = img || "/images/Placeholder.jpg";
     }
 
-    writeTeam(data);
+    if (req.body?.bio !== undefined) {
+      member.bio = normalizeBio(req.body.bio);
+    }
+
+    await atomicWriteJson(TEAM_PATH, data);
     res.json(data);
   } catch (err) {
     console.error("Error updating team member", err);
@@ -138,7 +259,7 @@ router.put("/:index", (req, res) => {
    ADMIN: DELETE MEMBER
    DELETE /api/team/:index
 ========================= */
-router.delete("/:index", (req, res) => {
+router.delete("/:index", requireSameOrigin, requireAdmin, async (req, res) => {
   try {
     const idx = parseInt(req.params.index, 10);
     const data = readTeam();
@@ -148,7 +269,7 @@ router.delete("/:index", (req, res) => {
     }
 
     data.team.splice(idx, 1);
-    writeTeam(data);
+    await atomicWriteJson(TEAM_PATH, data);
 
     res.json(data);
   } catch (err) {
@@ -162,36 +283,39 @@ router.delete("/:index", (req, res) => {
    POST /api/team/upload-image
    form-data: image (file), index (number)
 ========================= */
-router.post("/upload-image", upload.single("image"), (req, res) => {
-  try {
-    const idx = parseInt(req.body.index, 10);
+router.post(
+  "/upload-image",
+  requireSameOrigin,
+  requireAdmin,
+  upload.single("image"),
+  multerErrorHandler,
+  async (req, res) => {
+    try {
+      const idx = parseInt(req.body?.index, 10);
 
-    if (!req.file) {
-      return res
-        .status(400)
-        .json({ success: false, error: "No file uploaded" });
+      if (!req.file) {
+        return res.status(400).json({ success: false, error: "No file uploaded" });
+      }
+
+      const data = readTeam();
+
+      if (Number.isNaN(idx) || idx < 0 || idx >= data.team.length) {
+        // Cleanup uploaded file if index is invalid
+        try { await fsp.unlink(req.file.path); } catch {}
+        return res.status(400).json({ success: false, error: "Invalid member index" });
+      }
+
+      const relPath = `images/team/${req.file.filename}`;
+      data.team[idx].image = "/" + relPath;
+
+      await atomicWriteJson(TEAM_PATH, data);
+
+      res.json({ success: true, image: relPath });
+    } catch (err) {
+      console.error("Error uploading team image:", err);
+      res.status(500).json({ success: false, error: "Failed to upload team image" });
     }
-
-    const data = readTeam();
-
-    if (Number.isNaN(idx) || idx < 0 || idx >= data.team.length) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid member index" });
-    }
-
-    const relPath = `images/team/${req.file.filename}`;
-    data.team[idx].image = "/" + relPath;
-
-    writeTeam(data);
-
-    res.json({ success: true, image: relPath });
-  } catch (err) {
-    console.error("Error uploading team image:", err);
-    res
-      .status(500)
-      .json({ success: false, error: "Failed to upload team image" });
   }
-});
+);
 
 export default router;

@@ -577,6 +577,14 @@ body {
 .card.bible {
   height: 315px;   /* try 315; bump to 320 if you want a touch more */
 }
+/* ✅ Make Sunday (blue) card match Bible card height */
+.card.sunday {
+  height: 315px;
+}
+.card.sunday {
+  height: 315px;
+  padding-bottom: 36px;
+}
 
 
 

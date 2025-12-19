@@ -1,13 +1,14 @@
 // ✅ server/server.js
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import helmet from "helmet";
 import fetch from "node-fetch";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import session from "express-session";
+import rateLimit from "express-rate-limit"; // ✅ added (for /api/youtube)
 
 import contactRoutes from "./routes/contactRoutes.js";
 import prayerRoutes from "./routes/prayerRoutes.js";
@@ -21,14 +22,16 @@ import teamRoutes from "./routes/teamRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 👇 SIMPLE: load default .env from project root
-// (same way it was working earlier)
-dotenv.config();
+/* ------------------------------------------------------
+   ✅ SECURITY FAIL-CLOSED (prevents insecure defaults)
+------------------------------------------------------ */
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("❌ SESSION_SECRET is missing in production. Refusing to start.");
+  }
+}
 
-// 🔍 Debug – SHOW SMTP_* (the ones you actually use)
-console.log("ENV SMTP_USER:", process.env.SMTP_USER);
-console.log("ENV SMTP_PASS defined:", !!process.env.SMTP_PASS);
-
+// 🔍 Debug – safe (do NOT print secrets)
 console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
@@ -47,18 +50,41 @@ app.use(
     referrerPolicy: { policy: "no-referrer" },
   })
 );
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// ✅ Tighten CORS (keep functionality: allow same-origin + no-origin tools)
+const allowedOrigins = [
+  process.env.SITE_ORIGIN,              // e.g. https://martinlutheroshkosh.com
+  process.env.SITE_ORIGIN_2,            // e.g. https://mloshkosh.org
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true); // allow same-origin/no-origin (curl/postman)
+      if (allowedOrigins.length === 0) return cb(null, true); // if not configured, don't break
+      return allowedOrigins.includes(origin)
+        ? cb(null, true)
+        : cb(new Error("Not allowed by CORS"));
+    },
+  })
+);
+
+// ✅ Add explicit body size limits (prevents large-payload abuse)
+app.use(express.json({ limit: "25kb" }));
+app.use(express.urlencoded({ extended: true, limit: "25kb" }));
 
 /* ------------------------------------------------------
    🧩 Session Configuration (Persistent 15-minute Login)
 ------------------------------------------------------ */
 app.use(
   session({
+    name: "ml.sid", // ✅ avoid default connect.sid
     secret: process.env.SESSION_SECRET || "ml-secret",
     resave: false,
     saveUninitialized: false,
+    rolling: true, // ✅ refresh cookie expiration on activity
     cookie: {
       maxAge: 15 * 60 * 1000, // 🕒 15 minutes
       httpOnly: true,
@@ -69,6 +95,7 @@ app.use(
 );
 
 // 🕓 Extend session if user stays active
+// ✅ rolling:true already refreshes expiration, keep this for compatibility (won't break anything)
 app.use((req, res, next) => {
   if (req.session && req.session.loggedIn) {
     req.session._garbage = Date();
@@ -118,9 +145,16 @@ app.use("/content", contentRoutes);
 app.use("/api/team", teamRoutes);
 
 /* ------------------------------------------------------
-   🎥 YouTube Proxy
+   🎥 YouTube Proxy (✅ add rate limiting to protect API quota)
 ------------------------------------------------------ */
-app.get("/api/youtube", async (req, res) => {
+const youtubeLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30,             // 30 req/min per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.get("/api/youtube", youtubeLimiter, async (req, res) => {
   try {
     const { YOUTUBE_API_KEY, CHANNEL_ID } = process.env;
     if (!YOUTUBE_API_KEY || !CHANNEL_ID)

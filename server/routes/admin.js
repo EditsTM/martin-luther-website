@@ -5,6 +5,8 @@ import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import rateLimit from "express-rate-limit";
+import crypto from "crypto";
 
 dotenv.config();
 
@@ -12,9 +14,104 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🟢 Load admin password securely
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "default123";
-console.log("🧩 Loaded ADMIN_PASSWORD:", ADMIN_PASSWORD ? "[HIDDEN]" : "❌ Not Found");
+/* ======================================================
+   ✅ SECURITY HELPERS
+====================================================== */
+
+// ✅ Fail closed if ADMIN_PASSWORD isn't set (no insecure fallback)
+if (!process.env.ADMIN_PASSWORD) {
+  throw new Error("❌ ADMIN_PASSWORD is missing. Refusing to start for safety.");
+}
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+// ✅ Rate-limit login attempts (basic brute-force protection)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // 20 attempts per IP per window
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// ✅ Timing-safe password compare (reduces timing leakage)
+function timingSafeEqualString(a, b) {
+  const aBuf = Buffer.from(String(a ?? ""), "utf8");
+  const bBuf = Buffer.from(String(b ?? ""), "utf8");
+  if (aBuf.length !== bBuf.length) return false;
+  return crypto.timingSafeEqual(aBuf, bBuf);
+}
+
+// ✅ Simple same-origin CSRF guard for POSTs (works well with cookie sessions)
+// Note: This assumes your site runs over https in production.
+function requireSameOrigin(req, res, next) {
+  const origin = req.get("origin");
+  const host = req.get("host");
+
+  // If no Origin header (some same-origin requests), allow.
+  if (!origin) return next();
+
+  let originHost;
+  try {
+    originHost = new URL(origin).host;
+  } catch {
+    return res.status(403).json({ error: "Bad Origin" });
+  }
+
+  if (originHost !== host) {
+    return res.status(403).json({ error: "CSRF blocked (origin mismatch)" });
+  }
+
+  next();
+}
+
+// ✅ Auth guard
+function requireAdmin(req, res, next) {
+  if (!req.session?.loggedIn) return res.status(403).json({ error: "Unauthorized" });
+  next();
+}
+
+// ✅ Strict index parsing (prevents weird keys like "__proto__")
+function parseIndex(val) {
+  const i = Number(val);
+  if (!Number.isInteger(i) || i < 0) return null;
+  return i;
+}
+
+// ✅ Basic string length limits to prevent abuse / huge payloads
+function clampString(val, maxLen) {
+  if (val == null) return null;
+  const s = String(val);
+  if (!s) return null;
+  return s.length > maxLen ? s.slice(0, maxLen) : s;
+}
+
+/* ======================================================
+   ✅ UPLOAD HARDENING (EVENTS + FACULTY)
+====================================================== */
+
+const ALLOWED_IMAGE_MIME = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
+
+function imageFileFilter(req, file, cb) {
+  // ✅ Block SVG (common XSS vector if served as image/svg+xml)
+  if (file.mimetype === "image/svg+xml") {
+    return cb(new Error("SVG uploads are not allowed."), false);
+  }
+  if (!ALLOWED_IMAGE_MIME.has(file.mimetype)) {
+    return cb(new Error("Only JPG, PNG, WEBP, GIF allowed."), false);
+  }
+  cb(null, true);
+}
+
+function safeRandomFilename(originalname) {
+  const ext = path.extname(originalname || "").toLowerCase();
+  const safeExt = [".jpg", ".jpeg", ".png", ".webp", ".gif"].includes(ext) ? ext : "";
+  const unique = `${Date.now()}-${crypto.randomBytes(6).toString("hex")}`;
+  return `${unique}${safeExt}`;
+}
 
 /* ------------------------------------------------------
    🏠 Admin Login Page
@@ -29,12 +126,13 @@ router.get("/login", (req, res) => {
 /* ------------------------------------------------------
    🔐 Handle Login
 ------------------------------------------------------ */
-router.post("/login", (req, res) => {
+router.post("/login", loginLimiter, (req, res) => {
   const { password } = req.body;
 
-  if (password === ADMIN_PASSWORD) {
+  if (timingSafeEqualString(password, ADMIN_PASSWORD)) {
     req.session.loggedIn = true;
 
+    // ✅ (Keeps your existing UX behavior)
     return res.send(`
       <script>
         localStorage.setItem('isAdmin', 'true');
@@ -144,14 +242,14 @@ router.get("/dashboard", (req, res) => {
 </html>
   `);
 });
+
 /* ------------------------------------------------------
    🚪 Logout (POST) — for fetch() / idle timeout
 ------------------------------------------------------ */
-router.post("/logout", (req, res) => {
+router.post("/logout", requireSameOrigin, (req, res) => {
   if (!req.session) return res.status(200).json({ ok: true });
 
   req.session.destroy(() => {
-    // If you set the session cookie name differently, keep as-is.
     res.clearCookie("connect.sid");
     res.json({ ok: true });
   });
@@ -181,12 +279,21 @@ router.get("/check", (req, res) => {
 /* ------------------------------------------------------
    🧩 Update Event Title/Date/Image
 ------------------------------------------------------ */
-router.post("/update-event", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
-  const { index, title, date, image } = req.body;
+router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
   const filePath = path.resolve(process.cwd(), "server/content/events.json");
+
+  // ✅ strict index + basic input limits
+  const i = parseIndex(req.body?.index);
+  const title = clampString(req.body?.title, 120);
+  const date = clampString(req.body?.date, 80);
+  const image = clampString(req.body?.image, 300);
+
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
+
+  // ✅ If image is provided, force it to be site-relative under /images/
+  if (image && !image.startsWith("/images/")) {
+    return res.status(400).json({ error: "Invalid image path" });
+  }
 
   try {
     if (!fs.existsSync(filePath)) {
@@ -194,16 +301,16 @@ router.post("/update-event", (req, res) => {
     }
 
     const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    if (!data.events || !data.events[index]) {
+    if (!Array.isArray(data.events) || !data.events[i]) {
       return res.status(404).json({ error: "Event not found" });
     }
 
-    if (title) data.events[index].title = title;
-    if (date) data.events[index].date = date;
-    if (image) data.events[index].image = image;
+    if (title) data.events[i].title = title;
+    if (date) data.events[i].date = date;
+    if (image) data.events[i].image = image;
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    res.json({ success: true, updated: data.events[index] });
+    res.json({ success: true, updated: data.events[i] });
   } catch (err) {
     res.status(500).json({ error: "Failed to update event" });
   }
@@ -217,36 +324,43 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path.basename(file.originalname, ext);
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${base}-${unique}${ext}`);
-  },
+  filename: (req, file, cb) => cb(null, safeRandomFilename(file.originalname)),
 });
-const upload = multer({ storage });
 
-router.post("/upload-image", upload.single("image"), (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
+const upload = multer({
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 3 * 1024 * 1024 }, // ✅ 3MB
+});
 
-  const { index } = req.body;
-  const filePath = path.resolve(process.cwd(), "server/content/events.json");
+router.post(
+  "/upload-image",
+  requireSameOrigin,
+  requireAdmin,
+  upload.single("image"),
+  (req, res) => {
+    const i = parseIndex(req.body?.index);
+    if (i === null) return res.status(400).json({ error: "Invalid index" });
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
-  try {
-    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    if (!data.events[index])
-      return res.status(404).json({ error: "Event not found" });
+    const filePath = path.resolve(process.cwd(), "server/content/events.json");
 
-    const rel = `/images/events/${req.file.filename}`;
-    data.events[index].image = rel;
+    try {
+      const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+      if (!Array.isArray(data.events) || !data.events[i]) {
+        return res.status(404).json({ error: "Event not found" });
+      }
 
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    res.json({ success: true, image: rel });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to upload image" });
+      const rel = `/images/events/${req.file.filename}`;
+      data.events[i].image = rel;
+
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      res.json({ success: true, image: rel });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to upload image" });
+    }
   }
-});
+);
 
 /* ------------------------------------------------------
    📥 Serve events.json for homepage
@@ -318,10 +432,7 @@ router.get("/faculty.json", (req, res) => {
 /* ------------------------------------------------------
    ➕ Add Teacher
 ------------------------------------------------------ */
-router.post("/faculty/add", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
+router.post("/faculty/add", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const data = readFacultyFile();
 
@@ -347,10 +458,7 @@ router.post("/faculty/add", (req, res) => {
 /* ------------------------------------------------------
    ⭐ ADD ADMIN MEMBER
 ------------------------------------------------------ */
-router.post("/faculty/add-admin", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
+router.post("/faculty/add-admin", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const data = readFacultyFile();
 
@@ -377,10 +485,7 @@ router.post("/faculty/add-admin", (req, res) => {
 /* ------------------------------------------------------
    ⭐ ADD STAFF MEMBER (NEW)
 ------------------------------------------------------ */
-router.post("/faculty/add-staff", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
+router.post("/faculty/add-staff", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const data = readFacultyFile();
 
@@ -407,11 +512,16 @@ router.post("/faculty/add-staff", (req, res) => {
 /* ------------------------------------------------------
    ✏️ Update Teacher / Principal / Staff
 ------------------------------------------------------ */
-router.post("/faculty/update", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
+router.post("/faculty/update", requireSameOrigin, requireAdmin, (req, res) => {
+  const role = String(req.body?.role || "");
+  const name = clampString(req.body?.name, 120);
+  const subject = clampString(req.body?.subject, 120);
+  const image = clampString(req.body?.image, 300);
 
-  const { role, index, name, subject, image } = req.body;
+  // ✅ Only allow site-relative image paths under /images/
+  if (image && !image.startsWith("/images/")) {
+    return res.status(400).json({ error: "Invalid image path" });
+  }
 
   try {
     const data = readFacultyFile();
@@ -428,9 +538,9 @@ router.post("/faculty/update", (req, res) => {
 
     // TEACHER
     if (role === "teacher") {
-      const i = Number(index);
-      if (!data.teachers[i])
-        return res.status(404).json({ error: "Teacher not found" });
+      const i = parseIndex(req.body?.index);
+      if (i === null) return res.status(400).json({ error: "Invalid index" });
+      if (!data.teachers[i]) return res.status(404).json({ error: "Teacher not found" });
 
       if (name) data.teachers[i].name = name;
       if (subject) data.teachers[i].subject = subject;
@@ -446,9 +556,9 @@ router.post("/faculty/update", (req, res) => {
 
     // STAFF (NEW)
     if (role === "staff") {
-      const i = Number(index);
-      if (!data.staff || !data.staff[i])
-        return res.status(404).json({ error: "Staff not found" });
+      const i = parseIndex(req.body?.index);
+      if (i === null) return res.status(400).json({ error: "Invalid index" });
+      if (!data.staff || !data.staff[i]) return res.status(404).json({ error: "Staff not found" });
 
       if (name) data.staff[i].name = name;
       if (subject) data.staff[i].subject = subject;
@@ -471,21 +581,26 @@ router.post("/faculty/update", (req, res) => {
 /* ------------------------------------------------------
    ⭐ UPDATE ADMIN MEMBER
 ------------------------------------------------------ */
-router.post("/faculty/update-admin", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
+router.post("/faculty/update-admin", requireSameOrigin, requireAdmin, (req, res) => {
+  const i = parseIndex(req.body?.index);
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
 
-  const { index, name, subject, image } = req.body;
+  const name = clampString(req.body?.name, 120);
+  const subject = clampString(req.body?.subject, 120);
+  const image = clampString(req.body?.image, 300);
+
+  if (image && !image.startsWith("/images/")) {
+    return res.status(400).json({ error: "Invalid image path" });
+  }
 
   try {
     const data = readFacultyFile();
 
-    if (!data.admin || !data.admin[index])
-      return res.status(404).json({ error: "Admin not found" });
+    if (!data.admin || !data.admin[i]) return res.status(404).json({ error: "Admin not found" });
 
-    if (name) data.admin[index].name = name;
-    if (subject) data.admin[index].subject = subject;
-    if (image) data.admin[index].image = image;
+    if (name) data.admin[i].name = name;
+    if (subject) data.admin[i].subject = subject;
+    if (image) data.admin[i].image = image;
 
     writeFacultyFile(data);
     res.json({ success: true });
@@ -497,18 +612,15 @@ router.post("/faculty/update-admin", (req, res) => {
 /* ------------------------------------------------------
    ❌ DELETE TEACHER
 ------------------------------------------------------ */
-router.post("/faculty/delete", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
-  const { index } = req.body;
+router.post("/faculty/delete", requireSameOrigin, requireAdmin, (req, res) => {
+  const i = parseIndex(req.body?.index);
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
 
   try {
     const data = readFacultyFile();
-    if (!data.teachers[index])
-      return res.status(404).json({ error: "Teacher not found" });
+    if (!data.teachers[i]) return res.status(404).json({ error: "Teacher not found" });
 
-    data.teachers.splice(index, 1);
+    data.teachers.splice(i, 1);
     writeFacultyFile(data);
 
     res.json({ success: true });
@@ -520,18 +632,15 @@ router.post("/faculty/delete", (req, res) => {
 /* ------------------------------------------------------
    ⭐ DELETE ADMIN MEMBER
 ------------------------------------------------------ */
-router.post("/faculty/delete-admin", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
-  const { index } = req.body;
+router.post("/faculty/delete-admin", requireSameOrigin, requireAdmin, (req, res) => {
+  const i = parseIndex(req.body?.index);
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
 
   try {
     const data = readFacultyFile();
-    if (!data.admin || !data.admin[index])
-      return res.status(404).json({ error: "Admin not found" });
+    if (!data.admin || !data.admin[i]) return res.status(404).json({ error: "Admin not found" });
 
-    data.admin.splice(index, 1);
+    data.admin.splice(i, 1);
     writeFacultyFile(data);
 
     res.json({ success: true });
@@ -543,18 +652,15 @@ router.post("/faculty/delete-admin", (req, res) => {
 /* ------------------------------------------------------
    ⭐ DELETE STAFF MEMBER (NEW)
 ------------------------------------------------------ */
-router.post("/faculty/delete-staff", (req, res) => {
-  if (!req.session.loggedIn)
-    return res.status(403).json({ error: "Unauthorized" });
-
-  const { index } = req.body;
+router.post("/faculty/delete-staff", requireSameOrigin, requireAdmin, (req, res) => {
+  const i = parseIndex(req.body?.index);
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
 
   try {
     const data = readFacultyFile();
-    if (!data.staff || !data.staff[index])
-      return res.status(404).json({ error: "Staff not found" });
+    if (!data.staff || !data.staff[i]) return res.status(404).json({ error: "Staff not found" });
 
-    data.staff.splice(index, 1);
+    data.staff.splice(i, 1);
     writeFacultyFile(data);
 
     res.json({ success: true });
@@ -572,29 +678,32 @@ if (!fs.existsSync(facultyUploadDir))
 
 const facultyStorage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, facultyUploadDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path.basename(file.originalname, ext);
-    const unique = Date.now() + "-" + Math.random().toString(36).substring(2, 8);
-    cb(null, `${base}-${unique}${ext}`);
-  },
+  filename: (req, file, cb) => cb(null, safeRandomFilename(file.originalname)),
 });
-const uploadFaculty = multer({ storage: facultyStorage });
+
+const uploadFaculty = multer({
+  storage: facultyStorage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 3 * 1024 * 1024 }, // ✅ 3MB
+});
 
 router.post(
   "/faculty/upload-image",
+  requireSameOrigin,
+  requireAdmin,
   uploadFaculty.single("image"),
   (req, res) => {
-    if (!req.session.loggedIn)
-      return res.status(403).json({ error: "Unauthorized" });
-
-    const { role, index } = req.body;
+    const role = String(req.body?.role || "");
+    const idx = role === "principal" ? 0 : parseIndex(req.body?.index);
+    if (role !== "principal" && idx === null) {
+      return res.status(400).json({ error: "Invalid index" });
+    }
 
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
     try {
       const data = readFacultyFile();
-      const rel = `images/faculty/${req.file.filename}`;
+      const rel = `/images/faculty/${req.file.filename}`;
 
       if (role === "principal") {
         data.principal.image = rel;
@@ -603,31 +712,22 @@ router.post(
       }
 
       if (role === "teacher") {
-        const i = Number(index);
-        if (!data.teachers[i])
-          return res.status(404).json({ error: "Teacher not found" });
-
-        data.teachers[i].image = rel;
+        if (!data.teachers[idx]) return res.status(404).json({ error: "Teacher not found" });
+        data.teachers[idx].image = rel;
         writeFacultyFile(data);
         return res.json({ success: true, image: rel });
       }
 
       if (role === "admin") {
-        const i = Number(index);
-        if (!data.admin || !data.admin[i])
-          return res.status(404).json({ error: "Admin not found" });
-
-        data.admin[i].image = rel;
+        if (!data.admin || !data.admin[idx]) return res.status(404).json({ error: "Admin not found" });
+        data.admin[idx].image = rel;
         writeFacultyFile(data);
         return res.json({ success: true, image: rel });
       }
 
       if (role === "staff") {
-        const i = Number(index);
-        if (!data.staff || !data.staff[i])
-          return res.status(404).json({ error: "Staff not found" });
-
-        data.staff[i].image = rel;
+        if (!data.staff || !data.staff[idx]) return res.status(404).json({ error: "Staff not found" });
+        data.staff[idx].image = rel;
         writeFacultyFile(data);
         return res.json({ success: true, image: rel });
       }

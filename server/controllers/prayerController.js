@@ -2,8 +2,40 @@
 import nodemailer from "nodemailer";
 import { validationResult } from "express-validator";
 
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASS;
+const prayerTo = process.env.PRAYER_TO;
+
+if (!smtpUser || !smtpPass) {
+  console.error("❌ Missing SMTP_USER / SMTP_PASS in env (prayer).");
+}
+if (!prayerTo) {
+  console.error("❌ Missing PRAYER_TO in env (prayer).");
+}
+
+// ✅ Create transporter once (reuse)
+const transporter =
+  smtpUser && smtpPass
+    ? nodemailer.createTransport({
+        host: process.env.SMTP_HOST || "smtp.gmail.com",
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: true,
+        auth: { user: smtpUser, pass: smtpPass },
+      })
+    : null;
+
+// ✅ Simple CRLF strip to prevent header injection attempts
+function stripCRLF(value) {
+  return String(value ?? "").replace(/[\r\n]+/g, " ").trim();
+}
+
 export const sendPrayerRequest = async (req, res) => {
-  console.log("📩 Prayer request incoming:", req.body);
+  // ✅ Don’t log full body (contains sensitive prayer text). Log minimal metadata.
+  console.log("📩 Prayer request hit:", {
+    ip: req.ip,
+    hasBody: !!req.body,
+    time: new Date().toISOString(),
+  });
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -12,57 +44,48 @@ export const sendPrayerRequest = async (req, res) => {
 
   const { name, email, prayer, share } = req.body;
 
-  // 🔑 Use ONLY SMTP_* (matches your .env)
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-
-  console.log("🔐 Prayer SMTP user:", smtpUser);
-  console.log("🔐 Prayer SMTP user len:", smtpUser ? smtpUser.length : 0);
-  console.log("🔐 Prayer SMTP pass defined:", !!smtpPass);
-  console.log("🔐 Prayer SMTP pass len:", smtpPass ? smtpPass.length : 0);
-
-  if (!smtpUser || !smtpPass) {
-    console.error("❌ Missing SMTP_USER / SMTP_PASS in env (prayer).");
+  // ✅ Fail closed if email isn't configured
+  if (!smtpUser || !smtpPass || !transporter) {
     return res
       .status(500)
       .json({ ok: false, error: "Email is not configured on the server." });
   }
 
-  try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: Number(process.env.SMTP_PORT) || 465,
-      secure: true,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
+  if (!prayerTo) {
+    return res
+      .status(500)
+      .json({ ok: false, error: "Email destination is not configured on the server." });
+  }
 
-    const subject = `🙏 New Prayer Request from ${name}`;
+  try {
+    const safeName = stripCRLF(name);
+    const safeEmail = stripCRLF(email);
+    const safeShare = stripCRLF(share);
+
+    const subject = `🙏 New Prayer Request from ${safeName || "Visitor"}`;
 
     await transporter.sendMail({
       from: `"ML Prayer Request" <${smtpUser}>`,
-      to: process.env.PRAYER_TO,
-      replyTo: email,
-      subject,
+      to: prayerTo,
+      replyTo: safeEmail, // ✅ stripped of CR/LF defensively
+      subject: stripCRLF(subject),
       text: `
 New Prayer Request Submitted:
 
-Name: ${name}
-Email: ${email}
-Share with congregation: ${share.toUpperCase()}
+Name: ${safeName}
+Email: ${safeEmail}
+Share with congregation: ${(safeShare || "no").toUpperCase()}
 
 Prayer Request:
-${prayer}
+${String(prayer ?? "").trim()}
       `.trim(),
     });
 
     console.log("✅ Prayer request sent successfully!");
-    res.json({ ok: true });
+    return res.json({ ok: true });
   } catch (err) {
     console.error("💥 Prayer request error:", err);
-    res
+    return res
       .status(500)
       .json({ ok: false, error: "Failed to send prayer request." });
   }
