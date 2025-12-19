@@ -6,6 +6,20 @@ const smtpUser = process.env.SMTP_USER;
 const smtpPass = process.env.SMTP_PASS;
 const contactTo = process.env.CONTACT_TO;
 
+// ✅ Optional safe debug flag (NEVER logs secrets)
+const DEBUG_EMAIL = process.env.NODE_ENV !== "production" && process.env.DEBUG_EMAIL === "true";
+
+// ✅ Log only safe configuration status (no values)
+if (DEBUG_EMAIL) {
+  console.log("📧 Email config status:", {
+    hasSmtpUser: !!smtpUser,
+    hasSmtpPass: !!smtpPass,
+    hasContactTo: !!contactTo,
+    host: process.env.SMTP_HOST ? "set" : "default(gmail)",
+    port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 465,
+  });
+}
+
 if (!smtpUser || !smtpPass) {
   console.error("❌ Missing SMTP_USER / SMTP_PASS in env (contact).");
 }
@@ -14,12 +28,18 @@ if (!contactTo) {
 }
 
 // ✅ Create transporter once (reuse)
+const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+const smtpPort = Number(process.env.SMTP_PORT) || 465;
+// ✅ secure should typically be true for 465, false for 587
+const smtpSecure =
+  process.env.SMTP_SECURE != null ? process.env.SMTP_SECURE === "true" : smtpPort === 465;
+
 const transporter =
   smtpUser && smtpPass
     ? nodemailer.createTransport({
-        host: process.env.SMTP_HOST || "smtp.gmail.com",
-        port: Number(process.env.SMTP_PORT) || 465,
-        secure: true,
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpSecure,
         auth: { user: smtpUser, pass: smtpPass },
       })
     : null;
@@ -27,6 +47,12 @@ const transporter =
 // ✅ Simple CRLF strip to prevent header injection attempts
 function stripCRLF(value) {
   return String(value ?? "").replace(/[\r\n]+/g, " ").trim();
+}
+
+// ✅ Basic email format check (keeps replyTo safe/valid)
+function isValidEmail(value) {
+  const v = String(value ?? "").trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
 export const sendContactEmail = async (req, res) => {
@@ -46,15 +72,17 @@ export const sendContactEmail = async (req, res) => {
 
   // ✅ Fail closed if email isn't configured
   if (!smtpUser || !smtpPass || !transporter) {
-    return res
-      .status(500)
-      .json({ ok: false, error: "Email is not configured on the server." });
+    return res.status(500).json({
+      ok: false,
+      error: "Email is not configured on the server.",
+    });
   }
 
   if (!contactTo) {
-    return res
-      .status(500)
-      .json({ ok: false, error: "Email destination is not configured on the server." });
+    return res.status(500).json({
+      ok: false,
+      error: "Email destination is not configured on the server.",
+    });
   }
 
   try {
@@ -67,10 +95,13 @@ export const sendContactEmail = async (req, res) => {
     const fullName = [safeFirst, safeLast].filter(Boolean).join(" ").trim();
     const subject = `📬 New Contact Message from ${fullName || "Visitor"}`;
 
+    // ✅ Only set replyTo if it's a valid email
+    const replyTo = isValidEmail(safeEmail) ? safeEmail : undefined;
+
     await transporter.sendMail({
       from: `"ML Website" <${smtpUser}>`,
       to: contactTo,
-      replyTo: safeEmail, // ✅ stripped of CR/LF defensively
+      ...(replyTo ? { replyTo } : {}),
       subject: stripCRLF(subject),
       text: `
 New message from the website:
@@ -88,7 +119,8 @@ ${String(message ?? "").trim()}
     console.log("✅ Contact email sent successfully.");
     return res.json({ ok: true });
   } catch (err) {
-    console.error("💥 Contact email error:", err);
+    // ✅ Avoid dumping full objects that might include request data
+    console.error("💥 Contact email error:", err?.message || err);
     return res.status(500).json({ ok: false, error: "Failed to send message." });
   }
 };
