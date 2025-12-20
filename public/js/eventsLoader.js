@@ -25,8 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isAdmin = sessionData.loggedIn === true;
 
     // 🧩 Step 2: Load events.json
-    // This is your source of truth for event list content.
-    const res = await fetch("/admin/events.json", {
+    // ✅ MINIMAL FIX: Use ONE consistent public source everywhere.
+    // If your Events page is fetching /content/events.json, match it here too.
+    const res = await fetch("/content/events.json", {
       cache: "no-store",
       credentials: "same-origin",
     });
