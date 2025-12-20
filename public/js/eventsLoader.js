@@ -51,15 +51,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         const date = escapeHTML(ev.date);
         const desc = escapeHTML(ev.description || "");
 
-        // Normalize image path to always start with "/"
-        let imgPathRaw = String(ev.image || "");
-        imgPathRaw = imgPathRaw.startsWith("/") ? imgPathRaw : "/" + imgPathRaw;
+        /* ------------------------------------------------------
+           ✅ IMAGE PATH (HARDENED)
+           - Trim whitespace
+           - Accept "/images/..." OR "images/..."
+           - Fallback to placeholder if anything unexpected
+        ------------------------------------------------------ */
+        let imgPathRaw = String(ev.image ?? "").trim();
 
-        // Basic safety allowlist: only accept site-relative images under /images/
-        // Falls back to a placeholder if the path looks unexpected.
-        const imgPath = imgPathRaw.startsWith("/images/")
-          ? imgPathRaw
-          : "/images/Placeholder.jpg";
+        // If someone stored "images/foo.jpg" (no leading slash), normalize to "/images/foo.jpg"
+        if (imgPathRaw && !imgPathRaw.startsWith("/")) {
+          imgPathRaw = "/" + imgPathRaw;
+        }
+
+        // If still blank, or not under /images/, use placeholder
+        const imgPath =
+          imgPathRaw && imgPathRaw.startsWith("/images/")
+            ? imgPathRaw
+            : "/images/Placeholder.jpg";
 
         // Admin-only text edit controls (only rendered on the grid page)
         const adminTextButtons =
@@ -103,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                      alt="${title}"
                      id="event-image-${index}"
                      class="event-img"
-                     style="width:100%;height:100%;object-fit:cover;display:block;">
+                     style="width:100%;height:100%;min-height:220px;object-fit:cover;display:block;">
                 ${imageOverlayButton}
               </div>
             </div>
