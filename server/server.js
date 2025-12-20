@@ -59,13 +59,13 @@ app.use(
 ------------------------------------------------------ */
 // ✅ Tighten CORS (keep functionality: allow same-origin + no-origin tools)
 const allowedOrigins = [
-  process.env.SITE_ORIGIN,              // e.g. https://martinlutheroshkosh.com
-  process.env.SITE_ORIGIN_2,            // e.g. https://mloshkosh.org
+  process.env.SITE_ORIGIN, // e.g. https://martinlutheroshkosh.com
+  process.env.SITE_ORIGIN_2, // e.g. https://mloshkosh.org
 
-  // ✅ ADDED: allow your Render subdomain (often used during testing)
+  // ✅ allow your Render subdomain (often used during testing)
   "https://martin-luther-website.onrender.com",
 
-  // ✅ ADDED: allow the new custom domains (exactly what was being blocked)
+  // ✅ allow the new custom domains
   "https://www.martinlutheroshkosh.com",
   "https://martinlutheroshkosh.com",
 
@@ -76,10 +76,17 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin) return cb(null, true); // allow same-origin/no-origin (curl/postman)
-      if (allowedOrigins.length === 0) return cb(null, true); // if not configured, don't break
+      // ✅ allow same-origin/no-origin requests (curl/postman/etc.)
+      if (!origin) return cb(null, true);
 
-      // ✅ ADDED: helpful log so you instantly know what's blocked (prevents future guessing)
+      // ✅ FIX: browsers can send the literal string "null" for opaque origins
+      // (file:// pages, sandboxed iframes, some privacy contexts)
+      if (origin === "null") return cb(null, true);
+
+      // ✅ if not configured, don't break
+      if (allowedOrigins.length === 0) return cb(null, true);
+
+      // ✅ helpful log so you instantly know what's blocked
       if (!allowedOrigins.includes(origin)) {
         console.error("❌ Blocked by CORS origin:", origin);
         return cb(new Error("Not allowed by CORS"));
@@ -88,7 +95,7 @@ app.use(
       return cb(null, true);
     },
 
-    // ✅ ADDED: if you rely on sessions/cookies across requests, this is the correct setting
+    // ✅ if you rely on sessions/cookies across requests, this is the correct setting
     credentials: true,
   })
 );
@@ -171,7 +178,7 @@ app.use("/api/team", teamRoutes);
 ------------------------------------------------------ */
 const youtubeLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 30,             // 30 req/min per IP
+  max: 30, // 30 req/min per IP
   standardHeaders: true,
   legacyHeaders: false,
 });
