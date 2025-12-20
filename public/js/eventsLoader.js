@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       String(v ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
+        .replace(/>/g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
@@ -16,70 +17,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const escapeHTMLWithBreaks = (v) => escapeHTML(v).replace(/\n/g, "<br>");
 
     // ✅ IMPORTANT:
-    // For contenteditable, textContent often loses "empty lines" because of how the DOM is structured.
-    // innerText matches what you SEE (including blank lines) much better.
-    // Also: trailing blank line at the very end is commonly dropped — we detect it and re-add.
+    // innerText matches what you SEE in contenteditable (blank lines included) better than textContent.
     const getEditableNotesExactlyAsSeen = (el) => {
       if (!el) return "";
-
-      // innerText preserves visual line breaks better than textContent for contenteditable
       let text = String(el.innerText ?? "");
-
-      // Normalize Windows line endings
-      text = text.replace(/\r\n/g, "\n");
-
-      // Preserve trailing blank lines at the END (browser often drops the final empty line)
-      // If the editable div ends with one or more <br> / blank blocks, add matching \n back.
-      const html = String(el.innerHTML ?? "");
-
-      // Count trailing "blank line" markers at the end of the contenteditable
-      // Covers common patterns produced by contenteditable:
-      // - ...<br>
-      // - ...<div><br></div>
-      // - ...<p><br></p>
-      let trailingBlankLines = 0;
-      let tail = html;
-
-      while (true) {
-        const before = tail;
-
-        // strip whitespace at the end (but keep tags intact)
-        tail = tail.replace(/\s+$/g, "");
-
-        // Remove one trailing blank line marker (if present)
-        // Order matters: div/p wrappers first, then br.
-        if (/(<div><br><\/div>)$/i.test(tail)) {
-          trailingBlankLines++;
-          tail = tail.replace(/(<div><br><\/div>)$/i, "");
-          continue;
-        }
-        if (/(<p><br><\/p>)$/i.test(tail)) {
-          trailingBlankLines++;
-          tail = tail.replace(/(<p><br><\/p>)$/i, "");
-          continue;
-        }
-        if (/(<br\s*\/?>)$/i.test(tail)) {
-          trailingBlankLines++;
-          tail = tail.replace(/(<br\s*\/?>)$/i, "");
-          continue;
-        }
-
-        if (tail === before) break;
-        break;
-      }
-
-      // If we detected trailing blank line markers, ensure we keep them in storage
-      // BUT avoid duplicating if innerText already ended with newline(s).
-      const endsWithNewline = /\n$/.test(text);
-      if (trailingBlankLines > 0 && !endsWithNewline) {
-        text += "\n";
-        trailingBlankLines -= 1;
-      }
-      if (trailingBlankLines > 0) {
-        text += "\n".repeat(trailingBlankLines);
-      }
-
-      return text;
+      text = text.replace(/\r\n/g, "\n"); // normalize windows -> unix newlines
+      return text; // NO trim
     };
 
     // 🧩 Step 1: Verify admin session
@@ -102,7 +45,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cards = document.querySelector(".events-cards");
     if (!grid && !cards) return;
 
-    const eventHTML = (data.events || [])
+    const events = data.events || [];
+
+    const eventHTML = events
       .map((ev, index) => {
         const isEven = index % 2 === 0;
 
@@ -117,19 +62,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? imgPathRaw
           : "/images/Placeholder.jpg";
 
-        // ✅ Notes visible for everyone
-        const savedNotesRaw =
-          localStorage.getItem(`eventNotes_${index}`) || "*Insert text here*";
+        // ✅ Notes come from SERVER (events.json) so all devices see them
+        const notesRaw = String(ev.notes ?? "*Insert text here*");
 
         // ✅ Show notes for everyone (as HTML with <br>), but only editable for admin
-        // (KEEPING THIS EXACTLY AS YOU HAD IT)
         const notesBlock = `
           <div class="event-admin-section">
             <div
               id="admin-text-${index}"
               class="admin-display-text"
               ${isAdmin ? 'contenteditable="true" spellcheck="true"' : ""}
-            >${escapeHTMLWithBreaks(savedNotesRaw)}</div>
+            >${escapeHTMLWithBreaks(notesRaw)}</div>
 
             <button
               class="save-notes-btn"
@@ -196,6 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           `;
         }
 
+        // If you use a mobile cards layout elsewhere:
         return `
           <div class="event-card">
             <img src="${imgPath}" alt="${title}">
@@ -209,24 +153,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (grid) grid.innerHTML = eventHTML;
     if (cards) cards.innerHTML = eventHTML;
 
-    // ✅ Notes saving only wired for admin
+    // ✅ Notes saving wired for admin (NOW SAVES TO SERVER)
     if (isAdmin && grid) {
       document.querySelectorAll(".save-notes-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", async () => {
           const i = Number(btn.dataset.index);
           if (!Number.isInteger(i) || i < 0) return;
 
           const div = document.getElementById(`admin-text-${i}`);
           if (!div) return;
 
-          // ✅ IMPORTANT CHANGE:
-          // Use innerText (what you SEE) to preserve blank lines exactly.
-          // Also preserves trailing blank lines at the end.
-          const exact = getEditableNotesExactlyAsSeen(div);
+          const notes = getEditableNotesExactlyAsSeen(div); // ✅ preserves blank lines
 
-          // ✅ NO trim.
-          localStorage.setItem(`eventNotes_${i}`, exact);
-          alert("✅ Notes saved!");
+          await updateEvent(i, null, null, null, notes);
         });
       });
     }
@@ -243,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const newTitle = prompt("Enter new event title:");
         if (!newTitle) return;
 
-        await updateEvent(i, newTitle, null, null);
+        await updateEvent(i, newTitle, null, null, null);
       });
     });
 
@@ -256,7 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const newDate = prompt("Enter new event date:");
         if (!newDate) return;
 
-        await updateEvent(i, null, newDate, null);
+        await updateEvent(i, null, newDate, null, null);
       });
     });
 
@@ -312,25 +251,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    async function updateEvent(index, title, date, image) {
+    // ✅ UPDATED: supports notes
+    async function updateEvent(index, title, date, image, notes) {
       try {
         const res = await fetch("/admin/update-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
-          body: JSON.stringify({ index, title, date, image }),
+          body: JSON.stringify({ index, title, date, image, notes }),
         });
 
         const result = await res.json();
         if (result.success) {
-          alert("✅ Event updated successfully!");
+          alert("✅ Saved!");
           location.reload();
         } else {
-          alert("❌ Update failed: " + (result.error || "Unknown error"));
+          alert("❌ Save failed: " + (result.error || "Unknown error"));
         }
       } catch (err) {
         console.error("❌ Update error:", err);
-        alert("❌ Failed to update event.");
+        alert("❌ Failed to save.");
       }
     }
   } catch (err) {

@@ -231,3 +231,29 @@ body {
     opacity: 1;
   }
 }
+@media (max-width: 950px) {
+  .event-row {
+    flex-direction: column;
+  }
+
+  .grid-item {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  /* ✅ FORCE: always Text then Image on mobile */
+  .event-row .grid-item.grey {
+    order: 1;
+  }
+  .event-row .grid-item.white {
+    order: 2;
+  }
+
+  .event-img {
+    max-height: 440px;
+  }
+
+  .events-overlay h1 {
+    font-size: 38px;
+  }
+}
