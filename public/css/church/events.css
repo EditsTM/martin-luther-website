@@ -74,19 +74,14 @@ body {
   width: 50%;
 }
 
-/* ✅ ONLY CHANGE YOU ASKED FOR:
-   DOUBLE the size of the grey + white boxes
-   (still expands taller automatically if text needs more room) */
+/* ✅ DOUBLE the size of the grey + white boxes (already what you wanted) */
 .grid-item.grey {
   background: var(--grey);
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-
-  /* ⬆ doubled from 200 -> 400 */
   min-height: 400px;
-
   padding-bottom: 20px;
 }
 
@@ -98,22 +93,17 @@ body {
   justify-content: center;
   position: relative;
   overflow: hidden;
-
-  /* ⬆ optional but helps the white side match the grey side's minimum height */
   min-height: 400px;
 }
 
 /* =============================
-   IMAGE BEHAVIOR (IMPORTANT)
+   IMAGE BEHAVIOR
 ============================= */
 .event-img {
   width: 100%;
   height: auto;
-
-  /* ⬆ doubled from 200 -> 400 */
   max-height: 400px;
-
-  object-fit: contain; /* prevents cropping */
+  object-fit: contain;
   display: block;
 }
 
@@ -149,7 +139,7 @@ body {
   text-align: center;
   box-sizing: border-box;
   padding: 0;
-  flex-grow: 1; /* allows expansion when text is long */
+  flex-grow: 1;
 }
 
 .text-box p {
@@ -160,7 +150,7 @@ body {
 }
 
 /* =============================
-   ADMIN SECTION
+   ADMIN / NOTES
 ============================= */
 .event-admin-section {
   width: 90%;
@@ -170,9 +160,19 @@ body {
   align-items: center;
 }
 
+/* ✅ Make editable notes black AND preserve spacing/newlines */
 .admin-display-text {
   color: #000;
+  white-space: pre-wrap;   /* keeps line breaks + multiple spaces */
+  word-break: break-word;
 }
+
+/* ✅ Small spacing between the edit buttons */
+.event-admin-section button {
+  margin: 6px 0;  /* little vertical spacing */
+}
+
+/* your button */
 .save-notes-btn {
   margin-top: 4px;
   background: var(--light-blue);
@@ -196,7 +196,6 @@ body {
     width: 100%;
   }
 
-  /* ⬆ doubled from 220 -> 440 to stay proportional on mobile */
   .event-img {
     max-height: 440px;
   }
