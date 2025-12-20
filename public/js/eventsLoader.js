@@ -24,9 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sessionData = await sessionRes.json();
     const isAdmin = sessionData.loggedIn === true;
 
-    // 🧩 Step 2: Load events.json
-    // ✅ MINIMAL FIX: Use ONE consistent public source everywhere.
-    // If your Events page is fetching /content/events.json, match it here too.
+    // 🧩 Step 2: Load events.json (single source of truth)
     const res = await fetch("/content/events.json", {
       cache: "no-store",
       credentials: "same-origin",
@@ -84,29 +82,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
             : "";
 
+        // ✅ Build blocks once so we can alternate layout like your original page
+        const textBlock = `
+          <div class="grid-item grey">
+            <div class="text-box">
+              <div class="event-header">
+                <h2 id="event-title-${index}">${title}</h2>
+                <p id="event-date-${index}" class="event-date">${date}</p>
+              </div>
+              <p>${desc}</p>
+              ${adminTextButtons}
+            </div>
+          </div>
+        `;
+
+        const imageBlock = `
+          <div class="grid-item white" style="position:relative;">
+            <img src="${imgPath}"
+                 alt="${title}"
+                 id="event-image-${index}"
+                 class="event-img">
+            ${imageOverlayButton}
+          </div>
+        `;
+
         // Grid layout markup (full events page)
         if (grid) {
+          // ✅ Alternating layout: even = text then image, odd = image then text
           return `
             <div class="event-row ${isEven ? "even" : "odd"}">
-              <div class="grid-item grey">
-                <div class="text-box">
-                  <div class="event-header">
-                    <h2 id="event-title-${index}">${title}</h2>
-                    <p id="event-date-${index}" class="event-date">${date}</p>
-                  </div>
-                  <p>${desc}</p>
-                  ${adminTextButtons}
-                </div>
-              </div>
-
-              <div class="grid-item white" style="position:relative;">
-                <img src="${imgPath}"
-                     alt="${title}"
-                     id="event-image-${index}"
-                     class="event-img"
-                     style="width:100%;height:100%;object-fit:cover;display:block;">
-                ${imageOverlayButton}
-              </div>
+              ${isEven ? textBlock + imageBlock : imageBlock + textBlock}
             </div>
           `;
         }
@@ -131,18 +136,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!isAdmin || !grid) return;
 
     // 🧠 Step 5: Hook up edit buttons
-    // We rely on data-index to map each button to an event index in events.json
     document.querySelectorAll(".edit-title-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const i = Number(btn.dataset.index);
-
-        // Defensive checks: ensure index is a valid non-negative integer
         if (!Number.isInteger(i) || i < 0) return;
 
         const newTitle = prompt("Enter new event title:");
         if (!newTitle) return;
 
-        // Only update the title; leave other fields unchanged (null)
         await updateEvent(i, newTitle, null, null);
       });
     });
@@ -155,13 +156,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const newDate = prompt("Enter new event date:");
         if (!newDate) return;
 
-        // Only update the date; leave other fields unchanged (null)
         await updateEvent(i, null, newDate, null);
       });
     });
 
     // 🖼️ Step 6: Hook up image overlay for file upload
-    // Clicking the overlay triggers the hidden file input.
     document.querySelectorAll(".image-edit-overlay").forEach((overlay) => {
       const fileInput = overlay.querySelector(".hidden-file");
 
@@ -171,7 +170,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Quick client-side guard (server must still enforce type/size validation)
         if (!file.type.startsWith("image/")) {
           alert("Please upload an image file.");
           return;
@@ -188,7 +186,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         formData.append("index", index);
 
         try {
-          // credentials ensures admin session cookie is included.
           const res = await fetch("/admin/upload-image", {
             method: "POST",
             body: formData,
@@ -197,7 +194,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           const result = await res.json();
           if (result.success) {
-            // Cache-bust so the browser immediately shows the new upload
             const img = document.getElementById(`event-image-${index}`);
             if (img) {
               img.src =
@@ -218,8 +214,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     async function updateEvent(index, title, date, image) {
-      // Sends an update request to the server.
-      // NOTE: The server should verify admin permissions (UI checks are not security).
       try {
         const res = await fetch("/admin/update-event", {
           method: "POST",
@@ -230,7 +224,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const result = await res.json();
         if (result.success) {
-          // Simple approach: reload to re-render from updated events.json
           alert("✅ Event updated successfully!");
           location.reload();
         } else {
@@ -242,7 +235,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   } catch (err) {
-    // Catch-all so the page doesn’t die silently if JSON/network fails
     console.error("❌ Error loading events:", err);
   }
 });
