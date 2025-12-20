@@ -277,18 +277,27 @@ router.get("/check", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   🧩 Update Event Title/Date/Image
+   🧩 Update Event Title/Date/Image/Notes
 ------------------------------------------------------ */
 router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
   const filePath = path.resolve(process.cwd(), "server/content/events.json");
 
-  // ✅ strict index + basic input limits
   const i = parseIndex(req.body?.index);
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
+
+  // ✅ Allow empty strings if you ever want to clear a field.
+  // clampString() returns null for empty string, so for notes we handle separately.
   const title = clampString(req.body?.title, 120);
   const date = clampString(req.body?.date, 80);
   const image = clampString(req.body?.image, 300);
 
-  if (i === null) return res.status(400).json({ error: "Invalid index" });
+  // ✅ NEW: Notes can be long and can be empty; keep it exactly as sent
+  let notes = req.body?.notes;
+  if (notes !== undefined) {
+    notes = String(notes).replace(/\r\n/g, "\n"); // normalize newlines
+    // basic size cap so nobody posts a 50MB notes payload
+    if (notes.length > 12000) notes = notes.slice(0, 12000);
+  }
 
   // ✅ If image is provided, force it to be site-relative under /images/
   if (image && !image.startsWith("/images/")) {
@@ -305,16 +314,22 @@ router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
       return res.status(404).json({ error: "Event not found" });
     }
 
-    if (title) data.events[i].title = title;
-    if (date) data.events[i].date = date;
-    if (image) data.events[i].image = image;
+    // ✅ only update fields that were actually provided
+    if (title !== null) data.events[i].title = title;
+    if (date !== null) data.events[i].date = date;
+    if (image !== null) data.events[i].image = image;
+
+    // ✅ NEW: save notes (even if empty string)
+    if (notes !== undefined) data.events[i].notes = notes;
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     res.json({ success: true, updated: data.events[i] });
   } catch (err) {
+    console.error("update-event failed:", err);
     res.status(500).json({ error: "Failed to update event" });
   }
 });
+
 
 /* ------------------------------------------------------
    📸 Upload Event Image
