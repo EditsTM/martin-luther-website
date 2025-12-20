@@ -36,7 +36,10 @@ console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
 const app = express();
+
+// ✅ REQUIRED for Render/HTTPS so secure cookies + sessions behave correctly behind proxy
 app.set("trust proxy", 1);
+
 const PORT = process.env.PORT || 3000;
 
 /* ------------------------------------------------------
@@ -51,10 +54,21 @@ app.use(
   })
 );
 
+/* ------------------------------------------------------
+   ✅ CORS FIX (allow your new custom domain + keep your existing strategy)
+------------------------------------------------------ */
 // ✅ Tighten CORS (keep functionality: allow same-origin + no-origin tools)
 const allowedOrigins = [
   process.env.SITE_ORIGIN,              // e.g. https://martinlutheroshkosh.com
   process.env.SITE_ORIGIN_2,            // e.g. https://mloshkosh.org
+
+  // ✅ ADDED: allow your Render subdomain (often used during testing)
+  "https://martin-luther-website.onrender.com",
+
+  // ✅ ADDED: allow the new custom domains (exactly what was being blocked)
+  "https://www.martinlutheroshkosh.com",
+  "https://martinlutheroshkosh.com",
+
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ].filter(Boolean);
@@ -64,10 +78,18 @@ app.use(
     origin: (origin, cb) => {
       if (!origin) return cb(null, true); // allow same-origin/no-origin (curl/postman)
       if (allowedOrigins.length === 0) return cb(null, true); // if not configured, don't break
-      return allowedOrigins.includes(origin)
-        ? cb(null, true)
-        : cb(new Error("Not allowed by CORS"));
+
+      // ✅ ADDED: helpful log so you instantly know what's blocked (prevents future guessing)
+      if (!allowedOrigins.includes(origin)) {
+        console.error("❌ Blocked by CORS origin:", origin);
+        return cb(new Error("Not allowed by CORS"));
+      }
+
+      return cb(null, true);
     },
+
+    // ✅ ADDED: if you rely on sessions/cookies across requests, this is the correct setting
+    credentials: true,
   })
 );
 
