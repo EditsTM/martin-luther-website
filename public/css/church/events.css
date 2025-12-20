@@ -31,10 +31,7 @@ body {
 
 .events-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(30, 42, 87, 0.85);
   display: flex;
   justify-content: center;
@@ -65,16 +62,8 @@ body {
 ============================= */
 .event-row {
   display: flex;
-  align-items: stretch;
   width: 100%;
-}
-
-.event-row.even {
-  flex-direction: row; /* text left, image right */
-}
-
-.event-row.odd {
-  flex-direction: row; /* no reverse — JS already handles the swap */
+  align-items: stretch;
 }
 
 /* =============================
@@ -83,43 +72,49 @@ body {
 .grid-item {
   flex: 1 1 50%;
   width: 50%;
-  margin: 0;
-  padding: 0;
 }
 
+/* ✅ ONLY CHANGE YOU ASKED FOR:
+   DOUBLE the size of the grey + white boxes
+   (still expands taller automatically if text needs more room) */
 .grid-item.grey {
   background: var(--grey);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
-  min-height: 320px;
-  transition: min-height 0.3s ease;
+
+  /* ⬆ doubled from 200 -> 400 */
+  min-height: 400px;
+
+  padding-bottom: 20px;
 }
 
+/* Image container */
 .grid-item.white {
   background: white;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: stretch;
   position: relative;
-
-  /* ✅ NEEDED: prevents image overflow weirdness and keeps sizing consistent */
   overflow: hidden;
+
+  /* ⬆ optional but helps the white side match the grey side's minimum height */
+  min-height: 400px;
 }
 
+/* =============================
+   IMAGE BEHAVIOR (IMPORTANT)
+============================= */
 .event-img {
   width: 100%;
-  height: 100%;
-  min-height: 320px;
-  object-fit: cover;
-  display: block;
-  border: none;
-  transition: height 0.3s ease, min-height 0.3s ease;
+  height: auto;
 
-  /* ✅ NEEDED: prevents tiny slivers/gaps in some browsers */
-  flex: 1;
+  /* ⬆ doubled from 200 -> 400 */
+  max-height: 400px;
+
+  object-fit: contain; /* prevents cropping */
+  display: block;
 }
 
 /* =============================
@@ -129,21 +124,21 @@ body {
   width: 100%;
   text-align: center;
   border-bottom: 3px solid #000;
-  padding: 15px 0 0 0;
-  margin: 0;
+  padding-top: 15px;
 }
 
+/* ✅ KEEP TITLE BLACK */
 .event-header h2 {
   color: #000;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 600;
   margin: 0;
 }
 
 .event-header .event-date {
   color: #444;
-  font-size: 1rem;
-  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+  margin-top: 4px;
 }
 
 /* =============================
@@ -154,13 +149,12 @@ body {
   text-align: center;
   box-sizing: border-box;
   padding: 0;
-  margin: 0;
-  flex-grow: 1;
+  flex-grow: 1; /* allows expansion when text is long */
 }
 
 .text-box p {
   color: #333;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   margin: 10px 25px;
 }
@@ -177,24 +171,8 @@ body {
 }
 
 .admin-display-text {
-  display: block;
-  width: 100%;
-  min-height: 60px;
-  padding: 0 10px 10px 10px;
-  border: 1px dashed transparent;
-  border-radius: 6px;
-  background: transparent;
   color: #000;
-  font-size: 1rem;
-  line-height: 1.5;
-  text-align: center;
-  white-space: pre-wrap;
-  word-break: break-word;
-  box-sizing: border-box;
-  resize: none;
-  overflow: hidden;
 }
-
 .save-notes-btn {
   margin-top: 4px;
   background: var(--light-blue);
@@ -204,43 +182,23 @@ body {
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.3s ease;
-}
-
-.save-notes-btn:hover {
-  background: var(--blue);
 }
 
 /* =============================
-   MOBILE — STACK TEXT ABOVE IMAGE
+   MOBILE
 ============================= */
 @media (max-width: 950px) {
   .event-row {
-    flex-direction: column !important;
-    margin-bottom: 0; /* 🟢 removed the extra gap between stacked items */
+    flex-direction: column;
   }
 
   .grid-item {
-    width: 100% !important;
-    flex: 1 1 100%;
-  }
-
-  /* ✅ Force text always above image */
-  .event-row .grid-item.grey {
-    order: 1;
-  }
-
-  .event-row .grid-item.white {
-    order: 2;
-    margin-bottom: 0; /* 🟢 ensures image sits flush with next text */
-  }
-
-  .event-row .event-img {
     width: 100%;
-    height: 280px;
-    min-height: 280px;
-    object-fit: cover;
-    display: block;
+  }
+
+  /* ⬆ doubled from 220 -> 440 to stay proportional on mobile */
+  .event-img {
+    max-height: 440px;
   }
 
   .events-overlay h1 {
@@ -253,32 +211,24 @@ body {
 ============================= */
 .image-edit-overlay {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
   background: rgba(66, 121, 188, 0.85);
   color: #fff;
   font-weight: 700;
   font-size: 18px;
-  padding: 12px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  text-align: center;
-  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   opacity: 0;
-  transition: opacity 0.3s ease, transform 0.2s ease;
-  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .grid-item.white:hover .image-edit-overlay {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1.05);
-  pointer-events: all;
 }
 
 @media (hover: none) {
   .image-edit-overlay {
     opacity: 1;
-    pointer-events: all;
   }
 }

@@ -1,11 +1,9 @@
 // ✅ public/js/eventsLoader.js
 // Loads events from events.json and renders them.
-// If the user is an admin, it also enables inline editing + image uploads.
+// If the user is an admin, it also enables inline editing + image uploads + notes.
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // Escapes user-controlled strings before injecting into innerHTML.
-    // This helps prevent XSS when building HTML as strings.
     const escapeHTML = (v) =>
       String(v ?? "")
         .replace(/&/g, "&amp;")
@@ -15,8 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         .replace(/'/g, "&#39;");
 
     // 🧩 Step 1: Verify admin session
-    // credentials: "same-origin" ensures your session cookie is included.
-    // cache: "no-store" avoids stale admin status being cached.
     const sessionRes = await fetch("/admin/check", {
       cache: "no-store",
       credentials: "same-origin",
@@ -24,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sessionData = await sessionRes.json();
     const isAdmin = sessionData.loggedIn === true;
 
-    // 🧩 Step 2: Load events.json (single source of truth)
+    // 🧩 Step 2: Load events.json
     const res = await fetch("/content/events.json", {
       cache: "no-store",
       credentials: "same-origin",
@@ -32,35 +28,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!res.ok) throw new Error("Failed to load events.json");
     const data = await res.json();
 
-    // Supports two layouts:
-    // - grid layout (#events-grid) for your main Events page
-    // - card layout (.events-cards) for a smaller list/section
     const grid = document.getElementById("events-grid");
     const cards = document.querySelector(".events-cards");
     if (!grid && !cards) return;
 
-    // 🧩 Step 3: Build event HTML (escaped)
-    // NOTE: Because we inject via innerHTML, we escape text fields and sanitize image paths.
     const eventHTML = (data.events || [])
       .map((ev, index) => {
         const isEven = index % 2 === 0;
 
-        // Escape all text content that will land inside HTML
         const title = escapeHTML(ev.title);
         const date = escapeHTML(ev.date);
         const desc = escapeHTML(ev.description || "");
 
-        // Normalize image path to always start with "/"
         let imgPathRaw = String(ev.image || "");
         imgPathRaw = imgPathRaw.startsWith("/") ? imgPathRaw : "/" + imgPathRaw;
 
-        // Basic safety allowlist: only accept site-relative images under /images/
-        // Falls back to a placeholder if the path looks unexpected.
         const imgPath = imgPathRaw.startsWith("/images/")
           ? imgPathRaw
           : "/images/Placeholder.jpg";
 
-        // Admin-only text edit controls (only rendered on the grid page)
+        // ✅ Notes are visible for everyone (stored in localStorage)
+        const savedNotes = escapeHTML(
+          localStorage.getItem(`eventNotes_${index}`) || "*Insert text here*"
+        );
+
+        // ✅ Notes block always renders
+        // - Editable only for admin
+        // - Save button only visible for admin
+        const notesBlock = `
+          <div class="event-admin-section">
+            <div
+              id="admin-text-${index}"
+              class="admin-display-text"
+              ${isAdmin ? 'contenteditable="true" spellcheck="true"' : ""}
+            >${savedNotes}</div>
+
+            <button
+              class="save-notes-btn"
+              data-index="${index}"
+              style="display:${isAdmin ? "inline-block" : "none"};"
+            >
+              Save Notes
+            </button>
+          </div>
+        `;
+
         const adminTextButtons =
           isAdmin && grid
             ? `
@@ -71,7 +83,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
             : "";
 
-        // Admin-only overlay used to trigger file input for image upload
         const imageOverlayButton =
           isAdmin && grid
             ? `
@@ -82,7 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
             : "";
 
-        // ✅ Build blocks once so we can alternate layout like your original page
         const textBlock = `
           <div class="grid-item grey">
             <div class="text-box">
@@ -90,7 +100,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <h2 id="event-title-${index}">${title}</h2>
                 <p id="event-date-${index}" class="event-date">${date}</p>
               </div>
+
               <p>${desc}</p>
+
+              ${notesBlock}
               ${adminTextButtons}
             </div>
           </div>
@@ -106,9 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         `;
 
-        // Grid layout markup (full events page)
         if (grid) {
-          // ✅ Alternating layout: even = text then image, odd = image then text
           return `
             <div class="event-row ${isEven ? "even" : "odd"}">
               ${isEven ? textBlock + imageBlock : imageBlock + textBlock}
@@ -116,7 +127,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           `;
         }
 
-        // Card layout markup (smaller events section)
         return `
           <div class="event-card">
             <img src="${imgPath}" alt="${title}">
@@ -127,15 +137,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       })
       .join("");
 
-    // Render HTML into whichever container exists
     if (grid) grid.innerHTML = eventHTML;
     if (cards) cards.innerHTML = eventHTML;
 
+    // ✅ Notes saving only needs to be wired for admin
+    if (isAdmin && grid) {
+      document.querySelectorAll(".save-notes-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const i = Number(btn.dataset.index);
+          if (!Number.isInteger(i) || i < 0) return;
+
+          const div = document.getElementById(`admin-text-${i}`);
+          if (!div) return;
+
+          localStorage.setItem(`eventNotes_${i}`, div.innerText.trim());
+          alert("✅ Notes saved!");
+        });
+      });
+    }
+
     // If not admin, stop here (no edit wiring needed).
-    // Also: edits are only enabled on the grid version of the page.
     if (!isAdmin || !grid) return;
 
-    // 🧠 Step 5: Hook up edit buttons
+    // ✏️ Title edits
     document.querySelectorAll(".edit-title-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const i = Number(btn.dataset.index);
@@ -148,6 +172,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    // 📅 Date edits
     document.querySelectorAll(".edit-date-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const i = Number(btn.dataset.index);
@@ -160,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // 🖼️ Step 6: Hook up image overlay for file upload
+    // 🖼️ Image upload
     document.querySelectorAll(".image-edit-overlay").forEach((overlay) => {
       const fileInput = overlay.querySelector(".hidden-file");
 
