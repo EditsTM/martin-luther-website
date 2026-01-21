@@ -94,5 +94,14 @@
 
   <!-- ✅ Added: Dynamic Events Loader -->
   <script src="/js/eventsLoader.js"></script>
+
+  <script>
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".event-card");
+    if (!card) return;
+    window.location.href = "/html/church/events.html";
+  });
+</script>
+
 </body>
 </html>

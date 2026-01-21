@@ -1,20 +1,23 @@
 {
   "events": [
     {
-      "title": "Event TBD",
-      "date": "Insert date",
+      "title": "",
+      "date": "",
+      "image": "/images/events/WPCP.jpg",
+      "notes": "Contact Principal Steve Hennig with any questions or more information: stevehennig@martinlutheroshkosh.com"
+    },
+    {
+      "title": "",
+      "date": "",
+      "image": "/images/events/snowman.png",
+      "notes": "Martin Luther School PreK\nWhere learning & growing are \"snow\" much fun!\nOpen House January 31st\n10 – 11:30 AM\n\nExplore our 3K & 4K classrooms & facility\n\nMeet our caring, experienced teachers\n\nReceive information about our Christ-centered, play-based curriculum\n\n2026-2027 enrollment for children who are 3 or 4 yrs old by Sept. 1\n\nContact Information:\nPhone: 920-235-1612\n\nAddress:\n1526 Algoma Blvd, Oshkosh, WI 54901 (Located next to the Paine Art Center)"
+
+    },
+    {
+      "title": "",
+      "date": "",
       "image": "/images/events/Placeholder.jpg",
       "notes": ""
-    },
-    {
-      "title": "Event TBD",
-      "date": "Insert date",
-      "image": "/images/events/Placeholder.jpg"
-    },
-    {
-      "title": "Event TBD",
-      "date": "Insert date",
-      "image": "/images/events/Placeholder.jpg"
     }
   ]
 }
