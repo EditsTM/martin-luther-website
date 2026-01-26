@@ -134,7 +134,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 
-  width: 345px;
+  width: 315px;
 
   border: 1.5px solid rgba(0, 0, 0, 0.6); /* ✅ black outline */
 
@@ -167,13 +167,13 @@
   color: #000;
   font-size: 22px;
   font-weight: 700;
-  margin: 15px 0 5px;
+  margin: 12px 0 4px;
 }
 
 .event-date {
   color: #555;
   font-size: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 /* Button under cards */
