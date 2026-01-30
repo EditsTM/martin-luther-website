@@ -8,7 +8,10 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
 
   <!-- CSS -->
   <link rel="stylesheet" href="../../css/header.css" />
@@ -20,143 +23,168 @@
   <!-- Header -->
   <div id="header"></div>
 
-  <!-- Hero Section -->
+  <!-- HERO (ADDED BACK) -->
   <section class="financial-hero">
     <div class="overlay">
-      <h1>Wisconsin Parentel Choice Information</h1>
+      <h1>Wisconsin Parental Choice Program</h1>
     </div>
   </section>
 
-  <!-- Main Content (FAQ ONLY - centered) -->
-  <section class="financial-info">
-    <div class="faq-container">
-      <h2>Frequently Asked Questions</h2>
+  <main class="page">
+    <section class="sheet">
 
-      <div class="faq-item">
-        <button class="faq-question">What is WPCP?</button>
-        <div class="faq-answer">
-          <p>
-            Eligible students receive a voucher through the program, which covers their ML tuition in full.
-            The voucher remains with the student through their time at ML. Under this program — funded by
-            the State of Wisconsin — parents have a voice in how their tax dollars are spent on the education
-            of their children.
+ 
+      <!-- DARK TITLE BANNER (keep grey/black) -->
+<div class="title-banner">
+  <img
+    class="banner-seal"
+    src="../../images/OshkoshSealBlue.png"
+    alt="Martin Luther Oshkosh Seal"
+  />
+
+  <div class="banner-text">
+    <p class="title-line-1">Your child may be able to attend Martin Luther</p>
+    <p class="title-line-2">Tuition Free!</p>
+  </div>
+</div>
+
+
+
+      <!-- INTRO TEXT -->
+      <section class="content">
+        <p>
+          The Wisconsin Parental Choice Program (WPCP) provides qualifying families with a voucher to
+          attend the private or religious school of their choice <strong>tuition free</strong>. This means that
+          your child could attend MLS with <strong>tuition costs covered 100%</strong> by the state of Wisconsin!
+        </p>
+
+        <p>
+          The application is online, and the funds received through the program greatly benefit our students,
+          families, and congregation directly or indirectly.
+        </p>
+
+        <p class="center-strong">
+          <strong>All eligible families are encouraged to go online and apply!</strong><br />
+          <span class="small-note">(Be sure to select Martin Luther School)</span>
+        </p>
+
+        <!-- ELIGIBILITY BOX (CENTERED NOW) -->
+        <div class="callout">
+          <p class="callout-title">
+            <strong>Please apply if you meet the income requirements*</strong> and
+          </p>
+
+          <p class="callout-line">1) You have a child enrolled at MLS going into Kindergarten or Grade 1</p>
+
+          <p class="callout-line or-line"><strong>OR</strong></p>
+
+          <p class="callout-line">2) Your child is not currently enrolled at MLS and is going into any grade level, K-8</p>
+
+          <p class="callout-window">
+            <strong>The First Application Window is February 2, 2026 - February 20, 2026</strong>
           </p>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <button class="faq-question">Is our family eligible?</button>
-        <div class="faq-answer">
-          <p>There are two eligibility requirements.</p>
+        <p class="footnote">
+          * This program is limited to families with an Adjusted Gross Income (AGI) at or below the levels listed:
+        </p>
 
-          <p><strong>The first</strong> eligibility requirement is Wisconsin residency. Proofs of residency could include:</p>
-          <ul>
-            <li>Preferred (if applicable) – Property Tax Statement</li>
-            <li>Current Wage Statement (can be year-end W2)</li>
-            <li>Current water, gas, or electric bill (dated within the last 90 days)</li>
-            <li>Current lease agreement</li>
-          </ul>
+        <!-- INCOME TABLE -->
+        <div class="table-wrap">
+          <table class="ml-table">
+            <thead>
+              <tr>
+                <th>Family Size</th>
+                <th>Single Income</th>
+                <th>Married Income</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>2</td><td>$46,530</td><td>—</td></tr>
+              <tr><td>3</td><td>$58,630</td><td>$65,630</td></tr>
+              <tr><td>4</td><td>$70,730</td><td>$77,730</td></tr>
+              <tr><td>5</td><td>$82,830</td><td>$89,830</td></tr>
+              <tr><td>6</td><td>$94,930</td><td>$101,902</td></tr>
+            </tbody>
+          </table>
 
+          <p class="table-note"><em>For each additional child, add $12,110</em></p>
+        </div>
+
+        <!-- PROCESS OVERVIEW -->
+        <section class="process">
           <p>
-            <strong>The second</strong> eligibility requirement involves family income. To meet the 2025–2026
-            income requirements for the WPCP, a student's family must have an Adjusted Gross Income at or below
-            220% of the federal poverty level, with an additional $7,000 allowed for a married couple as illustrated
-            below (these numbers are adjusted yearly).
+            If you are applying for the Wisconsin Parental Choice Program for the first time, here is a simple overview
+            of the process. More details are available on the Wisconsin DPI website, or by contacting Martin Luther School.
+            We are happy to help!
           </p>
 
-          <div class="eligibility-table-container">
-            <table class="eligibility-table">
+          <ol class="steps">
+            <li>
+              <strong>Check Income Eligibility</strong> The state updates income limits for the new school year each January.
+              You can find the current limits above.
+            </li>
+
+            <li>
+              <strong>Apply During the Monthly Windows</strong> First-time applicants use the same monthly application windows
+              as returning families.
+            </li>
+
+            <li>
+              <strong>Complete the DPI Online Application</strong> You will need to verify your income using one of the two
+              state-approved methods:
+              <div class="substeps">
+                <p><strong>DPI Method:</strong> Enter the adjusted gross income from your 2025 tax return on the DPI application and submit a signed copy of your 1040 to the school you are applying to.</p>
+                <p><strong>DOR Method:</strong> Have the Wisconsin Department of Revenue verify your income based on tax returns you have already filed. If your 2025 return has not yet been filed, the state will use your 2024 tax data. You must still submit a signed copy of your 1040 to the school.</p>
+              </div>
+            </li>
+
+            <li>
+              <strong>Submit Proof of Residency</strong> Proof of residency must be submitted to your school during the same
+              application window in which you complete the DPI Online Application. Accepted documents are your WI-2 or January gas,
+              water, sewer, property tax, or electric bill as proof of residency.
+            </li>
+
+            <li>
+              <strong>Application Review and Lottery Process</strong> Once the window closes, the school will verify your application.
+              If there are more verified applicants than seats available, the school will follow the state-established preference order.
+            </li>
+          </ol>
+
+          <!-- CENTERED TITLE -->
+          <h3 class="section-title centered-title">Application Windows</h3>
+
+          <!-- WINDOWS TABLE -->
+          <div class="table-wrap">
+            <table class="ml-table windows-table">
               <thead>
                 <tr>
-                  <th>Family Size</th>
-                  <th>Single Income</th>
-                  <th>Married Income</th>
+                  <th>Application Period</th>
+                  <th>Application Open Date</th>
+                  <th>Application Closing Date</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td>2</td><td>$44,968</td><td>—</td></tr>
-                <tr><td>3</td><td>$56,804</td><td>$63,804</td></tr>
-                <tr><td>4</td><td>$68,640</td><td>$75,640</td></tr>
-                <tr><td>5</td><td>$80,476</td><td>$87,476</td></tr>
-                <tr><td>6</td><td>$92,312</td><td>$99,312</td></tr>
-                <tr><td>7</td><td>$104,148</td><td>$111,148</td></tr>
+                <tr><td>February</td><td>February 2, 2026</td><td>February 20, 2026</td></tr>
+                <tr><td>March</td><td>March 1, 2026</td><td>March 20, 2026</td></tr>
+                <tr><td>April</td><td>April 1, 2026</td><td>April 20, 2026</td></tr>
+                <tr><td>May</td><td>May 1, 2026</td><td>May 20, 2026</td></tr>
+                <tr><td>June</td><td>June 1, 2026</td><td>June 22, 2026</td></tr>
+                <tr><td>July</td><td>July 1, 2026</td><td>July 20, 2026</td></tr>
+                <tr><td>Aug.</td><td>August 1, 2026</td><td>August 20, 2026</td></tr>
               </tbody>
             </table>
-            <p class="eligibility-note"><em>For each additional child, add $11,836</em></p>
-            <p class="eligibility-footnote">
-              * Family size equals the total number of people in your family (parents and children).
-              For unique family situations, please contact the principal for more information.
-            </p>
           </div>
-        </div>
-      </div>
 
-      <div class="faq-item">
-        <button class="faq-question">Are we guaranteed a voucher?</button>
-        <div class="faq-answer">
-          <p>
-            There are a limited number of WPCP seats available that are designated per grade level.
-            The cap for vouchers in the 2025–2026 school year is scheduled to be 9% of the school district’s
-            total enrollment where the family resides. For school districts where more students apply than the cap allows,
-            students are selected by random draw by the Wisconsin Department of Public Instruction. You will be notified
-            of your selection in May or June.
+          <!-- CENTERED BOTTOM LINE -->
+          <p class="bottom-line centered-bottom">
+            For more information, call the school office at <strong>920-235-1612</strong>, or apply online at
+            <a class="link" href="https://dpi.wi.gov/Choice" target="_blank" rel="noopener">https://dpi.wi.gov/Choice</a>.
           </p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question">Will WPCP students be treated differently?</button>
-        <div class="faq-answer">
-          <p>
-            All students at Martin Luther School will be treated as dearly loved children of God and will be given the same
-            academic and extracurricular options as all students. ML is not new to offering financial aid to families and will
-            treat students in this program just like every other student who we are blessed to teach.
-          </p>
-          <p>
-            The identities of our Choice students, as well as other students receiving financial aid, are not readily shared with staff members.
-            They are known by the principal, the MLS Choice Administrator, the MLS treasurer, a person responsible for billing, and an assigned Choice designee.
-          </p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question">Does the voucher cover every school-related expense?</button>
-        <div class="faq-answer">
-          <p>The Choice payment covers tuition and education-related fees in full, but it does not cover additional fees not directly related to tuition and education. Such fees would include, but are not limited to:</p>
-          <ul>
-            <li>Hot Lunch</li>
-            <li>Extended Day Program (EDP)</li>
-            <li>Piano or band lessons</li>
-            <li>Extracurricular fees (athletics, robotics, etc.)</li>
-            <li>School or sports photos</li>
-            <li>Transportation, such as busing</li>
-          </ul>
-          <p>There may be other fees which ML may charge. The above list is not exhaustive. If you have questions, please contact the principal for clarification.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question">How do I apply?</button>
-        <div class="faq-answer">
-          <p>
-            The window to apply for the 2025–2026 school year is <strong>February 3 – April 17, 2025</strong>.
-            The application is filled out online, and an email address is required.
-            Please contact the school office if you need assistance or more information.
-          </p>
-          <p>
-            <a href="https://dpi.wi.gov/parental-education-options/choice-programs/student-applications" target="_blank" class="faq-link" rel="noopener">
-              Click here
-            </a>
-            to find a list of commonly asked questions, and to find more details about the Wisconsin Parental Choice Program.
-          </p>
-        </div>
-      </div>
-
-      <div class="tour-button-container">
-        <a href="../contact.html#contact-form" class="btn-orange">Contact for more information</a>
-      </div>
-    </div>
-  </section>
+        </section>
+      </section>
+    </section>
+  </main>
 
   <!-- Footer -->
   <div id="footer"></div>

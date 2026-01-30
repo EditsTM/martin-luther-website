@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+  --ml-blue: #1e2a57;
+  --light-blue: #4279bc;
+  --grey: #eaf0fa;
+  --border: rgba(30, 42, 87, 0.22);
+}
+
 /* =============================
    HERO SECTION
 ============================= */
@@ -15,7 +24,7 @@
 .forms-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(30, 42, 87, 0.85); /* Your requested overlay color */
+  background: rgba(30, 42, 87, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,21 +32,221 @@
 
 .forms-overlay h1 {
   color: white;
-  font-size: 90px;
+  font-size: 48px;          /* ✅ same scale as other pages */
   font-weight: 800;
-  letter-spacing: 3px;
+  letter-spacing: 1px;      /* ✅ subtle, not shouty */
   margin: 0;
+  text-align: center;
+}
+
+
+/* =============================
+   MAIN CONTENT (UPDATED: BIGGER + CENTERED)
+============================= */
+.forms-content {
+  max-width: 1200px;          /* ✅ bigger page width */
+  margin: 80px auto;          /* ✅ more breathing room */
+  padding: 0 20px;
+  font-family: "Open Sans", sans-serif;
+
+  display: flex;              /* ✅ centers the panel */
+  justify-content: center;
 }
 
 /* =============================
-   MAIN CONTENT
+   NEW BIG CENTER PANEL (USE THIS)
 ============================= */
-.forms-content {
-  max-width: 1000px;
-  margin: 60px auto;
-  padding: 0 20px;
+.forms-panel {
+  width: 100%;
+  max-width: 900px;           /* ✅ big but controlled */
+  background: #ffffff;
+  border: 3px solid var(--ml-blue);
+  padding: 60px 50px;
   text-align: center;
-  color: #1e2a57;
-  font-family: 'Open Sans', sans-serif;
-  line-height: 1.6;
+}
+
+.forms-panel h2 {
+  margin: 0 0 20px;
+  font-size: 42px;            /* ✅ bigger headline */
+  font-weight: 800;
+  color: var(--ml-blue);
+}
+
+.forms-panel p {
+  margin: 0 auto 40px;
+  max-width: 650px;
+  font-size: 20px;            /* ✅ bigger readable text */
+  line-height: 1.7;
+  color: #000;
+}
+
+/* BIG CTA button */
+.forms-cta {
+  display: inline-block;
+  padding: 18px 40px;
+  font-size: 20px;
+  font-weight: 800;
+
+  background: var(--ml-blue);
+  color: #ffffff;
+  text-decoration: none;
+
+  border: 3px solid var(--ml-blue);
+  transition: all 0.25s ease;
+}
+
+.forms-cta:hover {
+  background: #ffffff;
+  color: var(--ml-blue);
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .forms-panel {
+    padding: 40px 25px;
+  }
+
+  .forms-panel h2 {
+    font-size: 32px;
+  }
+
+  .forms-panel p {
+    font-size: 18px;
+  }
+}
+
+/* =============================
+   (OLD) Grid so adding more cards later is easy
+   Keeping this so nothing breaks if you still use it
+============================= */
+.forms-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* =============================
+   (OLD) CARD (UPGRADED)
+   Keeping this too, but you can delete later if not used
+============================= */
+.form-card {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.form-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 8px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--ml-blue), var(--light-blue));
+}
+
+.form-card-top {
+  padding: 26px 24px 10px;
+}
+
+.form-badge {
+  display: inline-block;
+  background: rgba(30, 42, 87, 0.10);
+  color: #000;
+  border: 1px solid rgba(30, 42, 87, 0.20);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.form-card h2 {
+  margin: 0 0 10px;
+  color: #000;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.form-card p {
+  margin: 0;
+  color: #000;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.form-card-actions {
+  padding: 18px 24px 26px;
+  background: var(--grey);
+  border-top: 1px solid rgba(30, 42, 87, 0.12);
+}
+
+/* =============================
+   (OLD) BUTTON (UPGRADED)
+============================= */
+.form-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-width: 260px;
+  padding: 12px 18px;
+
+  background: var(--ml-blue);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  border-radius: 10px;
+  border: 2px solid var(--ml-blue);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+  overflow: hidden;
+}
+
+.form-btn:hover {
+  background: #ffffff;
+  color: var(--ml-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(30, 42, 87, 0.25);
+}
+
+.form-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+}
+
+.form-btn:hover::after {
+  animation: shine 0.9s ease;
+}
+
+@keyframes shine {
+  0% { left: -75%; }
+  100% { left: 125%; }
+}
+
+.btn-arrow {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (min-width: 900px) {
+  .forms-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }

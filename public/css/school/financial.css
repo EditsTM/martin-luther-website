@@ -1,28 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap");
 
 :root {
-  --ml-blue: #1e2a57;      /* ✅ your standard ML blue */
+  --ml-blue: #1e2a57;
   --light-blue: #4279bc;
   --grey: #eaf0fa;
-  --orange: #ff9f45;
-  --orange-hover: #ffb366;
+  --border: rgba(30, 42, 87, 0.25);
+
+  /* keep this dark banner grey/black */
+  --banner-dark: #3f3f3f;
 }
 
 body {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  color: #2c3e50;
-  background: white;
+  font-family: "Open Sans", sans-serif;
+  color: #000;              /* ✅ make base text black */
+  background: #ffffff;
 }
 
 /* =============================
-   HERO SECTION
+   HERO (RESTORED)
 ============================= */
 .financial-hero {
   position: relative;
   width: 100%;
   height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center/cover;
+  background: url("../../images/Prayer.jpg") no-repeat center / cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,229 +33,305 @@ body {
 .financial-hero .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(30, 42, 87, 0.85); /* ✅ match other pages */
+  background: rgba(30, 42, 87, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .financial-hero h1 {
-  color: #fff;
-  font-size: 50px;
+  color: #ffffff;
+  font-size: 48px;
   font-weight: 800;
   letter-spacing: 2px;
   margin: 0;
   z-index: 1;
   text-align: center;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* =============================
-   MAIN CONTENT (FAQ ONLY, CENTERED)
-============================= */
-.financial-info {
+/* Page layout */
+.page {
+  padding: 40px 16px 70px;
+}
+
+.sheet {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+/* Top seal */
+.seal-wrap {
   display: flex;
   justify-content: center;
-  padding: 80px 16px;
-  background-color: white;
+  margin: 10px 0 18px;
 }
 
-.faq-container {
-  width: 100%;
-  max-width: 850px; /* ✅ centered single column */
+.seal {
+  width: 90px;
+  height: auto;
+}
+
+/* Title banner layout */
+.title-banner {
+  background: var(--banner-dark);
+  color: #fff;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;       /* centers items vertically */
+  border: 1px solid #00000040;
+}
+
+.title-line-1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.title-line-2 {
+  margin: 6px 0 0;
+  font-size: 42px;
+  font-weight: 800;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Content */
+.content {
+  padding: 20px 6px 0;
+  line-height: 1.6;
+  font-size: 15px;
+  color: #000; /* ✅ ensure content is black */
+}
+
+.center-strong {
   text-align: center;
+  margin-top: 14px;
+}
+
+.small-note {
+  font-size: 12px;
+  color: #000; /* ✅ was grey before - now black */
+}
+
+/* Callout box (CENTERED) */
+.callout {
+  background: var(--grey);
+  border: 2px solid var(--ml-blue);
+  padding: 16px;
+  margin: 16px 0 12px;
+  text-align: center; /* ✅ centers whole box */
+  color: #000;
+}
+
+.callout-title {
+  margin: 0 0 10px;
+}
+
+.callout-line {
+  margin: 8px 0;
+}
+
+.or-line {
+  margin: 10px 0;
+}
+
+.callout-window {
+  margin: 14px 0 0;
+  color: #000; /* ✅ make sure this is black */
+}
+
+/* Footnote line */
+.footnote {
+  font-size: 12px;
+  margin: 10px 0 10px;
+  color: #000; /* ✅ black */
+}
+
+/* Tables */
+.table-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px 0 18px;
 }
 
-.faq-container h2 {
-  font-size: 34px;
-  font-weight: 800;
-  color: #000000; /* ✅ black */
-  margin: 0 0 35px;
-}
-
-/* =============================
-   BIGGER FAQ DROPDOWNS
-============================= */
-.faq-item {
-  background: var(--grey);
-  border-radius: 12px;
-  margin-bottom: 22px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.10);
-  text-align: left;
+.ml-table {
   width: 100%;
-}
-
-.faq-question {
-  width: 100%;
-  text-align: left;
-  padding: 26px 30px;      /* ✅ bigger */
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 20px;         /* ✅ bigger */
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.faq-question::after {
-  content: "▼";
-  font-size: 18px;
-  transition: transform 0.3s ease;
-}
-
-.faq-item.active .faq-question::after {
-  transform: rotate(180deg);
-}
-
-.faq-answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  background: #f9f9f9;
-  padding: 0 30px;
-}
-
-.faq-item.active .faq-answer {
-  max-height: 800px;     /* ✅ more room */
-  padding: 20px 30px 26px;
-}
-
-.faq-answer p {
-  font-size: 17px;
-  line-height: 1.75;
-  margin: 0 0 14px;
-}
-
-.faq-answer ul {
-  margin: 10px 0 18px 28px;
-  padding: 0;
-  list-style-type: disc;
-}
-
-.faq-answer li {
-  margin-bottom: 10px;
-  line-height: 1.6;
-  color: #2c3e50;
-}
-
-.faq-link {
-  color: var(--ml-blue);
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-/* =============================
-   ELIGIBILITY TABLE
-============================= */
-.eligibility-table-container {
-  margin-top: 18px;
-  text-align: center;
-}
-
-.eligibility-table {
-  width: 100%;
-  max-width: 700px;
+  max-width: 560px;
   border-collapse: collapse;
-  margin: 0 auto 10px auto;
-  background: rgba(66, 121, 188, 0.15);
-  border: 2px solid #4279bc;
+  background: #fff;
+  border: 2px solid var(--ml-blue);
 }
 
-.eligibility-table th {
-  background-color: #4279bc;
-  color: white;
+.ml-table th {
+  background: var(--ml-blue);
+  color: #fff;
+  padding: 10px;
   font-weight: 800;
-  padding: 12px;
+  font-size: 13px;
   border: 1px solid #ffffff33;
 }
 
-.eligibility-table td {
-  border: 1px solid #4279bc;
-  padding: 12px;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.9);
+.ml-table td {
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  text-align: center;
+  background: rgba(66, 121, 188, 0.10);
+  font-size: 13px;
+  color: #000; /* ✅ black text */
 }
 
-.eligibility-note {
-  font-style: italic;
-  color: #2c3e50;
-  margin-top: 5px;
+.table-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #000; /* ✅ black */
 }
 
-.eligibility-footnote {
+/* Process section */
+.process {
+  margin-top: 18px;
+  color: #000;
+}
+
+.steps {
+  padding-left: 18px;
+  margin: 10px 0 16px;
+}
+
+.steps li {
+  margin: 10px 0;
+}
+
+/* Substeps box */
+.substeps {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--light-blue);
+  background: rgba(234, 240, 250, 0.6);
+  color: #000;
+}
+
+.substeps p {
+  margin: 8px 0;
   font-size: 14px;
-  color: #333;
-  margin-top: 10px;
-  line-height: 1.5;
+  color: #000;
 }
 
-/* =============================
-   BUTTON
-   ✅ Updated to match footer "Connect with us" button
-============================= */
-.tour-button-container {
-  text-align: center;
-  margin-top: 26px;
+/* Section title (centered) */
+.section-title {
+  margin: 16px 0 10px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ml-blue);
 }
 
-/* Replaces .btn-orange styling */
-.btn-orange {
-  position: relative;              /* for shine effect */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 260px;
-  padding: 6px 0;
-
-  background: #1e2a57 !important;
-  color: white !important;
-  border-radius: 6px;
-  font-weight: 600;
-  border: 2px solid #1e2a57 !important;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  font-size: 16px;
-  overflow: hidden;
-  text-align: center;
+.centered-title {
+  text-align: center; /* ✅ centers Application Windows */
 }
 
-.btn-orange:hover {
-  background: white !important;
-  color: #1e2a57 !important;
-  border-color: #1e2a57 !important;
-  transform: scale(1.06);
-  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
+/* Bottom line (centered) */
+.bottom-line {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #000;
 }
 
-/* Shine effect */
-.btn-orange::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-20deg);
+.centered-bottom {
+  text-align: center; /* ✅ centers footer sentence */
 }
 
-.btn-orange:hover::after {
-  animation: shine 0.9s ease;
+.link {
+  color: var(--light-blue);
+  font-weight: 700;
+  text-decoration: underline;
+  word-break: break-word;
 }
 
-@keyframes shine {
-  0% { left: -75%; }
-  100% { left: 125%; }
+/* Responsive */
+@media (max-width: 520px) {
+  .title-line-1 { font-size: 20px; }
+  .title-line-2 { font-size: 34px; }
+  .seal { width: 74px; }
+  .financial-hero h1 { font-size: 34px; }
+}
+
+/* Seal on left */
+.banner-seal {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* Text container */
+.banner-text {
+  flex: 1;                   /* take remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* centers text vertically */
+  align-items: center;       /* centers text horizontally */
+  text-align: center;        /* centers each line */
+}
+
+
+/* Existing text styles stay the same */
+.title-line-1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.title-line-2 {
+  margin: 6px 0 0;
+  font-size: 42px;
+  font-weight: 800;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Mobile fallback */
+@media (max-width: 520px) {
+  .title-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .banner-seal {
+    width: 70px;
+  }
+
+  .title-line-1 {
+    font-size: 20px;
+  }
+
+  .title-line-2 {
+    font-size: 34px;
+  }
+}
+/* Text styles (unchanged) */
+.title-line-1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.title-line-2 {
+  margin: 6px 0 0;
+  font-size: 42px;
+  font-weight: 800;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Mobile stacking */
+@media (max-width: 520px) {
+  .title-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .banner-seal {
+    width: 70px;
+    margin-bottom: 10px;
+  }
 }
