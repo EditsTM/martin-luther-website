@@ -148,6 +148,22 @@ function setupTeamModal() {
     return;
   }
 
+  // ✅ Make TAB insert a tab inside the Bio textarea (instead of cycling controls)
+  teamModalBioTextarea.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+
+    e.preventDefault();
+
+    const el = teamModalBioTextarea;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const value = el.value;
+
+    el.value = value.slice(0, start) + "\t" + value.slice(end);
+    el.selectionStart = el.selectionEnd = start + 1;
+  });
+
+
   // Close modal via "X" or clicking the overlay background
   teamModalCloseBtn.addEventListener("click", closeTeamModal);
   teamModalEl.addEventListener("click", (e) => {
@@ -284,16 +300,18 @@ function openTeamModal(index, cardElement) {
   } else {
     const member = teamData[index];
 
-    const bioArray = Array.isArray(member.bio)
-      ? member.bio
-      : (member.bio || "")
-          .split("\n\n")
-          .map((p) => p.trim())
-          .filter((p) => p.length > 0);
+// ✅ Keep compatibility with old array bios, but treat bio as ONE string going forward
+const bioText = Array.isArray(member.bio)
+  ? member.bio
+      .map((p) => String(p || "").trim())
+      .filter((p) => p.length > 0)
+      .join("\n\n")
+  : String(member.bio || ""); // no splitting, no trimming that could drop content
 
-    teamModalNameInput.value = member.name || "";
-    teamModalSubjectInput.value = member.subject || "";
-    teamModalBioTextarea.value = bioArray.join("\n\n");
+teamModalNameInput.value = member.name || "";
+teamModalSubjectInput.value = member.subject || "";
+teamModalBioTextarea.value = bioText;
+
 
     // Normalize image so preview can't point somewhere unexpected
     teamModalPhotoPreview.src = normalizeImagePath(member.image);
@@ -342,21 +360,15 @@ function renderTeam() {
     const h4 = document.createElement("h4");
     h4.textContent = member.subject || "Pastor";
 
+    // ✅ Bio (store/display as ONE text block, preserve line breaks via CSS)
     const bioDiv = document.createElement("div");
     bioDiv.className = "bio-text";
 
-    const bioArray = Array.isArray(member.bio)
-      ? member.bio
-      : (member.bio || "")
-          .split("\n\n")
-          .map((p) => p.trim())
-          .filter((p) => p.length > 0);
+    const bioText = Array.isArray(member.bio)
+      ? member.bio.join("\n\n") // supports your old array data
+      : (member.bio || "");
 
-    bioArray.forEach((pText) => {
-      const p = document.createElement("p");
-      p.textContent = pText; // safe against HTML injection
-      bioDiv.appendChild(p);
-    });
+    bioDiv.textContent = bioText; // safe against HTML injection
 
     card.appendChild(img);
     card.appendChild(h3);

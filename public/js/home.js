@@ -45,3 +45,49 @@ if (heroSection) {
   // If the hero isn't on this page, avoid runtime errors
   console.error("❌ Hero section not found in DOM");
 }
+
+//Load 3 events onto homepage
+const container = document.querySelector(".events-cards");
+
+if (container) {
+  fetch("/content/events.json")
+    .then((res) => res.json())
+    .then((data) => {
+      const events = Array.isArray(data.events) ? data.events : [];
+
+      //Keep events if they have AT LEAST a title OR date OR image
+      const validEvents = events.filter((ev) => {
+        const title = String(ev.title ?? "").trim();
+        const date = String(ev.date ?? "").trim();
+        const image = String(ev.image ?? "").trim();
+
+        // Show it if ANY of these exist
+        return title !== "" || date !== "" || image !== "";
+      });
+
+      //Show only the first 3 valid events
+      const top3 = validEvents.slice(0, 3);
+
+      //If nothing valid exists, show nothing
+      if (top3.length === 0) {
+        container.innerHTML = "";
+        return;
+      }
+
+      //Render the cards
+      container.innerHTML = top3
+        .map(
+          (ev) => `
+            <div class="event-card">
+              <img src="${ev.image}" alt="${ev.title}">
+              <h3>${ev.title}</h3>
+              <p>${ev.date}</p>
+            </div>
+          `
+        )
+        .join("");
+    })
+    .catch((err) => {
+      console.error("❌ Failed to load events on homepage:", err);
+    });
+}

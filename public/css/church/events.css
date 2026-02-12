@@ -1,25 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
 
-:root {
+:root{
   --blue: #282f7f;
-  --light-blue: #4279bc;
+  --navy: #1f2a57;      /* Edit button + modal primary */
+  --save: #2f6fce;      /* Save button */
   --grey: #eaeaea;
 }
 
 /* =============================
    GLOBAL
 ============================= */
-body {
+body{
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #2c3e50;
-  background: white;
+  background: #fff;
 }
 
 /* =============================
    HERO SECTION
 ============================= */
-.events-hero {
+.events-hero{
   position: relative;
   width: 100%;
   height: 300px;
@@ -29,7 +30,7 @@ body {
   align-items: center;
 }
 
-.events-overlay {
+.events-overlay{
   position: absolute;
   inset: 0;
   background: rgba(30, 42, 87, 0.85);
@@ -38,8 +39,8 @@ body {
   align-items: center;
 }
 
-.events-overlay h1 {
-  color: white;
+.events-overlay h1{
+  color: #fff;
   font-size: 50px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -49,7 +50,7 @@ body {
 /* =============================
    MAIN CONTAINER
 ============================= */
-.events-grid {
+.events-grid{
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -60,7 +61,7 @@ body {
 /* =============================
    EVENT ROW LAYOUT
 ============================= */
-.event-row {
+.event-row{
   display: flex;
   width: 100%;
   align-items: stretch;
@@ -69,13 +70,12 @@ body {
 /* =============================
    TEXT + IMAGE ITEMS
 ============================= */
-.grid-item {
+.grid-item{
   flex: 1 1 50%;
   width: 50%;
 }
 
-/* ✅ DOUBLE the size of the grey + white boxes (already what you wanted) */
-.grid-item.grey {
+.grid-item.grey{
   background: var(--grey);
   display: flex;
   flex-direction: column;
@@ -85,9 +85,8 @@ body {
   padding-bottom: 20px;
 }
 
-/* Image container */
-.grid-item.white {
-  background: white;
+.grid-item.white{
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,7 +98,7 @@ body {
 /* =============================
    IMAGE BEHAVIOR
 ============================= */
-.event-img {
+.event-img{
   width: 100%;
   height: auto;
   max-height: 400px;
@@ -110,22 +109,21 @@ body {
 /* =============================
    TITLE + DATE
 ============================= */
-.event-header {
+.event-header{
   width: 100%;
   text-align: center;
   border-bottom: 3px solid #000;
   padding-top: 15px;
 }
 
-/* ✅ KEEP TITLE BLACK */
-.event-header h2 {
+.event-header h2{
   color: #000;
   font-size: 22px;
   font-weight: 600;
   margin: 0;
 }
 
-.event-header .event-date {
+.event-header .event-date{
   color: #444;
   font-size: 0.95rem;
   margin-top: 4px;
@@ -134,7 +132,7 @@ body {
 /* =============================
    TEXT BOX
 ============================= */
-.text-box {
+.text-box{
   width: 100%;
   text-align: center;
   box-sizing: border-box;
@@ -142,7 +140,7 @@ body {
   flex-grow: 1;
 }
 
-.text-box p {
+.text-box p{
   color: #333;
   font-size: 15px;
   line-height: 1.6;
@@ -150,110 +148,217 @@ body {
 }
 
 /* =============================
-   ADMIN / NOTES
+   NOTES DISPLAY (non-admin too)
 ============================= */
-.event-admin-section {
+.event-notes{
   width: 90%;
   margin: 0 auto;
+  color: #000;
+  word-break: break-word;
+  text-align: center;
+  padding: 10px 0 0 0;
+}
+
+/* =============================
+   EDIT BUTTON (matches screenshot)
+============================= */
+.ml-edit-btn{
+  margin-top: 18px;
+  background: var(--navy);
+  color: #fff;
+  border: 2px solid var(--navy);
+  padding: 10px 26px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.ml-edit-btn:hover{
+  background: #fff;
+  color: var(--navy);
+}
+
+/* =============================
+   MODAL (matches screenshot)
+============================= */
+.event-modal-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none; /* JS sets to flex */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.event-modal{
+  width: min(920px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 26px;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+  position: relative;
+}
+
+.event-modal-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.event-modal-header h2{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #000;
+}
+
+.event-modal-close{
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.event-modal-body{
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+}
+
+.event-modal-photo{
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* ✅ Make editable notes black AND preserve spacing/newlines */
-.admin-display-text {
-  color: #000;
-  white-space: pre-wrap;   /* keeps line breaks + multiple spaces */
-  word-break: break-word;
+.event-modal-photo img{
+  width: 280px;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--grey);
 }
 
-/* ✅ Small spacing between the edit buttons */
-.event-admin-section button {
-  margin: 6px 0;  /* little vertical spacing */
-}
-
-/* your button */
-.save-notes-btn {
-  margin-top: 4px;
-  background: var(--light-blue);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+/* Change Photo button */
+.event-modal-primary{
+  margin-top: 14px;
+  width: 280px;
+  background: var(--navy);
+  color: #fff;
+  border: 2px solid var(--navy);
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 800;
   cursor: pointer;
-  font-weight: 600;
+  transition: 0.15s ease;
+}
+
+.event-modal-primary:hover{
+  background: #fff;
+  color: var(--navy);
+}
+
+.event-modal-form label{
+  display: block;
+  font-weight: 700;
+  margin: 10px 0 6px;
+  color: #000;
+}
+
+.event-modal-form input,
+.event-modal-form textarea{
+  width: 100%;
+  border: 1px solid #cfd6e4;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.event-modal-form textarea{
+  min-height: 160px;
+  resize: vertical;
+}
+
+.event-modal-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.event-modal-delete{
+  background: #b30000;
+  color: #fff;
+  border: 2px solid #b30000;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.event-modal-save{
+  background: var(--save);
+  color: #fff;
+  border: 2px solid var(--save);
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 /* =============================
    MOBILE
 ============================= */
-@media (max-width: 950px) {
-  .event-row {
+@media (max-width: 950px){
+  .event-row{
     flex-direction: column;
   }
 
-  .grid-item {
-    width: 100%;
-  }
-
-  .event-img {
-    max-height: 440px;
-  }
-
-  .events-overlay h1 {
-    font-size: 38px;
-  }
-}
-
-/* =============================
-   IMAGE EDIT OVERLAY
-============================= */
-.image-edit-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(66, 121, 188, 0.85);
-  color: #fff;
-  font-weight: 700;
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.grid-item.white:hover .image-edit-overlay {
-  opacity: 1;
-}
-
-@media (hover: none) {
-  .image-edit-overlay {
-    opacity: 1;
-  }
-}
-@media (max-width: 950px) {
-  .event-row {
-    flex-direction: column;
-  }
-
-  .grid-item {
+  .grid-item{
     width: 100%;
     flex: 1 1 100%;
   }
 
-  /* ✅ FORCE: always Text then Image on mobile */
-  .event-row .grid-item.grey {
-    order: 1;
-  }
-  .event-row .grid-item.white {
-    order: 2;
-  }
+  /* force Text then Image on mobile */
+  .event-row .grid-item.grey{ order: 1; }
+  .event-row .grid-item.white{ order: 2; }
 
-  .event-img {
+  .event-img{
     max-height: 440px;
   }
 
-  .events-overlay h1 {
+  .events-overlay h1{
     font-size: 38px;
   }
+
+  .event-modal-body{
+    grid-template-columns: 1fr;
+  }
 }
+/* Remove Photo button */
+.event-modal-remove {
+  margin-top: 10px;
+  width: 280px;
+  background: #b30000;
+  color: white;
+  border: 2px solid #b30000;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.event-modal-remove:hover {
+  background: white;
+  color: #b30000;
+}
+

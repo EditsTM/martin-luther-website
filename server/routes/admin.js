@@ -78,11 +78,11 @@ function parseIndex(val) {
 
 // ✅ Basic string length limits to prevent abuse / huge payloads
 function clampString(val, maxLen) {
-  if (val == null) return null;
+  if (val === null || val === undefined) return null;
   const s = String(val);
-  if (!s) return null;
   return s.length > maxLen ? s.slice(0, maxLen) : s;
 }
+
 
 /* ======================================================
    ✅ UPLOAD HARDENING (EVENTS + FACULTY)
@@ -129,17 +129,17 @@ router.get("/login", (req, res) => {
 router.post("/login", loginLimiter, (req, res) => {
   const { password } = req.body;
 
-  if (timingSafeEqualString(password, ADMIN_PASSWORD)) {
-    req.session.loggedIn = true;
+if (timingSafeEqualString(password, ADMIN_PASSWORD)) {
+  req.session.loggedIn = true;
+  req.session.isAdmin = true; // ✅ ADD THIS LINE
 
-    // ✅ (Keeps your existing UX behavior)
-    return res.send(`
-      <script>
-        localStorage.setItem('isAdmin', 'true');
-        window.location.href = '/admin/dashboard';
-      </script>
-    `);
-  }
+  return res.send(`
+    <script>
+      localStorage.setItem('isAdmin', 'true');
+      window.location.href = '/admin/dashboard';
+    </script>
+  `);
+}
 
   const errorHTML = `
 <!DOCTYPE html>
@@ -469,6 +469,53 @@ router.post("/faculty/add", requireSameOrigin, requireAdmin, (req, res) => {
     res.status(500).json({ error: "Failed to add teacher" });
   }
 });
+
+/* ------------------------------------------------------
+   🔀 Reorder Events (drag & drop)
+------------------------------------------------------ */
+router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
+  const filePath = path.resolve(process.cwd(), "server/content/events.json");
+
+  const order = req.body?.order;
+  if (!Array.isArray(order) || order.length === 0) {
+    return res.status(400).json({ error: "Invalid order" });
+  }
+
+  // Must be integers and unique
+  const clean = order.map(Number);
+  if (!clean.every(Number.isInteger)) {
+    return res.status(400).json({ error: "Order must be integer indices" });
+  }
+  const uniq = new Set(clean);
+  if (uniq.size !== clean.length) {
+    return res.status(400).json({ error: "Order has duplicates" });
+  }
+
+  try {
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "events.json not found" });
+    }
+
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const events = Array.isArray(data.events) ? data.events : [];
+
+    if (clean.length !== events.length) {
+      return res.status(400).json({ error: "Order length mismatch" });
+    }
+    if (!clean.every((i) => i >= 0 && i < events.length)) {
+      return res.status(400).json({ error: "Order contains out-of-range index" });
+    }
+
+    data.events = clean.map((i) => events[i]);
+
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    res.json({ success: true });
+  } catch (err) {
+    console.error("reorder-events failed:", err);
+    res.status(500).json({ error: "Failed to reorder events" });
+  }
+});
+
 
 /* ------------------------------------------------------
    ⭐ ADD ADMIN MEMBER

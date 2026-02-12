@@ -16,6 +16,42 @@
   <link rel="stylesheet" href="../../css/church/events.css">
 </head>
 
+<!-- ✅ EDIT MODAL (Admin only uses it, but safe to exist for everyone) -->
+<div class="event-modal-overlay" id="eventModalOverlay" style="display:none;">
+  <div class="event-modal" id="eventModal" style="display:none;">
+    <div class="event-modal-header">
+      <h2 id="eventModalTitle">Edit Event</h2>
+      <button class="event-modal-close" id="eventModalClose" type="button">×</button>
+    </div>
+
+    <div class="event-modal-body">
+      <div class="event-modal-photo">
+        <img id="eventModalImg" src="/images/Placeholder.jpg" alt="Event Photo">
+        <button class="event-modal-primary" id="eventModalChangePhotoBtn" type="button">Change Photo</button>
+        <button class="event-modal-remove" id="eventModalRemovePhotoBtn" type="button">Remove Photo</button>
+
+        <input id="eventModalFileInput" type="file" accept="image/*" style="display:none;">
+      </div>
+
+      <div class="event-modal-form">
+        <label for="eventModalFieldTitle">Title</label>
+        <input id="eventModalFieldTitle" type="text" />
+
+        <label for="eventModalFieldDate">Date</label>
+        <input id="eventModalFieldDate" type="text" />
+
+        <label for="eventModalFieldNotes">Notes (use blank lines for new paragraphs)</label>
+        <textarea id="eventModalFieldNotes"></textarea>
+
+        <div class="event-modal-actions">
+          <button class="event-modal-delete" id="eventModalDeleteBtn" type="button">Delete</button>
+          <button class="event-modal-save" id="eventModalSaveBtn" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <body>
   <!-- ✅ Dynamic Header -->
   <div id="header"></div>

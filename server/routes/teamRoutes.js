@@ -61,9 +61,9 @@ function requireSameOrigin(req, res, next) {
 const LIMITS = {
   name: 80,
   subject: 120,
-  bioTotal: 4000, // total combined text across bio paragraphs
-  bioParagraphs: 25,
-  bioParagraphLen: 500,
+
+  // ✅ CHANGE: store bio as ONE string; cap total size only
+  bioTotal: 24000,
 };
 
 // ✅ Normalize/validate strings (prevents huge payloads + downstream XSS risk)
@@ -77,13 +77,19 @@ function cleanString(v, max) {
 function normalizeBio(bio) {
   if (bio === undefined) return undefined;
 
+  const keepIndent = (s) =>
+    String(s ?? "")
+      .replace(/\r\n/g, "\n")
+      .replace(/[ \t]+$/gm, "");
+
   let parts = [];
   if (Array.isArray(bio)) {
-    parts = bio.map((p) => String(p ?? "").trim());
+    parts = bio.map((p) => keepIndent(p));
   } else {
     parts = String(bio ?? "")
+      .replace(/\r\n/g, "\n")
       .split("\n\n")
-      .map((p) => p.trim());
+      .map((p) => keepIndent(p));
   }
 
   parts = parts.filter((p) => p.length > 0).slice(0, LIMITS.bioParagraphs);
@@ -91,9 +97,9 @@ function normalizeBio(bio) {
     p.length > LIMITS.bioParagraphLen ? p.slice(0, LIMITS.bioParagraphLen) : p
   );
 
+  // keep your total limit logic the same
   const total = parts.reduce((sum, p) => sum + p.length, 0);
   if (total > LIMITS.bioTotal) {
-    // Trim from the end until within total limit
     let remaining = LIMITS.bioTotal;
     const trimmed = [];
     for (const p of parts) {
@@ -107,6 +113,7 @@ function normalizeBio(bio) {
 
   return parts;
 }
+
 
 // ✅ Atomic JSON write to avoid partial/corrupt file
 async function atomicWriteJson(filePath, dataObj) {
@@ -203,7 +210,9 @@ router.post("/", requireSameOrigin, requireAdmin, async (req, res) => {
       name,
       subject,
       image: image || "/images/Placeholder.jpg",
-      bio: bio ?? [],
+
+      // ✅ CHANGE: bio is a STRING now (not an array)
+      bio: bio ?? "",
     };
 
     data.team.push(newMember);
@@ -244,7 +253,8 @@ router.put("/:index", requireSameOrigin, requireAdmin, async (req, res) => {
     }
 
     if (req.body?.bio !== undefined) {
-      member.bio = normalizeBio(req.body.bio);
+      // ✅ CHANGE: store as STRING
+      member.bio = normalizeBio(req.body.bio) ?? "";
     }
 
     await atomicWriteJson(TEAM_PATH, data);
