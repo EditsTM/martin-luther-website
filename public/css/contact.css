@@ -309,3 +309,11 @@ textarea {
     border-bottom: none;
   }
 }
+
+/* ==================== MOBILE SUBMIT BUTTON==================== */
+@media (max-width: 600px) {
+  .contact-form .btn {
+    width: 100%;        
+    max-width: 320px;   
+  }
+}
