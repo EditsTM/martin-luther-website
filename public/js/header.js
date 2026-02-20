@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Insert the cleaned header HTML
     headerEl.replaceChildren(tpl.content);
+    headerEl.classList.add("loaded");
 
     // Post-insert tweaks
     const logo = document.querySelector(".logo-link");

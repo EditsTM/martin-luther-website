@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Footer file should be trusted static HTML.
     // If it ever becomes user-editable, do NOT use innerHTML without sanitizing.
     footerEl.innerHTML = html;
+    footerEl.classList.add("loaded");
   } catch (err) {
     console.error("⚠️ Footer load error:", err);
   }

@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
+/* Prevent header/footer pop-in while they load */
+#header,
+#footer {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+#header.loaded,
+#footer.loaded {
+  opacity: 1;
+}
+
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Open Sans', Arial, sans-serif; }
 
@@ -159,3 +171,4 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   .mega-column h3{text-align:center;}
   .mega-column a{text-align:center;}
 }
+
