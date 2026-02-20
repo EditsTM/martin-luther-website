@@ -1,30 +1,27 @@
-// Force preload class automatically
-document.documentElement.classList.add("preload");
-
 // /js/layoutReady.js
-(function () {
+(() => {
+  function show() {
+    document.documentElement.style.visibility = "visible";
+    // optional: if you want a fade too, keep your html.loaded CSS and add this:
+    document.documentElement.classList.add("loaded");
+    window.dispatchEvent(new Event("layout:ready"));
+  }
+
   function ready() {
     const headerLoaded = document.getElementById("header")?.classList.contains("loaded");
     const footerLoaded = document.getElementById("footer")?.classList.contains("loaded");
     return headerLoaded && footerLoaded;
   }
 
-  function show() {
-    document.body.classList.remove("preload");
-    document.body.classList.add("loaded");
-  }
-
-  // In case a page doesn't use footer/header for some reason:
   const hasHeader = !!document.getElementById("header");
   const hasFooter = !!document.getElementById("footer");
 
-  // If either doesn't exist, don't block the page
+  // If a page doesn't have header/footer containers, don't block it
   if (!hasHeader || !hasFooter) {
     show();
     return;
   }
 
-  // Poll briefly until both are loaded
   const t = setInterval(() => {
     if (ready()) {
       clearInterval(t);
@@ -32,7 +29,7 @@ document.documentElement.classList.add("preload");
     }
   }, 20);
 
-  // Safety fallback: never keep page hidden forever
+  // SAFETY: never keep the site hidden forever
   setTimeout(() => {
     clearInterval(t);
     show();
