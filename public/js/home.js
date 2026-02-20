@@ -4,7 +4,7 @@
 const heroImages = [
   "../images/HomeRotatingImage1.webp",
   "../images/HomeRotatingImage2.webp",
-  "../images/HomeRotatingImage3.webp",
+  "../images/HomeRotatingImage3.png",
 ];
 
 // Grab the hero section element that gets the rotating background
