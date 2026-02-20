@@ -59,7 +59,7 @@ body {
   align-items: start;
   justify-content: center;
   min-height: 100vh;
-  border-top: 2px solid #ccc; /* dividing line between hero and team */
+  border-top: none;
   position: relative;
 }
 
@@ -70,8 +70,8 @@ body {
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 1.5px;
-  background: #d1d1d1;
+  width: 3.0px;
+  background: #282f7f;
   transform: translateX(-50%);
 }
 
@@ -226,7 +226,7 @@ body {
 .add-btn-wrapper {
   width: 100%;
   max-width: 1200px;
-  margin: 30px auto 10px auto;
+  margin: 0 auto 10px auto;
   display: flex;
   justify-content: center;
 }

@@ -11,7 +11,6 @@ body.loaded {
   opacity: 1;
   transition: opacity 160ms ease;
 }
-
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Open Sans', Arial, sans-serif; }
 
