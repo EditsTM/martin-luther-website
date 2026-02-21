@@ -13,7 +13,7 @@ if (!prayerTo) {
   console.error("❌ Missing PRAYER_TO in env (prayer).");
 }
 
-// ✅ Create transporter once (reuse)
+// Create transporter once (reuse)
 const transporter =
   smtpUser && smtpPass
     ? nodemailer.createTransport({
