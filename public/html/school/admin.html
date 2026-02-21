@@ -32,10 +32,28 @@
         <h1>Admin Portal</h1>
         <p>Sign in to manage website content</p>
 
-        <form action="/admin/login" method="POST" class="login-form">
-          <input type="password" name="password" placeholder="Enter Password" required />
-          <button type="submit">Login</button>
-        </form>
+            <form action="/admin/login" method="POST" class="login-form">
+              <input type="password" name="password" placeholder="Enter Password" required />
+
+              <!-- 2FA Code -->
+              <input
+                type="text"
+                name="token"
+                placeholder="6-digit code"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                pattern="[0-9]{6}"
+                required
+              />
+
+              <!-- ✅ Remember Device Checkbox -->
+              <label class="remember-device">
+                <input type="checkbox" name="rememberDevice" />
+                Remember this device for 30 days
+              </label>
+
+              <button type="submit">Login</button>
+            </form>
 
         <a href="/html/index.html" class="back-link">← Back to Home</a>
       </div>

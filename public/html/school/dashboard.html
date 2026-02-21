@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Martin Luther</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/school/admin-dashboard.css">
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <main class="admin-shell">
+    <!-- LEFT SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar__title">
+        <div class="admin-sidebar__welcome">Welcome, Admin!</div>
+        <div class="admin-sidebar__sub">Use the options below to manage website content.</div>
+      </div>
+
+      <nav class="admin-nav">
+        <button class="admin-nav__item is-active" data-view="faculty" type="button">Manage Faculty</button>
+        <button class="admin-nav__item" data-view="pastors" type="button">Manage Pastors</button>
+        <button class="admin-nav__item" data-view="events" type="button">Manage Events</button>
+        <button class="admin-nav__item" data-view="suggestions" type="button">Suggest Improvements</button>
+
+        <button class="admin-nav__item admin-nav__item--logout" id="logoutBtn" type="button">
+            Logout
+        </button>
+      </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+<section class="admin-content">
+  <!-- FACULTY VIEW (default) -->
+  <div class="admin-view is-active" id="view-faculty"></div>
+
+  <!-- PASTORS VIEW -->
+  <div class="admin-view" id="view-pastors"></div>
+
+  <!-- EVENTS VIEW -->
+  <div class="admin-view" id="view-events"></div>
+
+  <!-- SUGGESTIONS VIEW -->
+  <div class="admin-view" id="view-suggestions">
+    <div class="panel">
+      <div class="panel__header">
+        <h2 class="panel__title">Suggested Improvements</h2>
+
+        <div class="panel__actions">
+          <button class="btn btn--ghost" id="toggleAllBtn" type="button">View all</button>
+          <button class="btn btn--primary" id="addSuggestionBtn" type="button">+ Add</button>
+        </div>
+      </div>
+
+      <div class="panel__body">
+        <div class="suggestions-list" id="suggestionsList"></div>
+
+        <div class="panel__hint" id="suggestionsHint">
+          Showing the most recent 3 suggestions.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ LIVE PREVIEW PANEL (shared for faculty/pastors/events) -->
+  <div class="preview-panel">
+    <div class="preview-toolbar">
+      <div class="preview-title">Preview</div>
+      <div class="preview-actions">
+        <button type="button" class="btn btn--ghost" id="refreshPreviewBtn">Refresh</button>
+      </div>
+    </div>
+
+    <iframe
+      id="previewFrame"
+      class="preview-frame"
+      src="/html/school/faculty.html"
+      loading="lazy"
+    ></iframe>
+  </div>
+</section>
+  </main>
+
+  <!-- SUGGESTION MODAL -->
+  <div class="modal-backdrop" id="suggestionModal" aria-hidden="true">
+    <div class="modal">
+      <button class="modal__close" id="closeSuggestionModal" type="button" aria-label="Close">×</button>
+
+      <h3 class="modal__title">Add Suggested Improvement</h3>
+
+      <form id="suggestionForm" class="modal__form">
+        <!-- Page dropdown -->
+        <label class="field">
+          <span class="field__label">What page are you requesting an edit?</span>
+          <select name="page" required>
+            <option value="" disabled selected>Select a page</option>
+            <option value="Home">Home</option>
+            <option value="About">About</option>
+            <option value="Church">Church</option>
+            <option value="School">School</option>
+            <option value="Faculty">Faculty</option>
+            <option value="Contact">Contact</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+
+        <!-- Change type -->
+        <label class="field">
+          <span class="field__label">What type of change is this?</span>
+          <select name="changeType" id="changeType" required>
+            <option value="" disabled selected>Select change type</option>
+            <option value="wording">Suggest a word change</option>
+            <option value="content">Content update</option>
+            <option value="design">Design/layout</option>
+            <option value="fix">Fix an issue/bug</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+
+        <!-- Conditional: wording -->
+        <div id="wordingFields" class="field-group is-hidden">
+          <label class="field">
+            <span class="field__label">From:</span>
+            <input type="text" name="fromText" placeholder="Current wording..." />
+          </label>
+
+          <label class="field">
+            <span class="field__label">To:</span>
+            <input type="text" name="toText" placeholder="Suggested wording..." />
+          </label>
+        </div>
+
+        <!-- Conditional: description -->
+        <div id="descriptionField" class="field-group">
+          <label class="field">
+            <span class="field__label">Description:</span>
+            <textarea name="description" rows="5" placeholder="Describe the change requested..."></textarea>
+          </label>
+        </div>
+
+        <div class="modal__footer">
+          <button class="btn btn--danger" id="cancelSuggestion" type="button">Cancel</button>
+          <button class="btn btn--primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="/js/header.js"></script>
+  <script src="/js/footer.js"></script>
+  <script src="/js/layoutReady.js"></script>
+  <script src="/js/reveal.js"></script>
+  <script src="/js/adminSession.js"></script>
+  <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>

@@ -3,10 +3,13 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import { fileURLToPath } from "url";
+import { fileURLToPath, URL } from "url";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import crypto from "crypto";
+import speakeasy from "speakeasy";
+// ✅ DB for suggestions
+import { db } from "../db/suggestionsDb.js"; // <-- adjust path if needed
 
 dotenv.config();
 
@@ -44,20 +47,36 @@ function timingSafeEqualString(a, b) {
 // Note: This assumes your site runs over https in production.
 function requireSameOrigin(req, res, next) {
   const origin = req.get("origin");
-  const host = req.get("host");
+  if (!origin) return next(); // allow non-browser tools / some requests
 
-  // If no Origin header (some same-origin requests), allow.
-  if (!origin) return next();
-
-  let originHost;
+  let originURL;
   try {
-    originHost = new URL(origin).host;
+    originURL = new URL(origin);
   } catch {
     return res.status(403).json({ error: "Bad Origin" });
   }
 
-  if (originHost !== host) {
-    return res.status(403).json({ error: "CSRF blocked (origin mismatch)" });
+  // ✅ get the "real" host the request came in on (works behind proxies)
+  const forwardedHost = (req.get("x-forwarded-host") || "").split(",")[0].trim();
+  const hostHeader = (forwardedHost || req.get("host") || "").split(",")[0].trim();
+
+  const requestHost = hostHeader.split(":")[0]; // strip port
+  const originHost = originURL.hostname;
+
+  const normalize = (h) => String(h || "").toLowerCase().replace(/^www\./, "");
+
+  // ✅ Dev exception: localhost vs 127.0.0.1
+  if (process.env.NODE_ENV !== "production") {
+    const devHosts = new Set(["localhost", "127.0.0.1"]);
+    if (devHosts.has(normalize(originHost)) && devHosts.has(normalize(requestHost))) {
+      return next();
+    }
+  }
+
+  if (normalize(originHost) !== normalize(requestHost)) {
+    // 👇 add this log temporarily so we can see what it's comparing
+    console.error("Bad Origin:", { originHost, requestHost, origin, hostHeader, forwardedHost });
+    return res.status(403).json({ error: "Bad Origin" });
   }
 
   next();
@@ -81,6 +100,46 @@ function clampString(val, maxLen) {
   if (val === null || val === undefined) return null;
   const s = String(val);
   return s.length > maxLen ? s.slice(0, maxLen) : s;
+}
+
+/* ======================================================
+   ✅ TRUSTED DEVICE (Remember for 30 days)
+====================================================== */
+
+if (!process.env.ADMIN_TOTP_SECRET) {
+  throw new Error("❌ ADMIN_TOTP_SECRET is missing. Refusing to start for safety.");
+}
+
+// Store hashed tokens + expiry in a file (simple, no DB)
+const trustedDevicesPath = path.resolve(process.cwd(), "server/content/trusted-devices.json");
+
+function readTrustedDevices() {
+  try {
+    if (!fs.existsSync(trustedDevicesPath)) {
+      fs.mkdirSync(path.dirname(trustedDevicesPath), { recursive: true });
+      fs.writeFileSync(trustedDevicesPath, JSON.stringify({ devices: [] }, null, 2));
+    }
+    const data = JSON.parse(fs.readFileSync(trustedDevicesPath, "utf8"));
+    if (!data || !Array.isArray(data.devices)) return { devices: [] };
+    return data;
+  } catch {
+    return { devices: [] };
+  }
+}
+
+function writeTrustedDevices(data) {
+  fs.mkdirSync(path.dirname(trustedDevicesPath), { recursive: true });
+  fs.writeFileSync(trustedDevicesPath, JSON.stringify(data, null, 2));
+}
+
+function hashToken(raw) {
+  return crypto.createHash("sha256").update(String(raw)).digest("hex");
+}
+
+function cleanupExpiredDevices(data) {
+  const now = Date.now();
+  data.devices = (data.devices || []).filter((d) => d && d.expires > now);
+  return data;
 }
 
 
@@ -124,23 +183,73 @@ router.get("/login", (req, res) => {
 });
 
 /* ------------------------------------------------------
-   🔐 Handle Login
+   🔐 Handle Login (Password + 2FA + Remember Device)
 ------------------------------------------------------ */
 router.post("/login", loginLimiter, (req, res) => {
-  const { password } = req.body;
+  const { password, token, rememberDevice } = req.body;
 
-if (timingSafeEqualString(password, ADMIN_PASSWORD)) {
-  req.session.loggedIn = true;
-  req.session.isAdmin = true; // ✅ ADD THIS LINE
+  // ✅ 1) Check if this browser is already trusted
+  let deviceTrusted = false;
+  const trustedCookie = req.cookies?.ml_trusted;
 
-  return res.send(`
-    <script>
-      localStorage.setItem('isAdmin', 'true');
-      window.location.href = '/admin/dashboard';
-    </script>
-  `);
-}
+  if (trustedCookie) {
+    const data = cleanupExpiredDevices(readTrustedDevices());
+    const hashed = hashToken(trustedCookie);
 
+    if (data.devices.some((d) => d.token === hashed)) {
+      deviceTrusted = true;
+    } else {
+      // keep file clean
+      writeTrustedDevices(data);
+    }
+  }
+
+  // ✅ 2) Password check
+  const passwordOk = timingSafeEqualString(password, ADMIN_PASSWORD);
+
+  // ✅ 3) 2FA check (skip if trusted)
+  const tokenOk = deviceTrusted
+    ? true
+    : speakeasy.totp.verify({
+        secret: process.env.ADMIN_TOTP_SECRET,
+        encoding: "base32",
+        token: String(token || ""),
+        window: 1,
+      });
+
+  if (passwordOk && tokenOk) {
+    return req.session.regenerate((err) => {
+      if (err) return res.status(500).send("Session error");
+
+      req.session.loggedIn = true;
+      req.session.isAdmin = true;
+
+      // ✅ 4) If they checked "Remember this device", set 30-day trusted cookie
+      if (rememberDevice && !deviceTrusted) {
+        const rawToken = crypto.randomBytes(32).toString("hex");
+        const hashed = hashToken(rawToken);
+
+        const data = cleanupExpiredDevices(readTrustedDevices());
+        data.devices.push({
+          token: hashed,
+          expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        });
+        writeTrustedDevices(data);
+
+        res.cookie("ml_trusted", rawToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          path: "/admin",
+        });
+      }
+
+      return res.redirect(303, "/admin/dashboard");
+    });
+  }
+
+  // ✅ generic error (don’t reveal if password or token was wrong)
   const errorHTML = `
 <!DOCTYPE html>
 <html lang="en">
@@ -177,10 +286,27 @@ if (timingSafeEqualString(password, ADMIN_PASSWORD)) {
 
         <form action="/admin/login" method="POST" class="login-form">
           <input type="password" name="password" placeholder="Enter Password" required />
+
+          <input
+            type="text"
+            name="token"
+            placeholder="6-digit code"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            pattern="[0-9]{6}"
+            required
+          />
+
+          <!-- ✅ add checkbox here too, otherwise it disappears on error -->
+          <label class="remember-device">
+            <input type="checkbox" name="rememberDevice" />
+            Remember this device for 30 days
+          </label>
+
           <button type="submit">Login</button>
         </form>
 
-        <div class="error-msg">❌ Incorrect password. Please try again.</div>
+        <div class="error-msg">❌ Invalid credentials. Please try again.</div>
         <a href="/html/home.html" class="back-link">← Back to Home</a>
       </div>
     </div>
@@ -193,82 +319,47 @@ if (timingSafeEqualString(password, ADMIN_PASSWORD)) {
 </html>
   `;
 
-  res.status(401).send(errorHTML);
+  return res.status(401).send(errorHTML);
 });
-
 /* ------------------------------------------------------
    🧩 Protected Dashboard
 ------------------------------------------------------ */
 router.get("/dashboard", (req, res) => {
   if (!req.session.loggedIn) return res.redirect("/admin/login");
 
-  res.send(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="/css/school/admin.css" />
-  <link rel="stylesheet" href="/css/header.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-</head>
-<body>
-  <div id="header"></div>
+  // Prevent caching so you always see latest changes
+  res.set("Cache-Control", "no-store");
 
-  <section class="admin-hero">
-    <div class="admin-overlay">
-      <div class="login-card">
-        <h1>Welcome, Admin!</h1>
-        <p>Use the options below to manage website content.</p>
-
-        <a href="/html/school/faculty.html" class="btn">Manage Faculty</a>
-        <br><br>
-        <a href="/html/church/team.html" class="btn">Manage Pastors</a>
-        <br><br>
-        <a href="/html/church/events.html" class="btn">Manage Events</a>
-        <br><br>
-        <a href="/admin/logout" class="btn logout-btn">Logout</a>
-
-      </div>
-    </div>
-  </section>
-
-  <div id="footer"></div>
-  <script src="/js/header.js"></script>
-  <script src="/js/footer.js"></script>
-  <script src="/js/adminSession.js"></script>
-</body>
-</html>
-  `);
+  // Serve your actual dashboard file
+  res.sendFile(
+    path.join(__dirname, "../../public/html/school/dashboard.html")
+  );
 });
 
 /* ------------------------------------------------------
    🚪 Logout (POST) — for fetch() / idle timeout
 ------------------------------------------------------ */
-router.post("/logout", requireSameOrigin, (req, res) => {
-  if (!req.session) return res.status(200).json({ ok: true });
+router.post("/logout", (req, res) => {
+  const done = () => {
+    // clear session cookie (your session name is ml.sid)
+    res.clearCookie("ml.sid", { path: "/" });
 
-  req.session.destroy(() => {
-    res.clearCookie("connect.sid");
-    res.json({ ok: true });
-  });
+    // optional trusted device cookie
+    res.clearCookie("ml_trusted", { path: "/admin" });
+    res.clearCookie("ml_trusted", { path: "/" });
+
+    // send them to login
+    return res.redirect(303, "/admin/login");
+  };
+
+  if (!req.session) return done();
+
+  // also flip flags just in case
+  req.session.loggedIn = false;
+  req.session.isAdmin = false;
+
+  req.session.destroy(() => done());
 });
-
-/* ------------------------------------------------------
-   🚪 Logout
------------------------------------------------------- */
-router.get("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.send(`
-      <script>
-        localStorage.removeItem('isAdmin');
-        window.location.href = '/admin/login';
-      </script>
-    `);
-  });
-});
-
 /* ------------------------------------------------------
    🧠 Session Check Endpoint
 ------------------------------------------------------ */
@@ -800,6 +891,121 @@ router.post(
     }
   }
 );
+
+
+
+function normalizeSuggestion(body) {
+  const page = clampString(body?.page, 60);
+  const changeType = clampString(body?.changeType, 30);
+
+  let fromText = clampString(body?.fromText, 400) ?? "";
+  let toText = clampString(body?.toText, 400) ?? "";
+  let description = clampString(body?.description, 2000) ?? "";
+
+  // Basic allow-list for changeType
+  const allowedTypes = new Set(["wording", "content", "design", "fix", "other"]);
+  if (!allowedTypes.has(String(changeType || ""))) return { error: "Invalid changeType" };
+
+  // If wording, require from/to; else require description
+  if (changeType === "wording") {
+    description = "";
+    if (!fromText.trim() || !toText.trim()) return { error: "Wording changes require From and To" };
+  } else {
+    fromText = "";
+    toText = "";
+    if (!description.trim()) return { error: "Description is required" };
+  }
+
+  if (!page || !page.trim()) return { error: "Page is required" };
+
+  return { page: page.trim(), changeType, fromText, toText, description };
+}
+
+/* ------------------------------------------------------
+   ✅ GET /admin/suggestions  (admin-only)
+------------------------------------------------------ */
+router.get("/suggestions", requireAdmin, (req, res) => {
+  try {
+    res.set("Cache-Control", "no-store");
+
+    const rows = db
+      .prepare(
+        `
+        SELECT id, page, changeType, fromText, toText, description, status, createdAt
+        FROM suggestions
+        ORDER BY datetime(createdAt) DESC
+        `
+      )
+      .all();
+
+    res.json(rows);
+  } catch (err) {
+    console.error("GET /admin/suggestions failed:", err);
+    res.status(500).json({ error: "Failed to load suggestions" });
+  }
+});
+
+/* ------------------------------------------------------
+   ✅ PATCH /admin/suggestions/:id  (status: new / in_progress / done)
+------------------------------------------------------ */
+router.patch("/suggestions/:id", requireSameOrigin, requireAdmin, (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Bad id" });
+
+    const status = String(req.body?.status || "").trim();
+    const allowed = new Set(["new", "in_progress", "done"]);
+    if (!allowed.has(status)) return res.status(400).json({ error: "Bad status" });
+
+    const info = db.prepare(`UPDATE suggestions SET status = ? WHERE id = ?`).run(status, id);
+    if (info.changes === 0) return res.status(404).json({ error: "Not found" });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("PATCH /admin/suggestions/:id failed:", err);
+    res.status(500).json({ error: "Failed to update suggestion" });
+  }
+});
+
+/* ------------------------------------------------------
+   ✅ DELETE /admin/suggestions/:id
+------------------------------------------------------ */
+router.delete("/suggestions/:id", requireSameOrigin, requireAdmin, (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Bad id" });
+
+    const info = db.prepare(`DELETE FROM suggestions WHERE id = ?`).run(id);
+    if (info.changes === 0) return res.status(404).json({ error: "Not found" });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("DELETE /admin/suggestions/:id failed:", err);
+    res.status(500).json({ error: "Failed to delete suggestion" });
+  }
+});
+
+/* ------------------------------------------------------
+   ✅ POST /admin/suggestions  (admin-only)
+------------------------------------------------------ */
+router.post("/suggestions", requireSameOrigin, requireAdmin, (req, res) => {
+  try {
+    const cleaned = normalizeSuggestion(req.body);
+    if (cleaned.error) return res.status(400).json({ error: cleaned.error });
+
+    const stmt = db.prepare(`
+      INSERT INTO suggestions (page, changeType, fromText, toText, description, status)
+      VALUES (@page, @changeType, @fromText, @toText, @description, 'new')
+    `);
+
+    const info = stmt.run(cleaned);
+
+    res.json({ success: true, id: info.lastInsertRowid });
+  } catch (err) {
+    console.error("POST /admin/suggestions failed:", err);
+    res.status(500).json({ error: "Failed to save suggestion" });
+  }
+});
 
 /* ------------------------------------------------------
    EXPORT ROUTER

@@ -150,3 +150,17 @@ body {
     font-size: 32px;
   }
 }
+
+.remember-device {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.remember-device input {
+  width: 16px;
+  height: 16px;
+}

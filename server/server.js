@@ -15,6 +15,7 @@ import prayerRoutes from "./routes/prayerRoutes.js";
 import adminRoutes from "./routes/admin.js";
 import contentRoutes from "./routes/contentRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
+import cookieParser from "cookie-parser";
 
 // ------------------------------------------------------
 // 🔐 Resolve __dirname and load .env from project root
@@ -36,6 +37,7 @@ console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
 const app = express();
+app.use(cookieParser());
 
 // ✅ REQUIRED for Render/HTTPS so secure cookies + sessions behave correctly behind proxy
 app.set("trust proxy", 1);
@@ -210,7 +212,6 @@ app.get("/api/youtube", youtubeLimiter, async (req, res) => {
 /* ------------------------------------------------------
    🌐 STATIC FILES
 ------------------------------------------------------ */
-app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(__dirname, "../public")));
 
 /* ------------------------------------------------------
