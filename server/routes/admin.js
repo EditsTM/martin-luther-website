@@ -205,7 +205,8 @@ router.get("/login", (req, res) => {
 /* Handle Login (Password + 2FA + Remember Device) */
 router.post("/login", loginLimiter, (req, res) => {
   try {
-    const { password, token, rememberDevice } = req.body;
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const { password, token, rememberDevice } = body;
 
     // 1) Check if this browser is already trusted
     let deviceTrusted = false;
@@ -247,12 +248,21 @@ router.post("/login", loginLimiter, (req, res) => {
     }
 
     if (passwordOk && tokenOk) {
+      if (!req.session) {
+        console.error("POST /admin/login failed: req.session is missing");
+        return res.status(500).send("Session error");
+      }
       return req.session.regenerate((err) => {
         if (err) {
           // Fallback path: keep current session object instead of hard-failing login.
           console.error("Session regenerate failed; falling back to current session:", err);
         }
-        return completeLogin(req, res, { rememberDevice, deviceTrusted });
+        try {
+          return completeLogin(req, res, { rememberDevice, deviceTrusted });
+        } catch (completeErr) {
+          console.error("completeLogin failed:", completeErr);
+          return res.status(500).send("Session error");
+        }
       });
     }
 

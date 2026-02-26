@@ -249,6 +249,18 @@ app.get("/api/admin-session", (req, res) => {
   res.json({ loggedIn: !!req.session.loggedIn });
 });
 
+/* Global Error Logger */
+app.use((err, req, res, next) => {
+  console.error("Unhandled server error:", {
+    method: req.method,
+    path: req.originalUrl,
+    message: err?.message,
+    stack: err?.stack,
+  });
+  if (res.headersSent) return next(err);
+  return res.status(500).send("Internal Server Error");
+});
+
 /* 404 Handler*/
 app.use((req, res) => {
   const notFoundPage = path.join(__dirname, "../public/html/404.html");
