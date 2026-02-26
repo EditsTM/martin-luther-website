@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+  File: public\html\church\beliefs.html
+  Purpose: Provides HTML markup for the beliefs page.
+-->
+
 <html lang="en">
 <head>
 
@@ -25,7 +30,7 @@
 </head>
 
 <body>
-  <!-- ✅ Header -->
+  <!-- [OK] Header -->
   <div id="header"></div>
 
   <!-- HERO -->
@@ -156,7 +161,7 @@
     </section>
   </main>
 
-  <!-- ✅ Footer -->
+  <!-- [OK] Footer -->
   <div id="footer"></div>
 
   <!-- JS -->
@@ -221,7 +226,7 @@
       });
     })();
 
-    // ✅ Tab switching logic (still safe with 1 tab)
+    // [OK] Tab switching logic (still safe with 1 tab)
     document.querySelectorAll('.tab-btn').forEach(button => {
       button.addEventListener('click', () => {
         const tab = button.getAttribute('data-tab');

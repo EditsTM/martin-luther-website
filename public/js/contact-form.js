@@ -1,3 +1,7 @@
+/**
+ * File: public\js\contact-form.js
+ * Purpose: Implements client-side behavior for the contact form experience.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("contactForm");
   const msgBox = document.getElementById("rateLimitMsg");

@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+  File: public\html\church\events.html
+  Purpose: Provides HTML markup for the events page.
+-->
+
 <html lang="en">
 <head>
   <script>
@@ -22,7 +27,7 @@
   <link rel="stylesheet" href="/css/church/events.css">
 </head>
 
-<!-- ✅ EDIT MODAL (Admin only uses it, but safe to exist for everyone) -->
+<!-- [OK] EDIT MODAL (Admin only uses it, but safe to exist for everyone) -->
 <div class="event-modal-overlay" id="eventModalOverlay" style="display:none;">
   <div class="event-modal" id="eventModal" style="display:none;">
     <div class="event-modal-header">
@@ -59,7 +64,7 @@
 </div>
 
 <body>
-  <!-- ✅ Dynamic Header -->
+  <!-- [OK] Dynamic Header -->
   <div id="header"></div>
 
   <!-- HERO SECTION -->
@@ -74,17 +79,17 @@
     <!-- 🟦 Events load dynamically here -->
   </main>
 
-  <!-- ✅ Dynamic Footer -->
+  <!-- [OK] Dynamic Footer -->
   <div id="footer"></div>
 
-  <!-- ✅ Core JS -->
+  <!-- [OK] Core JS -->
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>
   <script src="/js/reveal.js"></script>
 
-  <!-- ✅ MINIMAL FIX: Remove the inline fetch script so you don't have TWO competing loaders. -->
-  <!-- ✅ Use your single source of truth loader file instead. -->
+  <!-- [OK] MINIMAL FIX: Remove the inline fetch script so you don't have TWO competing loaders. -->
+  <!-- [OK] Use your single source of truth loader file instead. -->
   <script src="/js/eventsLoader.js"></script>
 </body>
 </html>

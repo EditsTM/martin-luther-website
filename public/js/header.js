@@ -1,3 +1,7 @@
+/**
+ * File: public\js\header.js
+ * Purpose: Implements client-side behavior for the header experience.
+ */
 //public/js/header.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -38,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     lockMegaMenuToHeader();
     setupMenuReflowWatchers();
   } catch (err) {
-    console.error("⚠️ Header load error:", err);
+    console.error("[WARNING] Header load error:", err);
   }
 });
 

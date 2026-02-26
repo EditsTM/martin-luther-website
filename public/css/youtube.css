@@ -1,3 +1,7 @@
+/*
+ * File: public\css\youtube.css
+ * Purpose: Defines presentation styles for the youtube interface.
+ */
 /* =============================
    HERO
 ============================= */
@@ -291,7 +295,7 @@
    RESPONSIVE
 ============================= */
 @media (max-width: 1000px) {
-  /* ✅ Move "Most Recent Livestream" banner above the first video */
+  /* [OK] Move "Most Recent Livestream" banner above the first video */
   .livestream-section .youtube-heading {
     display: none;
   }

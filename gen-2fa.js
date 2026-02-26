@@ -1,3 +1,7 @@
+/**
+ * File: gen-2fa.js
+ * Purpose: Generates a TOTP secret for administrator two-factor authentication setup.
+ */
 import speakeasy from "speakeasy";
 
 const secret = speakeasy.generateSecret({

@@ -1,3 +1,7 @@
+/**
+ * File: public\js\home.js
+ * Purpose: Implements client-side behavior for the home experience.
+ */
 // Rotating hero background images
 // These are relative to the page where this script runs.
 // Make sure the files exist at these paths in /public/images.
@@ -23,8 +27,8 @@ if (heroSection) {
     preload.src = img;
 
     // Optional logs to verify files/paths are correct
-    preload.onload = () => console.log(`✅ Loaded: ${img}`);
-    preload.onerror = () => console.error(`❌ Failed to load: ${img}`);
+    preload.onload = () => console.log(`[OK] Loaded: ${img}`);
+    preload.onerror = () => console.error(`[ERROR] Failed to load: ${img}`);
   });
 
   // Set the initial background image immediately on page load
@@ -43,7 +47,7 @@ if (heroSection) {
   }, 5000);
 } else {
   // If the hero isn't on this page, avoid runtime errors
-  console.error("❌ Hero section not found in DOM");
+  console.error("[ERROR] Hero section not found in DOM");
 }
 
 //Load 3 events onto homepage
@@ -108,6 +112,6 @@ if (container) {
       );
     })
     .catch((err) => {
-      console.error("❌ Failed to load events on homepage:", err);
+      console.error("[ERROR] Failed to load events on homepage:", err);
     });
 }

@@ -1,3 +1,7 @@
+/**
+ * File: public\js\reveal.js
+ * Purpose: Implements client-side behavior for the reveal experience.
+ */
 // /js/reveal.js
 (() => {
   // 1) Inject CSS once

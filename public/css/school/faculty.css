@@ -1,3 +1,7 @@
+/*
+ * File: public\css\school\faculty.css
+ * Purpose: Defines presentation styles for the faculty interface.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
 
 body {
@@ -83,7 +87,7 @@ body {
   border-radius: 16px;
   padding: 24px;
   width: 100%;
-  height: 430px;                  /* ✅ FIXED BOX SIZE */
+  height: 430px;                  /* [OK] FIXED BOX SIZE */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -109,9 +113,9 @@ body {
 
 /* Image fills as much as possible but shows the FULL picture */
 .faculty-image-wrapper img {
-  width: 100%;      /* 🔥 Forces full width */
+  width: 100%;      /* [INFO] Forces full width */
   height: 100%;     /* Fits the wrapper height */
-  object-fit: cover; /* 🔥 Fills width completely */
+  object-fit: cover; /* [INFO] Fills width completely */
   border-radius: 12px;
 }
 
@@ -406,7 +410,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   justify-content: center !important;
 }
 
-/* 🔥 FIX #3 — prevent single faculty card from becoming massive */
+/* [INFO] FIX #3 — prevent single faculty card from becoming massive */
 .faculty-grid:has(.faculty-card:only-child) .faculty-card {
   max-width: 360px !important;
   margin-left: auto;

@@ -1,3 +1,7 @@
+/**
+ * File: server\controllers\prayerController.js
+ * Purpose: Contains controller logic used by prayerController workflows.
+ */
 // server/controllers/prayerController.js
 import nodemailer from "nodemailer";
 import { validationResult } from "express-validator";
@@ -7,10 +11,10 @@ const smtpPass = process.env.SMTP_PASS;
 const prayerTo = process.env.PRAYER_TO;
 
 if (!smtpUser || !smtpPass) {
-  console.error("❌ Missing SMTP_USER / SMTP_PASS in env (prayer).");
+  console.error("[ERROR] Missing SMTP_USER / SMTP_PASS in env (prayer).");
 }
 if (!prayerTo) {
-  console.error("❌ Missing PRAYER_TO in env (prayer).");
+  console.error("[ERROR] Missing PRAYER_TO in env (prayer).");
 }
 
 // Create transporter once (reuse)
@@ -87,7 +91,7 @@ ${String(prayer ?? "").trim()}
       `.trim(),
     });
 
-    console.log("✅ Prayer request sent successfully!");
+    console.log("[OK] Prayer request sent successfully!");
     return res.json({ ok: true });
   } catch (err) {
     console.error("💥 Prayer request error:", err?.message || err);

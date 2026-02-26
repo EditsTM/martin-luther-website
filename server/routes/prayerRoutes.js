@@ -1,3 +1,7 @@
+/**
+ * File: server\routes\prayerRoutes.js
+ * Purpose: Defines HTTP route handlers and request validation for prayerRoutes operations.
+ */
 // server/routes/prayerRoutes.js
 import express from "express";
 import rateLimit from "express-rate-limit";

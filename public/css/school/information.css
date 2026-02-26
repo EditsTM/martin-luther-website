@@ -1,3 +1,7 @@
+/*
+ * File: public\css\school\information.css
+ * Purpose: Defines presentation styles for the information interface.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
 
 body {
@@ -155,14 +159,14 @@ body {
   margin-bottom: 40px;
 }
 
-/* ✅ NEW: Triangle column always centers itself in its grid cell */
+/* [OK] NEW: Triangle column always centers itself in its grid cell */
 .about-main-image {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* ✅ NEW: Prevent any clipping inside the triangle column */
+/* [OK] NEW: Prevent any clipping inside the triangle column */
 .about-main-image,
 .triangle-area {
   overflow: visible;
@@ -613,7 +617,7 @@ h2, h3, h4 { color: #000; }
    RESPONSIVE
 ============================= */
 
-/* ✅ NEW: Wrap triangle UNDER text BEFORE it ever gets cut off */
+/* [OK] NEW: Wrap triangle UNDER text BEFORE it ever gets cut off */
 @media (max-width: 1250px) {
   .about-grid {
     grid-template-columns: 1fr;
@@ -720,8 +724,8 @@ h2, h3, h4 { color: #000; }
 
 /* =============================
    PERFECT TRIANGLE LAYOUT
-   ✅ Fluid sizing — NO transforms, NO clipping
-   ✅ Animations restored
+   [OK] Fluid sizing — NO transforms, NO clipping
+   [OK] Animations restored
 ============================= */
 
 /* Responsive sizing variables */
@@ -746,7 +750,7 @@ h2, h3, h4 { color: #000; }
   margin: 0 auto;
 }
 
-/* ✅ animations (restored) */
+/* [OK] animations (restored) */
 @keyframes triangleGlow {
   0% { background-position: 0% 0%; filter: brightness(1); }
   50% { background-position: 100% 100%; filter: brightness(1.18); }
@@ -832,18 +836,18 @@ h2, h3, h4 { color: #000; }
   bottom: 0;
   right: 0;
 }
-/* ✅ Prevent overlap on small screens */
+/* [OK] Prevent overlap on small screens */
 .triangle-area{
   margin-bottom: 28px; /* keeps it from crashing into stuff below */
 }
 
-/* ✅ Make the SVG always fill the wrapper */
+/* [OK] Make the SVG always fill the wrapper */
 .triangle-lines{
   width: 100%;
   height: 100%;
 }
 
-/* ✅ Tighten everything up under 500px */
+/* [OK] Tighten everything up under 500px */
 @media (max-width: 500px){
   :root{
     --triangle-width: clamp(280px, 92vw, 420px);
@@ -863,7 +867,7 @@ h2, h3, h4 { color: #000; }
   }
 }
 
-/* ✅ Even tighter for tiny phones */
+/* [OK] Even tighter for tiny phones */
 @media (max-width: 380px){
   :root{
     --triangle-box-w: clamp(110px, 40vw, 150px);

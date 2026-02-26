@@ -1,3 +1,7 @@
+/*
+ * File: public\css\church\member.css
+ * Purpose: Defines presentation styles for the member interface.
+ */
 /* =============================
    GLOBAL
 ============================= */
@@ -211,7 +215,7 @@ body {
   line-height: 1.6;
 }
 
-/* ✅ Expand-All Button Style — identical to Beliefs page */
+/* [OK] Expand-All Button Style — identical to Beliefs page */
 .expand-toggle {
   display: inline-block;
   margin: 5px auto 25px;

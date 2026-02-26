@@ -1,4 +1,8 @@
-// ✅ server/server.js
+/**
+ * File: server\server.js
+ * Purpose: Bootstraps the Express server, security middleware, routes, and static hosting.
+ */
+// [OK] server/server.js
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
@@ -27,12 +31,12 @@ const __dirname = path.dirname(__filename);
 
 /* SECURITY FAIL-CLOSED (prevents insecure defaults)*/
 if (!process.env.SESSION_SECRET) {
-  throw new Error("❌ SESSION_SECRET is missing. Refusing to start for safety.");
+  throw new Error("[ERROR] SESSION_SECRET is missing. Refusing to start for safety.");
 }
 
 // Debug – safe (do NOT print secrets)
-console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
-console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
+console.log("[START] SERVER FILE RELOADED:", new Date().toISOString());
+console.log("[INFO] ACTIVE SERVER FILE:", import.meta.url);
 
 const app = express();
 app.use(cookieParser());
@@ -116,7 +120,7 @@ app.use(
         allowedOrigins.has(origin) || (!isProduction && isLocalDevOrigin(origin));
 
       if (!isAllowed) {
-        console.error("❌ Blocked by CORS origin:", origin);
+        console.error("[ERROR] Blocked by CORS origin:", origin);
         return cb(new Error("Not allowed by CORS"));
       }
 
@@ -136,13 +140,13 @@ app.use(express.urlencoded({ extended: true, limit: "25kb" }));
 app.use(
   session({
     store: sessionStore,
-    name: "ml.sid", // ✅ avoid default connect.sid
+    name: "ml.sid", // [OK] avoid default connect.sid
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    rolling: true, // ✅ refresh cookie expiration on activity
+    rolling: true, // [OK] refresh cookie expiration on activity
     cookie: {
-      maxAge: 15 * 60 * 1000, // 🕒 15 minutes
+      maxAge: 15 * 60 * 1000, // 15-minute 15 minutes
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       secure: process.env.NODE_ENV === "production",
@@ -198,7 +202,7 @@ app.use("/admin", adminRoutes);
 app.use("/content", contentRoutes);
 app.use("/api/team", teamRoutes);
 
-/*YouTube Proxy (✅ add rate limiting to protect API quota)*/
+/*YouTube Proxy ([OK] add rate limiting to protect API quota)*/
 const youtubeLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 30, // 30 req/min per IP
@@ -225,7 +229,7 @@ app.get("/api/youtube", youtubeLimiter, async (req, res) => {
 
     res.json(videosData);
   } catch (err) {
-    console.error("❌ YouTube API error:", err);
+    console.error("[ERROR] YouTube API error:", err);
     res.status(500).json({ error: "Failed to load YouTube videos" });
   }
 });
@@ -271,5 +275,5 @@ app.use((req, res) => {
 
 /* Start Server*/
 app.listen(PORT, "0.0.0.0", () =>
-  console.log(`✅ Server running at: http://localhost:${PORT}`)
+  console.log(`[OK] Server running at: http://localhost:${PORT}`)
 );

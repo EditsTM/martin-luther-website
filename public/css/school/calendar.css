@@ -1,3 +1,7 @@
+/*
+ * File: public\css\school\calendar.css
+ * Purpose: Defines presentation styles for the calendar interface.
+ */
 /* =============================
    GLOBAL STYLES
 ============================= */
@@ -56,7 +60,7 @@ body {
 
 .calendar-container {
   width: 100%;
-  max-width: 1500px; /* ✅ wider layout */
+  max-width: 1500px; /* [OK] wider layout */
   text-align: center;
 }
 
@@ -108,8 +112,8 @@ body {
   border-radius: 12px;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
-  width: 95%; /* ✅ fills nearly entire page */
-  height: 900px; /* ✅ taller calendar view */
+  width: 95%; /* [OK] fills nearly entire page */
+  height: 900px; /* [OK] taller calendar view */
 }
 
 .calendar-embed iframe:hover {

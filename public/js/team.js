@@ -1,3 +1,7 @@
+/**
+ * File: public\js\team.js
+ * Purpose: Implements client-side behavior for the team experience.
+ */
 // public/js/team.js
 
 // ---------- SECURITY HELPERS ----------

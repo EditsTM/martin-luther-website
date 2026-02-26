@@ -1,3 +1,7 @@
+/**
+ * File: server\routes\contactRoutes.js
+ * Purpose: Defines HTTP route handlers and request validation for contactRoutes operations.
+ */
 // server/routes/contactRoutes.js
 import express from "express";
 import rateLimit from "express-rate-limit";

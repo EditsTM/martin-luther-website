@@ -1,3 +1,7 @@
+/**
+ * File: public\js\prayer-form.js
+ * Purpose: Implements client-side behavior for the prayer form experience.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("prayerForm");
   const msg = document.getElementById("form-msg");

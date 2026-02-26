@@ -1,3 +1,7 @@
+/**
+ * File: public\js\adminSession.js
+ * Purpose: Implements client-side behavior for the adminSession experience.
+ */
 //public/js/adminSession.js
 //Auto logout after 15 minutes of inactivity
 const IDLE_LIMIT = 15 * 60 * 1000; // 15 minutes

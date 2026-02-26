@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+  File: public\html\contact.html
+  Purpose: Provides HTML markup for the contact page.
+-->
+
 <html lang="en">
 <head>
   <script>
@@ -8,12 +13,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact - Martin Luther Church & School</title>
 
-  <!-- ✅ Correct CSS Paths -->
+  <!-- [OK] Correct CSS Paths -->
   <link rel="stylesheet" href="/css/header.css" />
   <link rel="stylesheet" href="/css/footer.css" />
   <link rel="stylesheet" href="/css/contact.css" />
 
-  <!-- ✅ Consistent Font -->
+  <!-- [OK] Consistent Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -38,7 +43,7 @@
   <section class="contact-section">
     <div class="contact-container">
 
-      <!-- ✅ Left Side: Contact Info -->
+      <!-- [OK] Left Side: Contact Info -->
       <div class="contact-info">
         <h2>Get In Touch!</h2>
         <div class="info-row">
@@ -65,11 +70,11 @@
         </div>
       </div>
 
-      <!-- ✅ Right Side: Contact Form -->
+      <!-- [OK] Right Side: Contact Form -->
       <div class="contact-form">
         <h2>Contact Us</h2>
 
-        <!-- ✅ Form Section -->
+        <!-- [OK] Form Section -->
         <form id="contactForm">
           <div class="form-row">
             <input type="text" name="firstName" placeholder="First Name *" required />
@@ -88,7 +93,7 @@
             <input type="email" name="email" placeholder="Email Address *" required />
           </div>
 
-          <!-- ✅ New Dropdown -->
+          <!-- [OK] New Dropdown -->
           <div class="form-row">
             <select name="reason" required>
               <option value="">Select a Reason *</option>
@@ -107,7 +112,7 @@
             required
           ></textarea>
 
-          <!-- ✅ Honeypot (anti-bot) field -->
+          <!-- [OK] Honeypot (anti-bot) field -->
           <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
           <button type="submit" class="btn">Submit</button>

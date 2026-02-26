@@ -1,3 +1,7 @@
+/**
+ * File: public\js\faculty.js
+ * Purpose: Implements client-side behavior for the faculty experience.
+ */
 // public/js/faculty.js
 
 function getCsrfToken() {

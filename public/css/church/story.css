@@ -1,3 +1,7 @@
+/*
+ * File: public\css\church\story.css
+ * Purpose: Defines presentation styles for the story interface.
+ */
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
@@ -30,12 +34,12 @@ body {
 
 .story-overlay h1 {
   color: white;
-  font-size: clamp(28px, 5vw, 50px); /* ✅ scales cleanly on small screens */
+  font-size: clamp(28px, 5vw, 50px); /* [OK] scales cleanly on small screens */
   font-weight: 800;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  text-align: center;               /* ✅ force center */
-  max-width: 1000px;                /* ✅ prevents weird wrapping */
-  padding: 0 20px;                  /* ✅ breathing room on mobile */
+  text-align: center;               /* [OK] force center */
+  max-width: 1000px;                /* [OK] prevents weird wrapping */
+  padding: 0 20px;                  /* [OK] breathing room on mobile */
 }
 
 
@@ -49,7 +53,7 @@ body {
 
 .story-section h2 {
   font-size: 38px;
-  color: black; /* ✅ black title */
+  color: black; /* [OK] black title */
   margin-bottom: 20px;
   font-weight: 800;
 }
@@ -70,7 +74,7 @@ body {
 
 .story-core h2 {
   font-size: 36px;
-  color: black; /* ✅ black title */
+  color: black; /* [OK] black title */
 }
 
 .story-core .subtitle {
@@ -81,7 +85,7 @@ body {
 
 /* Gospel Message */
 .core-feature {
-  background: #e9e9e9; /* ✅ distinct light grey */
+  background: #e9e9e9; /* [OK] distinct light grey */
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   padding: 40px;
@@ -98,7 +102,7 @@ body {
 }
 
 .icon-box {
-  background: #f0f0f0; /* ✅ grey square background */
+  background: #f0f0f0; /* [OK] grey square background */
   padding: 14px;
   border-radius: 8px;
   display: flex;
@@ -191,7 +195,7 @@ body {
 /* Top row inside the card (icon + title) */
 .mission-card-header {
   display: flex;
-  align-items: center;        /* ✅ vertically centers icon & title */
+  align-items: center;        /* [OK] vertically centers icon & title */
   gap: 14px;
   margin-bottom: 12px;
 }
@@ -207,7 +211,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ✅ Make world icon black only */
+/* [OK] Make world icon black only */
 .mission-card:nth-child(1) .icon-box img {
   filter: brightness(0) saturate(100%);
 }
@@ -219,7 +223,7 @@ body {
 
 /* Title text beside icon */
 .mission-card h4 {
-  color: #1e2a57;             /* ✅ consistent dark blue */
+  color: #1e2a57;             /* [OK] consistent dark blue */
   font-size: 20px;
   font-weight: 700;
   margin: 0;
@@ -243,7 +247,7 @@ body {
 
 /* Text beside icon */
 .mission-card h4 {
-  color: #1e2a57;             /* ✅ Dark blue titles */
+  color: #1e2a57;             /* [OK] Dark blue titles */
   font-size: 20px;
   margin: 0 0 6px;
   font-weight: 700;
@@ -287,7 +291,7 @@ body {
   background: #1e2a57;
   color: white;
   text-decoration: none;
-  padding: 14px 90px; /* ✅ longer, slightly shorter height */
+  padding: 14px 90px; /* [OK] longer, slightly shorter height */
   font-size: 20px;
   font-weight: 700;
   border-radius: 6px;

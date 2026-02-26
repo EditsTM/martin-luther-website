@@ -1,3 +1,7 @@
+/*
+ * File: public\css\contact.css
+ * Purpose: Defines presentation styles for the contact interface.
+ */
 /* ==================== BASE FONT CONSISTENCY ==================== */
 :root {
   --blue: rgb(30, 42, 87);

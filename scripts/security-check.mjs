@@ -1,3 +1,7 @@
+/**
+ * File: scripts\security-check.mjs
+ * Purpose: Runs project automation and validation tasks for security check.
+ */
 import fs from "fs";
 import path from "path";
 

@@ -1,3 +1,7 @@
+/**
+ * File: server\routes\teamRoutes.js
+ * Purpose: Defines HTTP route handlers and request validation for teamRoutes operations.
+ */
 //server/routes/teamRoutes.js
 import express from "express";
 import fs from "fs";
@@ -39,11 +43,11 @@ const LIMITS = {
   name: 80,
   subject: 120,
 
-  // ✅ CHANGE: store bio as ONE string; cap total size only
+  // [OK] CHANGE: store bio as ONE string; cap total size only
   bioTotal: 24000,
 };
 
-// ✅ Normalize/validate strings (prevents huge payloads + downstream XSS risk)
+// [OK] Normalize/validate strings (prevents huge payloads + downstream XSS risk)
 function cleanString(v, max) {
   if (v === undefined || v === null) return undefined;
   const s = String(v).trim();
@@ -92,7 +96,7 @@ function normalizeBio(bio) {
 }
 
 
-// ✅ Atomic JSON write to avoid partial/corrupt file
+// [OK] Atomic JSON write to avoid partial/corrupt file
 async function atomicWriteJson(filePath, dataObj) {
   const dir = path.dirname(filePath);
   const tmpPath = path.join(
@@ -104,7 +108,7 @@ async function atomicWriteJson(filePath, dataObj) {
   await fsp.rename(tmpPath, filePath);
 }
 
-// ✅ Read team.json safely
+// [OK] Read team.json safely
 function readTeam() {
   const raw = fs.readFileSync(TEAM_PATH, "utf8");
   const parsed = JSON.parse(raw);
@@ -114,7 +118,7 @@ function readTeam() {
   return parsed;
 }
 
-// ✅ Multer storage config (safe filenames)
+// [OK] Multer storage config (safe filenames)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
@@ -128,7 +132,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// ✅ Upload restrictions (blocks dangerous types + disk fill)
+// [OK] Upload restrictions (blocks dangerous types + disk fill)
 const upload = multer({
   storage,
   limits: {
@@ -145,7 +149,7 @@ const upload = multer({
   },
 });
 
-// ✅ Friendly multer error handler (so invalid files don't crash / leak stack)
+// [OK] Friendly multer error handler (so invalid files don't crash / leak stack)
 function multerErrorHandler(err, req, res, next) {
   if (!err) return next();
   return res.status(400).json({ success: false, error: err.message || "Upload failed" });
@@ -188,7 +192,7 @@ router.post("/", requireSameOrigin, requireAdmin, async (req, res) => {
       subject,
       image: image || "/images/Placeholder.jpg",
 
-      // ✅ CHANGE: bio is a STRING now (not an array)
+      // [OK] CHANGE: bio is a STRING now (not an array)
       bio: bio ?? "",
     };
 
@@ -230,7 +234,7 @@ router.put("/:index", requireSameOrigin, requireAdmin, async (req, res) => {
     }
 
     if (req.body?.bio !== undefined) {
-      // ✅ CHANGE: store as STRING
+      // [OK] CHANGE: store as STRING
       member.bio = normalizeBio(req.body.bio) ?? "";
     }
 

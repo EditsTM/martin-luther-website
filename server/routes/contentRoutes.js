@@ -1,3 +1,7 @@
+/**
+ * File: server\routes\contentRoutes.js
+ * Purpose: Defines HTTP route handlers and request validation for contentRoutes operations.
+ */
 //server/routes/contentRoutes.js
 import express from "express";
 import path from "path";
@@ -38,7 +42,7 @@ function validateEventsPayload(req, res, next) {
   return next();
 }
 
-// ✅ Atomic write to prevent partial/corrupt JSON on crash
+// [OK] Atomic write to prevent partial/corrupt JSON on crash
 async function atomicWriteJson(filePath, dataObj) {
   const dir = path.dirname(filePath);
   const tmpPath = path.join(dir, `.tmp-${path.basename(filePath)}-${process.pid}-${Date.now()}`);
@@ -75,7 +79,7 @@ router.post(
       await atomicWriteJson(EVENTS_PATH, req.body);
       return res.json({ success: true });
     } catch (err) {
-      console.error("❌ Error writing events.json:", err);
+      console.error("[ERROR] Error writing events.json:", err);
       return res.status(500).json({ error: "Failed to save content" });
     }
   }

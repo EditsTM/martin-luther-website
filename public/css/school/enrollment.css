@@ -1,3 +1,7 @@
+/*
+ * File: public\css\school\enrollment.css
+ * Purpose: Defines presentation styles for the enrollment interface.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
 
 :root {
@@ -51,7 +55,7 @@ body {
   color: #fff;
 }
 
-/* ✅ MATCH INFORMATION HERO TITLE EXACTLY */
+/* [OK] MATCH INFORMATION HERO TITLE EXACTLY */
 .enroll-overlay h1 {
   color: #fff;
   font-size: 50px;
@@ -198,7 +202,7 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* ✅ UPDATED COLOR PALETTE */
+  /* [OK] UPDATED COLOR PALETTE */
   background: linear-gradient(
     135deg,
     rgba(30, 42, 87, 0.95),
@@ -224,7 +228,7 @@ body {
   z-index: 0;
 }
 
-/* ✅ BUBBLES — COLOR TUNED, ANIMATION UNCHANGED */
+/* [OK] BUBBLES — COLOR TUNED, ANIMATION UNCHANGED */
 .enroll-steps::before {
   background-image:
     radial-gradient(circle 120px at 10% 90%, rgba(210,225,255,0.35) 20%, transparent 70%),

@@ -1,3 +1,7 @@
+/*
+ * File: public\css\header.css
+ * Purpose: Defines presentation styles for the header interface.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
 /* Prevent header/footer pop-in while they load */
@@ -87,13 +91,13 @@ body { font-family:'Open Sans', Arial, sans-serif; }
 /* 🔹 Center Nav for ≥1275px */
 @media(min-width:1275px) {
   .main-header {
-    justify-content:center;   /* ✅ centers entire nav section */
-    gap:120px;                /* ✅ spacing between logo and nav */
+    justify-content:center;   /* [OK] centers entire nav section */
+    gap:120px;                /* [OK] spacing between logo and nav */
   }
   .nav-links ul {
-    justify-content:center;   /* ✅ centers the link group */
+    justify-content:center;   /* [OK] centers the link group */
     position:relative;
-    top:8px;                  /* ✅ lowered slightly more for visual balance */
+    top:8px;                  /* [OK] lowered slightly more for visual balance */
   }
 }
 
@@ -107,7 +111,7 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   }
   .logo-section{
     flex-wrap:wrap;
-    justify-content:center; /* ✅ center logo only when wrapping starts */
+    justify-content:center; /* [OK] center logo only when wrapping starts */
     width:100%;
   }
   .logo{

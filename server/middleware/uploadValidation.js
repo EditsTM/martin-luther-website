@@ -1,3 +1,7 @@
+/**
+ * File: server\middleware\uploadValidation.js
+ * Purpose: Implements middleware used to enforce uploadValidation rules.
+ */
 import fs from "fs";
 
 function startsWith(buf, bytes) {

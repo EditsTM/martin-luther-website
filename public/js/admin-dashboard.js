@@ -1,3 +1,7 @@
+/**
+ * File: public\js\admin-dashboard.js
+ * Purpose: Implements client-side behavior for the admin dashboard experience.
+ */
 (() => {
   // -------------------------
   // View switching (left nav)
@@ -175,7 +179,7 @@ async function loadSuggestions() {
   renderSuggestions();
 }
 
-// ✅ IMPORTANT: these MUST be outside loadSuggestions()
+// [OK] IMPORTANT: these MUST be outside loadSuggestions()
 async function setSuggestionStatus(id, status) {
   const res = await fetch(`/admin/suggestions/${id}`, {
     method: "PATCH",
@@ -194,7 +198,7 @@ async function deleteSuggestion(id) {
   if (!res.ok) throw new Error("Failed to delete");
 }
 
-// ✅ attach click handler ONCE (prevents confirm loop)
+// [OK] attach click handler ONCE (prevents confirm loop)
 if (!window.__mlSuggestionsHandlerAttached) {
   window.__mlSuggestionsHandlerAttached = true;
 

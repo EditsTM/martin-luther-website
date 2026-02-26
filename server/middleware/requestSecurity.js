@@ -1,3 +1,7 @@
+/**
+ * File: server\middleware\requestSecurity.js
+ * Purpose: Implements middleware used to enforce requestSecurity rules.
+ */
 import { URL } from "url";
 
 const DEV_HOSTS = new Set(["localhost", "127.0.0.1"]);

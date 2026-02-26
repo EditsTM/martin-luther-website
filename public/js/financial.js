@@ -1,3 +1,7 @@
+/**
+ * File: public\js\financial.js
+ * Purpose: Implements client-side behavior for the financial experience.
+ */
 // /public/js/financial.js
 // Handles accordion-style behavior for the Financial FAQ section
 

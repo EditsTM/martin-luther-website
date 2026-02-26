@@ -1,3 +1,7 @@
+/*
+ * File: public\css\church\expectations.css
+ * Purpose: Defines presentation styles for the expectations interface.
+ */
 /* =============================
    GLOBAL STYLES
 ============================= */
@@ -458,7 +462,7 @@ body {
 
 .t-line {
   display: flex;
-  align-items: center; /* ✅ Header centers to icon */
+  align-items: center; /* [OK] Header centers to icon */
   gap: 16px;
 }
 
@@ -470,7 +474,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* ✅ Icon always stays correct size */
+  flex-shrink: 0; /* [OK] Icon always stays correct size */
 }
 
 .t-badge img {
@@ -488,7 +492,7 @@ body {
 }
 
 .t-item p {
-  margin: 0; /* ✅ Body text starts immediately */
+  margin: 0; /* [OK] Body text starts immediately */
   line-height: 1.55;
   font-size: 15px;
   color: #2f2f2f;
@@ -577,7 +581,7 @@ body {
 .card.bible {
   height: 315px;   /* try 315; bump to 320 if you want a touch more */
 }
-/* ✅ Make Sunday (blue) card match Bible card height */
+/* [OK] Make Sunday (blue) card match Bible card height */
 .card.sunday {
   height: 315px;
 }

@@ -1,3 +1,7 @@
+/**
+ * File: public\js\eventsLoader.js
+ * Purpose: Implements client-side behavior for the eventsLoader experience.
+ */
 // public/js/eventsLoader.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -180,10 +184,10 @@ if (modalRemovePhotoBtn) {
         throw new Error(result.error || "Failed to remove photo");
       }
 
-      alert("✅ Photo removed!");
+      alert("[OK] Photo removed!");
     } catch (err) {
       console.error(err);
-      alert("❌ Failed to remove photo.");
+      alert("[ERROR] Failed to remove photo.");
     }
   });
 }
@@ -245,12 +249,12 @@ if (modalRemovePhotoBtn) {
 
           await updateEvent(currentIndex, newTitle, newDate, newNotes);
 
-          alert("✅ Saved!");
+          alert("[OK] Saved!");
           closeModal();
           location.reload();
         } catch (err) {
           console.error(err);
-          alert("❌ " + (err.message || "Failed to save"));
+          alert("[ERROR] " + (err.message || "Failed to save"));
         }
       });
     }
@@ -362,7 +366,7 @@ if (isAdmin) {
     if (!result.success) throw new Error(result.error || "Failed to save order");
   }
 
-  // ✅ Wheel/trackpad scroll while dragging
+  // [OK] Wheel/trackpad scroll while dragging
   const onWheelWhileDragging = (e) => {
     if (!isDragging) return;
 
@@ -422,7 +426,7 @@ if (isAdmin) {
         location.reload(); // reload so indices match new JSON order
       } catch (err) {
         console.error(err);
-        alert("❌ Couldn't save new order: " + (err.message || "error"));
+        alert("[ERROR] Couldn't save new order: " + (err.message || "error"));
       }
     });
   });
@@ -480,6 +484,6 @@ if (isAdmin) {
       });
     }
   } catch (err) {
-    console.error("❌ Error loading events:", err);
+    console.error("[ERROR] Error loading events:", err);
   }
 });

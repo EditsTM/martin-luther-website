@@ -1,3 +1,7 @@
+/**
+ * File: public\js\footer.js
+ * Purpose: Implements client-side behavior for the footer experience.
+ */
 //public/js/footer.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -14,6 +18,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     footerEl.innerHTML = html;
     footerEl.classList.add("loaded");
   } catch (err) {
-    console.error("⚠️ Footer load error:", err);
+    console.error("[WARNING] Footer load error:", err);
   }
 });

@@ -1,4 +1,8 @@
-// ✅ public/js/youtube.js
+/**
+ * File: public\js\youtube.js
+ * Purpose: Implements client-side behavior for the youtube experience.
+ */
+// [OK] public/js/youtube.js
 // Safely fetch and render latest and past YouTube videos
 
 function escapeHTML(v) {
@@ -20,7 +24,7 @@ async function loadVideos() {
   const pastContainer = document.getElementById("past-streams");
 
   if (!latestContainer || !pastContainer) {
-    console.error("⚠️ YouTube containers not found in DOM");
+    console.error("[WARNING] YouTube containers not found in DOM");
     return;
   }
 
@@ -30,7 +34,7 @@ async function loadVideos() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const data = await response.json();
-    console.log("✅ YouTube data received:", data);
+    console.log("[OK] YouTube data received:", data);
 
     if (!data.items || data.items.length === 0) {
       latestContainer.textContent = "No videos found.";
@@ -97,5 +101,5 @@ async function loadVideos() {
   }
 }
 
-// ✅ Wait until page fully loaded before running
+// [OK] Wait until page fully loaded before running
 window.addEventListener("DOMContentLoaded", loadVideos);

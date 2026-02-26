@@ -1,3 +1,7 @@
+/**
+ * File: public\js\layoutReady.js
+ * Purpose: Implements client-side behavior for the layoutReady experience.
+ */
 // /js/layoutReady.js
 (() => {
   function show() {

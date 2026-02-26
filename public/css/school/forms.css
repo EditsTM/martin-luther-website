@@ -1,3 +1,7 @@
+/*
+ * File: public\css\school\forms.css
+ * Purpose: Defines presentation styles for the forms interface.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
 
 :root {
@@ -32,9 +36,9 @@
 
 .forms-overlay h1 {
   color: white;
-  font-size: 48px;          /* ✅ same scale as other pages */
+  font-size: 48px;          /* [OK] same scale as other pages */
   font-weight: 800;
-  letter-spacing: 1px;      /* ✅ subtle, not shouty */
+  letter-spacing: 1px;      /* [OK] subtle, not shouty */
   margin: 0;
   text-align: center;
 }
@@ -44,12 +48,12 @@
    MAIN CONTENT (UPDATED: BIGGER + CENTERED)
 ============================= */
 .forms-content {
-  max-width: 1200px;          /* ✅ bigger page width */
-  margin: 80px auto;          /* ✅ more breathing room */
+  max-width: 1200px;          /* [OK] bigger page width */
+  margin: 80px auto;          /* [OK] more breathing room */
   padding: 0 20px;
   font-family: "Open Sans", sans-serif;
 
-  display: flex;              /* ✅ centers the panel */
+  display: flex;              /* [OK] centers the panel */
   justify-content: center;
 }
 
@@ -58,7 +62,7 @@
 ============================= */
 .forms-panel {
   width: 100%;
-  max-width: 900px;           /* ✅ big but controlled */
+  max-width: 900px;           /* [OK] big but controlled */
   background: #ffffff;
   border: 3px solid var(--ml-blue);
   padding: 60px 50px;
@@ -67,7 +71,7 @@
 
 .forms-panel h2 {
   margin: 0 0 20px;
-  font-size: 42px;            /* ✅ bigger headline */
+  font-size: 42px;            /* [OK] bigger headline */
   font-weight: 800;
   color: var(--ml-blue);
 }
@@ -75,7 +79,7 @@
 .forms-panel p {
   margin: 0 auto 40px;
   max-width: 650px;
-  font-size: 20px;            /* ✅ bigger readable text */
+  font-size: 20px;            /* [OK] bigger readable text */
   line-height: 1.7;
   color: #000;
 }

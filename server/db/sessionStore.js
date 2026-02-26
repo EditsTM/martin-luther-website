@@ -1,3 +1,7 @@
+/**
+ * File: server\db\sessionStore.js
+ * Purpose: Provides database access helpers for sessionStore data operations.
+ */
 import session from "express-session";
 import Database from "better-sqlite3";
 import fs from "fs";

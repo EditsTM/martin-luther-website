@@ -1,3 +1,7 @@
+/*
+ * File: public\css\school\financial.css
+ * Purpose: Defines presentation styles for the financial interface.
+ */
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap");
 
 :root {
@@ -13,7 +17,7 @@
 body {
   margin: 0;
   font-family: "Open Sans", sans-serif;
-  color: #000;              /* ✅ make base text black */
+  color: #000;              /* [OK] make base text black */
   background: #ffffff;
 }
 
@@ -101,7 +105,7 @@ body {
   padding: 20px 6px 0;
   line-height: 1.6;
   font-size: 15px;
-  color: #000; /* ✅ ensure content is black */
+  color: #000; /* [OK] ensure content is black */
 }
 
 .center-strong {
@@ -111,7 +115,7 @@ body {
 
 .small-note {
   font-size: 12px;
-  color: #000; /* ✅ was grey before - now black */
+  color: #000; /* [OK] was grey before - now black */
 }
 
 /* Callout box (CENTERED) */
@@ -120,7 +124,7 @@ body {
   border: 2px solid var(--ml-blue);
   padding: 16px;
   margin: 16px 0 12px;
-  text-align: center; /* ✅ centers whole box */
+  text-align: center; /* [OK] centers whole box */
   color: #000;
 }
 
@@ -138,14 +142,14 @@ body {
 
 .callout-window {
   margin: 14px 0 0;
-  color: #000; /* ✅ make sure this is black */
+  color: #000; /* [OK] make sure this is black */
 }
 
 /* Footnote line */
 .footnote {
   font-size: 12px;
   margin: 10px 0 10px;
-  color: #000; /* ✅ black */
+  color: #000; /* [OK] black */
 }
 
 /* Tables */
@@ -179,13 +183,13 @@ body {
   text-align: center;
   background: rgba(66, 121, 188, 0.10);
   font-size: 13px;
-  color: #000; /* ✅ black text */
+  color: #000; /* [OK] black text */
 }
 
 .table-note {
   margin: 8px 0 0;
   font-size: 12px;
-  color: #000; /* ✅ black */
+  color: #000; /* [OK] black */
 }
 
 /* Process section */
@@ -227,7 +231,7 @@ body {
 }
 
 .centered-title {
-  text-align: center; /* ✅ centers Application Windows */
+  text-align: center; /* [OK] centers Application Windows */
 }
 
 /* Bottom line (centered) */
@@ -238,7 +242,7 @@ body {
 }
 
 .centered-bottom {
-  text-align: center; /* ✅ centers footer sentence */
+  text-align: center; /* [OK] centers footer sentence */
 }
 
 .link {

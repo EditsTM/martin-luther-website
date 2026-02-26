@@ -1,3 +1,7 @@
+/**
+ * File: server\controllers\contactController.js
+ * Purpose: Contains controller logic used by contactController workflows.
+ */
 // server/controllers/contactController.js
 import nodemailer from "nodemailer";
 import { validationResult } from "express-validator";
@@ -21,10 +25,10 @@ if (DEBUG_EMAIL) {
 }
 
 if (!smtpUser || !smtpPass) {
-  console.error("❌ Missing SMTP_USER / SMTP_PASS in env (contact).");
+  console.error("[ERROR] Missing SMTP_USER / SMTP_PASS in env (contact).");
 }
 if (!contactTo) {
-  console.error("❌ Missing CONTACT_TO in env (contact).");
+  console.error("[ERROR] Missing CONTACT_TO in env (contact).");
 }
 
 //Create transporter once (reuse)

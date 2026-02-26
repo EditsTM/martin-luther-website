@@ -1,4 +1,8 @@
-// ✅ server/routes/admin.js
+/**
+ * File: server\routes\admin.js
+ * Purpose: Defines HTTP route handlers and request validation for admin operations.
+ */
+// [OK] server/routes/admin.js
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -22,7 +26,7 @@ const __dirname = path.dirname(__filename);
 
 //Fail closed if ADMIN_PASSWORD isn't set (no insecure fallback)
 if (!process.env.ADMIN_PASSWORD) {
-  throw new Error("❌ ADMIN_PASSWORD is missing. Refusing to start for safety.");
+  throw new Error("[ERROR] ADMIN_PASSWORD is missing. Refusing to start for safety.");
 }
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
@@ -67,7 +71,7 @@ function clampString(val, maxLen) {
 /* TRUSTED DEVICE (Remember for 30 days) */
 
 if (!process.env.ADMIN_TOTP_SECRET) {
-  throw new Error("❌ ADMIN_TOTP_SECRET is missing. Refusing to start for safety.");
+  throw new Error("[ERROR] ADMIN_TOTP_SECRET is missing. Refusing to start for safety.");
 }
 
 function resolveWritableAdminDataDir() {
@@ -323,7 +327,7 @@ router.post("/login", loginLimiter, (req, res) => {
           <button type="submit">Login</button>
         </form>
 
-        <div class="error-msg">❌ Invalid credentials. Please try again.</div>
+        <div class="error-msg">[ERROR] Invalid credentials. Please try again.</div>
         <a href="/html/home.html" class="back-link">← Back to Home</a>
       </div>
     </div>

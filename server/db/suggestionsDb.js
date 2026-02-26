@@ -1,9 +1,13 @@
+/**
+ * File: server\db\suggestionsDb.js
+ * Purpose: Provides database access helpers for suggestionsDb data operations.
+ */
 // server/db/suggestionsDb.js
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
 
-// ✅ Use Render persistent disk if available
+// [OK] Use Render persistent disk if available
 const baseDir =
   process.env.DB_DIR ||
   (process.env.RENDER ? "/var/data" : path.resolve(process.cwd(), "server/db"));

@@ -1,3 +1,7 @@
+/*
+ * File: public\css\church\beliefs.css
+ * Purpose: Defines presentation styles for the beliefs interface.
+ */
 /* =============================
    HERO SECTION - OUR BELIEFS
 ============================= */
@@ -217,7 +221,7 @@
   filter: brightness(0) saturate(100%) invert(0); /* make lines solid black base */
 }
 
-/* ✅ Overlay that colors the lines half blue / half navy */
+/* [OK] Overlay that colors the lines half blue / half navy */
 .belief-card__icon::after {
   content: "";
   position: absolute;
@@ -342,7 +346,7 @@
   transform: none !important;
 }
 
-/* ✅ Centered icons and text in expanded mode */
+/* [OK] Centered icons and text in expanded mode */
 .carousel.expanded .belief-card {
   height: 260px;
   display: flex;

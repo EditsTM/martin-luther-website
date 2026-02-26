@@ -1,3 +1,7 @@
+/*
+ * File: public\css\home.css
+ * Purpose: Defines presentation styles for the home interface.
+ */
 /* ======================================================
    HERO SECTION
 ====================================================== */
@@ -136,7 +140,7 @@
 
   width: 315px;
 
-  border: 1.5px solid rgba(0, 0, 0, 0.6); /* ✅ black outline */
+  border: 1.5px solid rgba(0, 0, 0, 0.6); /* [OK] black outline */
 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -151,15 +155,15 @@
 .event-card img {
   width: 100%;
   height: 230px;              /* keep size */
-  object-fit: contain;        /* ✅ zoomed out / show full image */
+  object-fit: contain;        /* [OK] zoomed out / show full image */
   object-position: center;
-  background: #ffffff;           /* ✅ optional: fills empty space nicely */
+  background: #ffffff;           /* [OK] optional: fills empty space nicely */
   display: block;
 }
 
 /* Divider line between image and text */
 .event-card img {
-  border-bottom: 1.5px solid #000; /* ✅ thin black divider */
+  border-bottom: 1.5px solid #000; /* [OK] thin black divider */
 }
 
 /* Event text */
