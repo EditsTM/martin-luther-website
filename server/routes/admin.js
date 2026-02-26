@@ -70,11 +70,31 @@ if (!process.env.ADMIN_TOTP_SECRET) {
   throw new Error("❌ ADMIN_TOTP_SECRET is missing. Refusing to start for safety.");
 }
 
+function resolveWritableAdminDataDir() {
+  const candidates = [
+    process.env.ADMIN_DATA_DIR,
+    process.env.DB_DIR,
+    "/var/data",
+    path.resolve(process.cwd(), "server/content"),
+  ].filter(Boolean);
+
+  for (const dir of candidates) {
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      const probePath = path.join(dir, ".write-test");
+      fs.writeFileSync(probePath, "ok");
+      fs.unlinkSync(probePath);
+      return dir;
+    } catch {
+      // Try next candidate.
+    }
+  }
+
+  return path.resolve(process.cwd(), "server/content");
+}
+
 // Store hashed tokens + expiry in a writable path.
-const adminDataDir =
-  process.env.ADMIN_DATA_DIR ||
-  process.env.DB_DIR ||
-  (process.env.RENDER ? "/var/data" : path.resolve(process.cwd(), "server/content"));
+const adminDataDir = resolveWritableAdminDataDir();
 if (!fs.existsSync(adminDataDir)) fs.mkdirSync(adminDataDir, { recursive: true });
 const trustedDevicesPath = path.join(adminDataDir, "trusted-devices.json");
 
@@ -153,14 +173,18 @@ router.post("/login", loginLimiter, (req, res) => {
     const trustedCookie = req.cookies?.ml_trusted;
 
     if (trustedCookie) {
-      const data = cleanupExpiredDevices(readTrustedDevices());
-      const hashed = hashToken(trustedCookie);
+      try {
+        const data = cleanupExpiredDevices(readTrustedDevices());
+        const hashed = hashToken(trustedCookie);
 
-      if (data.devices.some((d) => d.token === hashed)) {
-        deviceTrusted = true;
-      } else {
-        // keep file clean
-        writeTrustedDevices(data);
+        if (data.devices.some((d) => d.token === hashed)) {
+          deviceTrusted = true;
+        } else {
+          // keep file clean
+          writeTrustedDevices(data);
+        }
+      } catch (err) {
+        console.warn("Trusted-device read/write failed; continuing without trust:", err?.message || err);
       }
     }
 
@@ -168,14 +192,20 @@ router.post("/login", loginLimiter, (req, res) => {
     const passwordOk = timingSafeEqualString(password, ADMIN_PASSWORD);
 
     // 3) 2FA check (skip if trusted)
-    const tokenOk = deviceTrusted
-      ? true
-      : speakeasy.totp.verify({
+    let tokenOk = deviceTrusted;
+    if (!deviceTrusted) {
+      try {
+        tokenOk = speakeasy.totp.verify({
           secret: process.env.ADMIN_TOTP_SECRET,
           encoding: "base32",
           token: String(token || ""),
           window: 1,
         });
+      } catch (err) {
+        console.error("TOTP verification failed:", err);
+        tokenOk = false;
+      }
+    }
 
     if (passwordOk && tokenOk) {
       return req.session.regenerate((err) => {
@@ -186,23 +216,27 @@ router.post("/login", loginLimiter, (req, res) => {
 
         //4) If they checked "Remember this device", set 30-day trusted cookie
         if (rememberDevice && !deviceTrusted) {
-          const rawToken = crypto.randomBytes(32).toString("hex");
-          const hashed = hashToken(rawToken);
+          try {
+            const rawToken = crypto.randomBytes(32).toString("hex");
+            const hashed = hashToken(rawToken);
 
-          const data = cleanupExpiredDevices(readTrustedDevices());
-          data.devices.push({
-            token: hashed,
-            expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
-          });
-          writeTrustedDevices(data);
+            const data = cleanupExpiredDevices(readTrustedDevices());
+            data.devices.push({
+              token: hashed,
+              expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+            });
+            writeTrustedDevices(data);
 
-          res.cookie("ml_trusted", rawToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 30 * 24 * 60 * 60 * 1000,
-            path: "/admin",
-          });
+            res.cookie("ml_trusted", rawToken, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              maxAge: 30 * 24 * 60 * 60 * 1000,
+              path: "/admin",
+            });
+          } catch (err) {
+            console.warn("Trusted-device save failed; login continues:", err?.message || err);
+          }
         }
 
         return res.redirect(303, "/admin/dashboard");

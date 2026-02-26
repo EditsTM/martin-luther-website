@@ -5,12 +5,32 @@ import path from "path";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+function resolveWritableBaseDir(customBaseDir) {
+  const candidates = [
+    customBaseDir,
+    process.env.DB_DIR,
+    process.env.ADMIN_DATA_DIR,
+    "/var/data",
+    path.resolve(process.cwd(), "server/db"),
+  ].filter(Boolean);
+
+  for (const dir of candidates) {
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      const probePath = path.join(dir, ".write-test");
+      fs.writeFileSync(probePath, "ok");
+      fs.unlinkSync(probePath);
+      return dir;
+    } catch {
+      // Try next candidate.
+    }
+  }
+
+  return path.resolve(process.cwd(), "server/db");
+}
+
 export function createSqliteSessionStore(options = {}) {
-  const baseDir =
-    options.baseDir ||
-    process.env.DB_DIR ||
-    (process.env.RENDER ? "/var/data" : path.resolve(process.cwd(), "server/db"));
-  if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir, { recursive: true });
+  const baseDir = resolveWritableBaseDir(options.baseDir);
   const dbPath = options.dbPath || path.join(baseDir, "sessions.sqlite");
   const cleanupIntervalMs = Number(options.cleanupIntervalMs) || ONE_DAY_MS;
 
