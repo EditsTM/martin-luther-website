@@ -127,6 +127,45 @@ function cleanupExpiredDevices(data) {
   return data;
 }
 
+function completeLogin(req, res, { rememberDevice, deviceTrusted }) {
+  req.session.loggedIn = true;
+  req.session.isAdmin = true;
+
+  // If they checked "Remember this device", set 30-day trusted cookie.
+  if (rememberDevice && !deviceTrusted) {
+    try {
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      const hashed = hashToken(rawToken);
+
+      const data = cleanupExpiredDevices(readTrustedDevices());
+      data.devices.push({
+        token: hashed,
+        expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      });
+      writeTrustedDevices(data);
+
+      res.cookie("ml_trusted", rawToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        path: "/admin",
+      });
+    } catch (err) {
+      console.warn("Trusted-device save failed; login continues:", err?.message || err);
+    }
+  }
+
+  // Persist session; if store write fails we still return a clear error.
+  return req.session.save((saveErr) => {
+    if (saveErr) {
+      console.error("Session save failed after login:", saveErr);
+      return res.status(500).send("Session error");
+    }
+    return res.redirect(303, "/admin/dashboard");
+  });
+}
+
 
 /*  UPLOAD HARDENING (EVENTS + FACULTY) */
 
@@ -209,37 +248,11 @@ router.post("/login", loginLimiter, (req, res) => {
 
     if (passwordOk && tokenOk) {
       return req.session.regenerate((err) => {
-        if (err) return res.status(500).send("Session error");
-
-        req.session.loggedIn = true;
-        req.session.isAdmin = true;
-
-        //4) If they checked "Remember this device", set 30-day trusted cookie
-        if (rememberDevice && !deviceTrusted) {
-          try {
-            const rawToken = crypto.randomBytes(32).toString("hex");
-            const hashed = hashToken(rawToken);
-
-            const data = cleanupExpiredDevices(readTrustedDevices());
-            data.devices.push({
-              token: hashed,
-              expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
-            });
-            writeTrustedDevices(data);
-
-            res.cookie("ml_trusted", rawToken, {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production",
-              sameSite: "lax",
-              maxAge: 30 * 24 * 60 * 60 * 1000,
-              path: "/admin",
-            });
-          } catch (err) {
-            console.warn("Trusted-device save failed; login continues:", err?.message || err);
-          }
+        if (err) {
+          // Fallback path: keep current session object instead of hard-failing login.
+          console.error("Session regenerate failed; falling back to current session:", err);
         }
-
-        return res.redirect(303, "/admin/dashboard");
+        return completeLogin(req, res, { rememberDevice, deviceTrusted });
       });
     }
 

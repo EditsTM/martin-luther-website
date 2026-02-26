@@ -41,6 +41,11 @@ app.use(cookieParser());
 app.set("trust proxy", 1);
 
 const PORT = process.env.PORT || 3000;
+const useMemorySessionStore = String(process.env.SESSION_STORE || "").toLowerCase() === "memory";
+const sessionStore = useMemorySessionStore ? undefined : createSqliteSessionStore();
+if (useMemorySessionStore) {
+  console.warn("SESSION_STORE=memory enabled; using in-memory sessions.");
+}
 
 function collectInlineScriptHashes(rootDir) {
   const hashes = new Set();
@@ -130,7 +135,7 @@ app.use(express.urlencoded({ extended: true, limit: "25kb" }));
 /* Session Configuration (Persistent 15-minute Login) */
 app.use(
   session({
-    store: createSqliteSessionStore(),
+    store: sessionStore,
     name: "ml.sid", // ✅ avoid default connect.sid
     secret: process.env.SESSION_SECRET,
     resave: false,
