@@ -110,8 +110,8 @@ app.use(
     origin: (origin, cb) => {
       //allow same-origin/no-origin requests (curl/postman/etc.)
       if (!origin) return cb(null, true);
-      // Some local contexts (file://, sandboxed docs) send the literal string "null".
-      if (!isProduction && origin === "null") return cb(null, true);
+      // Some browsers/contexts send the literal string "null" for same-site form posts.
+      if (origin === "null") return cb(null, true);
       const isAllowed =
         allowedOrigins.has(origin) || (!isProduction && isLocalDevOrigin(origin));
 
