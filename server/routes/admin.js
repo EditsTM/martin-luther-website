@@ -70,8 +70,13 @@ if (!process.env.ADMIN_TOTP_SECRET) {
   throw new Error("❌ ADMIN_TOTP_SECRET is missing. Refusing to start for safety.");
 }
 
-// Store hashed tokens + expiry in a file (simple, no DB)
-const trustedDevicesPath = path.resolve(process.cwd(), "server/content/trusted-devices.json");
+// Store hashed tokens + expiry in a writable path.
+const adminDataDir =
+  process.env.ADMIN_DATA_DIR ||
+  process.env.DB_DIR ||
+  (process.env.RENDER ? "/var/data" : path.resolve(process.cwd(), "server/content"));
+if (!fs.existsSync(adminDataDir)) fs.mkdirSync(adminDataDir, { recursive: true });
+const trustedDevicesPath = path.join(adminDataDir, "trusted-devices.json");
 
 function readTrustedDevices() {
   try {
@@ -140,68 +145,69 @@ router.get("/login", (req, res) => {
 
 /* Handle Login (Password + 2FA + Remember Device) */
 router.post("/login", loginLimiter, (req, res) => {
-  const { password, token, rememberDevice } = req.body;
+  try {
+    const { password, token, rememberDevice } = req.body;
 
-  // 1) Check if this browser is already trusted
-  let deviceTrusted = false;
-  const trustedCookie = req.cookies?.ml_trusted;
+    // 1) Check if this browser is already trusted
+    let deviceTrusted = false;
+    const trustedCookie = req.cookies?.ml_trusted;
 
-  if (trustedCookie) {
-    const data = cleanupExpiredDevices(readTrustedDevices());
-    const hashed = hashToken(trustedCookie);
+    if (trustedCookie) {
+      const data = cleanupExpiredDevices(readTrustedDevices());
+      const hashed = hashToken(trustedCookie);
 
-    if (data.devices.some((d) => d.token === hashed)) {
-      deviceTrusted = true;
-    } else {
-      // keep file clean
-      writeTrustedDevices(data);
-    }
-  }
-
-  // 2) Password check
-  const passwordOk = timingSafeEqualString(password, ADMIN_PASSWORD);
-
-  // 3) 2FA check (skip if trusted)
-  const tokenOk = deviceTrusted
-    ? true
-    : speakeasy.totp.verify({
-        secret: process.env.ADMIN_TOTP_SECRET,
-        encoding: "base32",
-        token: String(token || ""),
-        window: 1,
-      });
-
-  if (passwordOk && tokenOk) {
-    return req.session.regenerate((err) => {
-      if (err) return res.status(500).send("Session error");
-
-      req.session.loggedIn = true;
-      req.session.isAdmin = true;
-
-      //4) If they checked "Remember this device", set 30-day trusted cookie
-      if (rememberDevice && !deviceTrusted) {
-        const rawToken = crypto.randomBytes(32).toString("hex");
-        const hashed = hashToken(rawToken);
-
-        const data = cleanupExpiredDevices(readTrustedDevices());
-        data.devices.push({
-          token: hashed,
-          expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
-        });
+      if (data.devices.some((d) => d.token === hashed)) {
+        deviceTrusted = true;
+      } else {
+        // keep file clean
         writeTrustedDevices(data);
-
-        res.cookie("ml_trusted", rawToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 30 * 24 * 60 * 60 * 1000,
-          path: "/admin",
-        });
       }
+    }
 
-      return res.redirect(303, "/admin/dashboard");
-    });
-  }
+    // 2) Password check
+    const passwordOk = timingSafeEqualString(password, ADMIN_PASSWORD);
+
+    // 3) 2FA check (skip if trusted)
+    const tokenOk = deviceTrusted
+      ? true
+      : speakeasy.totp.verify({
+          secret: process.env.ADMIN_TOTP_SECRET,
+          encoding: "base32",
+          token: String(token || ""),
+          window: 1,
+        });
+
+    if (passwordOk && tokenOk) {
+      return req.session.regenerate((err) => {
+        if (err) return res.status(500).send("Session error");
+
+        req.session.loggedIn = true;
+        req.session.isAdmin = true;
+
+        //4) If they checked "Remember this device", set 30-day trusted cookie
+        if (rememberDevice && !deviceTrusted) {
+          const rawToken = crypto.randomBytes(32).toString("hex");
+          const hashed = hashToken(rawToken);
+
+          const data = cleanupExpiredDevices(readTrustedDevices());
+          data.devices.push({
+            token: hashed,
+            expires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+          });
+          writeTrustedDevices(data);
+
+          res.cookie("ml_trusted", rawToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            path: "/admin",
+          });
+        }
+
+        return res.redirect(303, "/admin/dashboard");
+      });
+    }
 
   //eneric error 
   const errorHTML = `
@@ -273,7 +279,11 @@ router.post("/login", loginLimiter, (req, res) => {
 </html>
   `;
 
-  return res.status(401).send(errorHTML);
+    return res.status(401).send(errorHTML);
+  } catch (err) {
+    console.error("POST /admin/login failed:", err);
+    return res.status(500).send("Internal Server Error");
+  }
 });
 /* Protected Dashboard */
 router.get("/dashboard", (req, res) => {

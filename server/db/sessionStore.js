@@ -1,13 +1,17 @@
 import session from "express-session";
 import Database from "better-sqlite3";
+import fs from "fs";
 import path from "path";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 export function createSqliteSessionStore(options = {}) {
-  const dbPath =
-    options.dbPath ||
-    path.resolve(process.cwd(), "server/db/sessions.sqlite");
+  const baseDir =
+    options.baseDir ||
+    process.env.DB_DIR ||
+    (process.env.RENDER ? "/var/data" : path.resolve(process.cwd(), "server/db"));
+  if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir, { recursive: true });
+  const dbPath = options.dbPath || path.join(baseDir, "sessions.sqlite");
   const cleanupIntervalMs = Number(options.cleanupIntervalMs) || ONE_DAY_MS;
 
   const db = new Database(dbPath);
