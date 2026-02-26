@@ -1,20 +1,22 @@
-// ✅ server/routes/teamRoutes.js
+//server/routes/teamRoutes.js
 import express from "express";
 import fs from "fs";
 import { promises as fsp } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
+import { enforceTrustedOrigin } from "../middleware/requestSecurity.js";
+import { hasValidImageSignature } from "../middleware/uploadValidation.js";
 
 const router = express.Router();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Path to server/content/team.json
+//Path to server/content/team.json
 const TEAM_PATH = path.join(__dirname, "../content/team.json");
 
-// ✅ Upload directory for team images (public/images/team)
+//Upload directory for team images (public/images/team)
 const publicDir = path.join(process.cwd(), "public");
 const uploadDir = path.join(publicDir, "images", "team");
 
@@ -22,16 +24,8 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-/* ======================================================
-   ✅ SECURITY HARDENING (keeps same endpoints/behavior)
-   1) Require admin session for all write routes
-   2) Same-origin check for CSRF-hardening (cookie sessions)
-   3) Input validation + length caps to reduce abuse/XSS risk
-   4) Multer file type + size limits (blocks SVG/HTML/etc.)
-   5) Atomic JSON writes to avoid corruption
-====================================================== */
 
-// ✅ Admin guard (same concept as your other routes)
+//Admin guard (same concept as your other routes)
 function requireAdmin(req, res, next) {
   if (!req.session || !req.session.isAdmin) {
     return res.status(403).json({ error: "Unauthorized" });
@@ -39,24 +33,7 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-// ✅ Same-origin check (helps block CSRF without changing your frontend)
-function requireSameOrigin(req, res, next) {
-  const origin = req.get("origin");
-  const host = req.get("host");
-  if (!origin) return next(); // allow non-browser clients
-
-  let originHost;
-  try {
-    originHost = new URL(origin).host;
-  } catch {
-    return res.status(403).json({ error: "Bad origin" });
-  }
-
-  if (originHost !== host) {
-    return res.status(403).json({ error: "Cross-site request blocked" });
-  }
-  next();
-}
+const requireSameOrigin = enforceTrustedOrigin({ allowNoOrigin: false });
 
 const LIMITS = {
   name: 80,
@@ -305,6 +282,11 @@ router.post(
 
       if (!req.file) {
         return res.status(400).json({ success: false, error: "No file uploaded" });
+      }
+
+      if (!hasValidImageSignature(req.file.path, req.file.mimetype)) {
+        try { await fsp.unlink(req.file.path); } catch {}
+        return res.status(400).json({ success: false, error: "Invalid image content" });
       }
 
       const data = readTeam();

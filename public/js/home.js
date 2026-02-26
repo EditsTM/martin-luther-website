@@ -1,4 +1,4 @@
-// ✅ Rotating hero background images
+// Rotating hero background images
 // These are relative to the page where this script runs.
 // Make sure the files exist at these paths in /public/images.
 const heroImages = [
@@ -49,6 +49,15 @@ if (heroSection) {
 //Load 3 events onto homepage
 const container = document.querySelector(".events-cards");
 
+function normalizeEventImagePath(path) {
+  const raw = String(path ?? "").trim();
+  if (!raw) return "/images/Placeholder.jpg";
+
+  const noOrigin = raw.replace(/^https?:\/\/[^/]+/i, "");
+  const rel = noOrigin.startsWith("/") ? noOrigin : "/" + noOrigin;
+  return rel.startsWith("/images/") ? rel : "/images/Placeholder.jpg";
+}
+
 if (container) {
   fetch("/content/events.json")
     .then((res) => res.json())
@@ -70,22 +79,33 @@ if (container) {
 
       //If nothing valid exists, show nothing
       if (top3.length === 0) {
-        container.innerHTML = "";
+        container.replaceChildren();
         return;
       }
 
-      //Render the cards
-      container.innerHTML = top3
-        .map(
-          (ev) => `
-            <div class="event-card">
-              <img src="${ev.image}" alt="${ev.title}">
-              <h3>${ev.title}</h3>
-              <p>${ev.date}</p>
-            </div>
-          `
-        )
-        .join("");
+      // Render cards with safe DOM APIs to avoid HTML injection.
+      container.replaceChildren(
+        ...top3.map((ev) => {
+          const card = document.createElement("div");
+          card.className = "event-card";
+
+          const title = String(ev.title ?? "");
+          const date = String(ev.date ?? "");
+
+          const img = document.createElement("img");
+          img.src = normalizeEventImagePath(ev.image);
+          img.alt = title;
+
+          const h3 = document.createElement("h3");
+          h3.textContent = title;
+
+          const p = document.createElement("p");
+          p.textContent = date;
+
+          card.append(img, h3, p);
+          return card;
+        })
+      );
     })
     .catch((err) => {
       console.error("❌ Failed to load events on homepage:", err);

@@ -1,13 +1,4 @@
 // public/js/team.js
-/* =========================================================
-   SECURITY IMPROVEMENTS (front-end only)
-   - Send cookies reliably with credentials: "same-origin"
-   - Disable caching on admin/session-ish requests (no-store)
-   - Consistent JSON fetch + error handling
-   - Optional CSRF header support (won't break if server ignores it)
-   - Client-side file checks for uploads (server must still validate)
-   - Basic image-path allowlisting to avoid weird paths being stored
-   ========================================================= */
 
 // ---------- SECURITY HELPERS ----------
 function getCsrfToken() {
@@ -148,7 +139,7 @@ function setupTeamModal() {
     return;
   }
 
-  // ✅ Make TAB insert a tab inside the Bio textarea (instead of cycling controls)
+  //Make TAB insert a tab inside the Bio textarea (instead of cycling controls)
   teamModalBioTextarea.addEventListener("keydown", (e) => {
     if (e.key !== "Tab") return;
 
@@ -176,7 +167,6 @@ function setupTeamModal() {
     const subject = teamModalSubjectInput.value.trim() || "Pastor";
     const bioRaw = teamModalBioTextarea.value || "";
 
-    // Only store allowlisted /images/... paths (prevents weird paths being saved)
     const imageSrc = normalizeImagePath(
       teamModalPhotoPreview.src || "/images/Placeholder.jpg"
     );
@@ -300,7 +290,7 @@ function openTeamModal(index, cardElement) {
   } else {
     const member = teamData[index];
 
-// ✅ Keep compatibility with old array bios, but treat bio as ONE string going forward
+// Keep compatibility with old array bios, but treat bio as ONE string going forward
 const bioText = Array.isArray(member.bio)
   ? member.bio
       .map((p) => String(p || "").trim())
@@ -360,7 +350,7 @@ function renderTeam() {
     const h4 = document.createElement("h4");
     h4.textContent = member.subject || "Pastor";
 
-    // ✅ Bio (store/display as ONE text block, preserve line breaks via CSS)
+    //Bio (store/display as ONE text block, preserve line breaks via CSS)
     const bioDiv = document.createElement("div");
     bioDiv.className = "bio-text";
 

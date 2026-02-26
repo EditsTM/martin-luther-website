@@ -1,4 +1,4 @@
-// ✅ public/js/footer.js
+//public/js/footer.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const footerEl = document.getElementById("footer");

@@ -24,7 +24,7 @@ const contactLimiter = rateLimit({
   },
 });
 
-// ✅ Actually enforce express-validator results (this is the big missing piece)
+//Actually enforce express-validator results (this is the big missing piece)
 function enforceValidation(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -44,13 +44,13 @@ router.post(
     body("reason").trim().notEmpty().isLength({ max: 60 }).withMessage("Please select a reason"),
     body("message").trim().isLength({ min: 10, max: 2000 }).withMessage("Message too short"),
 
-    // ✅ Honeypot 
+    //Honeypot 
     body("website").optional({ checkFalsy: true }).custom((value) => {
       if (value && value.trim() !== "") throw new Error("Bot detected");
       return true;
     }),
   ],
-  enforceValidation, // ✅ stops bad input before your controller runs
+  enforceValidation, //stops bad input before your controller runs
   sendContactEmail
 );
 

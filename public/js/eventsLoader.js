@@ -1,7 +1,4 @@
-// ✅ public/js/eventsLoader.js
-// Loads events and renders them.
-// If admin: shows an "Edit" button that opens a modal like your screenshot (photo + Change Photo + fields + Save).
-
+// public/js/eventsLoader.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const escapeHTML = (v) =>
@@ -19,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return String(el.value ?? "").replace(/\r\n/g, "\n"); // normalize newlines
     };
 
-    // ✅ Check admin session
+    //Check admin session
     const sessionRes = await fetch("/admin/check", {
       cache: "no-store",
       credentials: "same-origin",
@@ -27,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sessionData = await sessionRes.json();
     const isAdmin = sessionData.loggedIn === true;
 
-    // ✅ Load events.json
+    //Load events.json
     const res = await fetch("/content/events.json", {
       cache: "no-store",
       credentials: "same-origin",
@@ -40,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const events = Array.isArray(data.events) ? data.events : [];
 
-    // ✅ Modal elements (added in events.html below)
+    //Modal elements (added in events.html below)
     const modalOverlay = document.getElementById("eventModalOverlay");
     const modal = document.getElementById("eventModal");
     const modalClose = document.getElementById("eventModalClose");
@@ -90,16 +87,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.body.style.overflow = "hidden";
     }
 
-// ✅ Allow TAB to indent inside Notes textarea
+//Allow TAB to indent inside Notes textarea
 if (modalFieldNotes) {
   modalFieldNotes.addEventListener("keydown", (e) => {
     if (e.key === "Tab") {
-      e.preventDefault(); // stop focus cycling
+      e.preventDefault();
 
       const start = modalFieldNotes.selectionStart;
       const end = modalFieldNotes.selectionEnd;
 
-      // Insert 2 spaces (or use "\t" for real tab)
       const indent = "  ";
 
       // Update textarea value
@@ -152,23 +148,23 @@ if (modalFieldNotes) {
       });
     }
 
-// ✅ Remove Photo button (sets image to blank)
+//Remove Photo button (sets image to blank)
 if (modalRemovePhotoBtn) {
   modalRemovePhotoBtn.addEventListener("click", async () => {
     try {
       if (currentIndex === null) return;
 
-      // ✅ clear any pending upload
+      //clear any pending upload
       pendingFile = null;
       if (modalFileInput) modalFileInput.value = "";
 
-      // ✅ clear preview
+      //clear preview
       if (modalImg) modalImg.src = "";
 
-      // ✅ update local copy
+      //update local copy
       events[currentIndex].image = "";
 
-      // ✅ save BLANK image to events.json
+      //save BLANK image to events.json
       const res = await fetch("/admin/update-event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -266,7 +262,7 @@ if (modalRemovePhotoBtn) {
       });
     }
 
-    // ✅ Render events
+    //Render events
     const eventHTML = events
       .map((ev, index) => {
         const isEven = index % 2 === 0;
@@ -342,7 +338,7 @@ if (modalRemovePhotoBtn) {
 
     grid.innerHTML = eventHTML;
 
-// ✅ Drag & Drop reorder (ADMIN ONLY)
+//Drag & Drop reorder (ADMIN ONLY)
 if (isAdmin) {
   const rows = () => Array.from(grid.querySelectorAll(".event-row"));
 
@@ -351,7 +347,7 @@ if (isAdmin) {
 
   let isDragging = false;
 
-  // ✅ Save current DOM order to server
+  //Save current DOM order to server
   async function saveOrderToServer() {
     const order = rows().map((r) => Number(r.getAttribute("data-event-index")));
 
@@ -381,7 +377,7 @@ if (isAdmin) {
 
   document.addEventListener("wheel", onWheelWhileDragging, { passive: false });
 
-  // ✅ Auto-scroll near edges
+  //Auto-scroll near edges
   const EDGE = 140;      // bigger = easier to trigger
   const SPEED = 22;      // bigger = faster scroll
   let autoScrollTimer = null;
@@ -406,7 +402,7 @@ if (isAdmin) {
     window.__dragY = undefined;
   }
 
-  // ✅ Drag start / end
+  //Drag start / end
   rows().forEach((row) => {
     row.addEventListener("dragstart", (e) => {
       row.classList.add("dragging");
@@ -431,7 +427,7 @@ if (isAdmin) {
     });
   });
 
-  // ✅ BIG IMPROVEMENT: dragover on the GRID (not per-row)
+  // BIG IMPROVEMENT: dragover on the GRID (not per-row)
   // Much less “exact”
   grid.addEventListener("dragover", (e) => {
     e.preventDefault();
@@ -473,7 +469,7 @@ if (isAdmin) {
 }
 
 
-    // ✅ Hook up Edit buttons -> open modal
+    //Hook up Edit buttons -> open modal
     if (isAdmin) {
       document.querySelectorAll("[data-edit-index]").forEach((btn) => {
         btn.addEventListener("click", () => {

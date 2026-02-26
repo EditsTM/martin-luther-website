@@ -6,47 +6,86 @@ import helmet from "helmet";
 import fetch from "node-fetch";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 import { fileURLToPath } from "url";
 import session from "express-session";
-import rateLimit from "express-rate-limit"; // ✅ added (for /api/youtube)
-
+import rateLimit from "express-rate-limit"; 
 import contactRoutes from "./routes/contactRoutes.js";
 import prayerRoutes from "./routes/prayerRoutes.js";
 import adminRoutes from "./routes/admin.js";
 import contentRoutes from "./routes/contentRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import cookieParser from "cookie-parser";
+import { getAllowedOrigins, isLocalDevOrigin } from "./middleware/requestSecurity.js";
+import { createSqliteSessionStore } from "./db/sessionStore.js";
 
-// ------------------------------------------------------
-// 🔐 Resolve __dirname and load .env from project root
-// ------------------------------------------------------
+
+//Resolve __dirname and load .env from project root
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/* ------------------------------------------------------
-   ✅ SECURITY FAIL-CLOSED (prevents insecure defaults)
------------------------------------------------------- */
-if (process.env.NODE_ENV === "production") {
-  if (!process.env.SESSION_SECRET) {
-    throw new Error("❌ SESSION_SECRET is missing in production. Refusing to start.");
-  }
+/* SECURITY FAIL-CLOSED (prevents insecure defaults)*/
+if (!process.env.SESSION_SECRET) {
+  throw new Error("❌ SESSION_SECRET is missing. Refusing to start for safety.");
 }
 
-// 🔍 Debug – safe (do NOT print secrets)
+// Debug – safe (do NOT print secrets)
 console.log("🚀 SERVER FILE RELOADED:", new Date().toISOString());
 console.log("🔥 ACTIVE SERVER FILE:", import.meta.url);
 
 const app = express();
 app.use(cookieParser());
 
-// ✅ REQUIRED for Render/HTTPS so secure cookies + sessions behave correctly behind proxy
+//REQUIRED for Render/HTTPS so secure cookies + sessions behave correctly behind proxy
 app.set("trust proxy", 1);
 
 const PORT = process.env.PORT || 3000;
 
-/* ------------------------------------------------------
-   🛡️ Security & Middleware
------------------------------------------------------- */
+function collectInlineScriptHashes(rootDir) {
+  const hashes = new Set();
+  const scriptRegex = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi;
+
+  function walk(dir) {
+    let entries = [];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+        continue;
+      }
+      if (!entry.isFile() || !entry.name.toLowerCase().endsWith(".html")) continue;
+
+      let html = "";
+      try {
+        html = fs.readFileSync(fullPath, "utf8");
+      } catch {
+        continue;
+      }
+
+      let match;
+      while ((match = scriptRegex.exec(html)) !== null) {
+        const scriptBody = String(match[1] ?? "");
+        if (!scriptBody.trim()) continue;
+        const hash = crypto.createHash("sha256").update(scriptBody, "utf8").digest("base64");
+        hashes.add(`'sha256-${hash}'`);
+      }
+    }
+  }
+
+  walk(rootDir);
+  return Array.from(hashes);
+}
+
+const inlineScriptHashes = collectInlineScriptHashes(path.join(__dirname, "../public/html"));
+
+/* Security & Middleware*/
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -56,40 +95,22 @@ app.use(
   })
 );
 
-/* ------------------------------------------------------
-   ✅ CORS FIX (allow your new custom domain + keep your existing strategy)
------------------------------------------------------- */
-// ✅ Tighten CORS (keep functionality: allow same-origin + no-origin tools)
-const allowedOrigins = [
-  process.env.SITE_ORIGIN, // e.g. https://martinlutheroshkosh.com
-  process.env.SITE_ORIGIN_2, // e.g. https://mloshkosh.org
+/* (allow your new custom domain + keep your existing strategy) */
 
-  // ✅ allow your Render subdomain (often used during testing)
-  "https://martin-luther-website.onrender.com",
-
-  // ✅ allow the new custom domains
-  "https://www.martinlutheroshkosh.com",
-  "https://martinlutheroshkosh.com",
-
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-].filter(Boolean);
+const allowedOrigins = getAllowedOrigins();
+const isProduction = process.env.NODE_ENV === "production";
 
 app.use(
   cors({
     origin: (origin, cb) => {
-      // ✅ allow same-origin/no-origin requests (curl/postman/etc.)
+      //allow same-origin/no-origin requests (curl/postman/etc.)
       if (!origin) return cb(null, true);
+      // Some local contexts (file://, sandboxed docs) send the literal string "null".
+      if (!isProduction && origin === "null") return cb(null, true);
+      const isAllowed =
+        allowedOrigins.has(origin) || (!isProduction && isLocalDevOrigin(origin));
 
-      // ✅ FIX: browsers can send the literal string "null" for opaque origins
-      // (file:// pages, sandboxed iframes, some privacy contexts)
-      if (origin === "null") return cb(null, true);
-
-      // ✅ if not configured, don't break
-      if (allowedOrigins.length === 0) return cb(null, true);
-
-      // ✅ helpful log so you instantly know what's blocked
-      if (!allowedOrigins.includes(origin)) {
+      if (!isAllowed) {
         console.error("❌ Blocked by CORS origin:", origin);
         return cb(new Error("Not allowed by CORS"));
       }
@@ -97,36 +118,35 @@ app.use(
       return cb(null, true);
     },
 
-    // ✅ if you rely on sessions/cookies across requests, this is the correct setting
+    //if you rely on sessions/cookies across requests, this is the correct setting
     credentials: true,
   })
 );
 
-// ✅ Add explicit body size limits (prevents large-payload abuse)
+//Add explicit body size limits (prevents large-payload abuse)
 app.use(express.json({ limit: "25kb" }));
 app.use(express.urlencoded({ extended: true, limit: "25kb" }));
 
-/* ------------------------------------------------------
-   🧩 Session Configuration (Persistent 15-minute Login)
------------------------------------------------------- */
+/* Session Configuration (Persistent 15-minute Login) */
 app.use(
   session({
+    store: createSqliteSessionStore(),
     name: "ml.sid", // ✅ avoid default connect.sid
-    secret: process.env.SESSION_SECRET || "ml-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     rolling: true, // ✅ refresh cookie expiration on activity
     cookie: {
       maxAge: 15 * 60 * 1000, // 🕒 15 minutes
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       secure: process.env.NODE_ENV === "production",
     },
   })
 );
 
-// 🕓 Extend session if user stays active
-// ✅ rolling:true already refreshes expiration, keep this for compatibility (won't break anything)
+//Extend session if user stays active
+//rolling:true already refreshes expiration, keep this for compatibility (won't break anything)
 app.use((req, res, next) => {
   if (req.session && req.session.loggedIn) {
     req.session._garbage = Date();
@@ -135,16 +155,15 @@ app.use((req, res, next) => {
   next();
 });
 
-/* ------------------------------------------------------
-   ✅ CSP Policy
------------------------------------------------------- */
+/* CSP Policy */
 app.use((req, res, next) => {
   res.removeHeader("Content-Security-Policy");
   res.setHeader(
-    "Content-Security-Policy",
-    [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      "Content-Security-Policy",
+      [
+        "default-src 'self'",
+        ["script-src", "'self'", "'unsafe-inline'", ...inlineScriptHashes].join(" "),
+        "script-src-attr 'none'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https://www.youtube.com https://i.ytimg.com https://calendar.google.com https://www.google.com https://secure.myvanco.com",
@@ -154,30 +173,27 @@ app.use((req, res, next) => {
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'self'",
-    ].join("; ")
+      process.env.NODE_ENV === "production" ? "upgrade-insecure-requests" : "",
+    ]
+      .filter(Boolean)
+      .join("; ")
   );
   next();
 });
 
-/* ------------------------------------------------------
-   🧭 Redirect static admin.html to session-aware route
------------------------------------------------------- */
+/* Redirect static admin.html to session-aware route */
 app.get("/html/school/admin.html", (req, res) => {
   res.redirect("/admin/login");
 });
 
-/* ------------------------------------------------------
-   📩 API ROUTES
------------------------------------------------------- */
+/* API ROUTES */
 app.use("/contact", contactRoutes);
 app.use("/prayer", prayerRoutes);
 app.use("/admin", adminRoutes);
 app.use("/content", contentRoutes);
 app.use("/api/team", teamRoutes);
 
-/* ------------------------------------------------------
-   🎥 YouTube Proxy (✅ add rate limiting to protect API quota)
------------------------------------------------------- */
+/*YouTube Proxy (✅ add rate limiting to protect API quota)*/
 const youtubeLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 30, // 30 req/min per IP
@@ -209,28 +225,26 @@ app.get("/api/youtube", youtubeLimiter, async (req, res) => {
   }
 });
 
-/* ------------------------------------------------------
-   🌐 STATIC FILES
------------------------------------------------------- */
-app.use(express.static(path.join(__dirname, "../public")));
+/* STATIC FILES*/
+app.use(
+  express.static(path.join(__dirname, "../public"), {
+    setHeaders: (res) => {
+      res.setHeader("X-Content-Type-Options", "nosniff");
+    },
+  })
+);
 
-/* ------------------------------------------------------
-   🏠 Home Route
------------------------------------------------------- */
+/* Home Route */
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/html/index.html"));
 });
 
-/* ------------------------------------------------------
-   👤 Simple Admin Session Check
------------------------------------------------------- */
+/* Simple Admin Session Check- */
 app.get("/api/admin-session", (req, res) => {
   res.json({ loggedIn: !!req.session.loggedIn });
 });
 
-/* ------------------------------------------------------
-   ❌ 404 Handler
------------------------------------------------------- */
+/* 404 Handler*/
 app.use((req, res) => {
   const notFoundPage = path.join(__dirname, "../public/html/404.html");
   fs.existsSync(notFoundPage)
@@ -238,9 +252,7 @@ app.use((req, res) => {
     : res.status(404).send("<h1>404 - Page Not Found</h1>");
 });
 
-/* ------------------------------------------------------
-   🚀 Start Server
------------------------------------------------------- */
+/* Start Server*/
 app.listen(PORT, "0.0.0.0", () =>
   console.log(`✅ Server running at: http://localhost:${PORT}`)
 );

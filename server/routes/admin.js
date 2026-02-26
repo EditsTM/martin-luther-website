@@ -3,13 +3,14 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import { fileURLToPath, URL } from "url";
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import crypto from "crypto";
 import speakeasy from "speakeasy";
-// ✅ DB for suggestions
-import { db } from "../db/suggestionsDb.js"; // <-- adjust path if needed
+import { db } from "../db/suggestionsDb.js"; 
+import { enforceTrustedOrigin } from "../middleware/requestSecurity.js";
+import { hasValidImageSignature } from "../middleware/uploadValidation.js";
 
 dotenv.config();
 
@@ -17,17 +18,15 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/* ======================================================
-   ✅ SECURITY HELPERS
-====================================================== */
+/* SECURITY HELPERS*/
 
-// ✅ Fail closed if ADMIN_PASSWORD isn't set (no insecure fallback)
+//Fail closed if ADMIN_PASSWORD isn't set (no insecure fallback)
 if (!process.env.ADMIN_PASSWORD) {
   throw new Error("❌ ADMIN_PASSWORD is missing. Refusing to start for safety.");
 }
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-// ✅ Rate-limit login attempts (basic brute-force protection)
+//Rate-limit login attempts (basic brute-force protection)
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 20, // 20 attempts per IP per window
@@ -35,7 +34,7 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// ✅ Timing-safe password compare (reduces timing leakage)
+//Timing-safe password compare (reduces timing leakage)
 function timingSafeEqualString(a, b) {
   const aBuf = Buffer.from(String(a ?? ""), "utf8");
   const bBuf = Buffer.from(String(b ?? ""), "utf8");
@@ -43,68 +42,29 @@ function timingSafeEqualString(a, b) {
   return crypto.timingSafeEqual(aBuf, bBuf);
 }
 
-// ✅ Simple same-origin CSRF guard for POSTs (works well with cookie sessions)
-// Note: This assumes your site runs over https in production.
-function requireSameOrigin(req, res, next) {
-  const origin = req.get("origin");
-  if (!origin) return next(); // allow non-browser tools / some requests
+const requireSameOrigin = enforceTrustedOrigin({ allowNoOrigin: false });
 
-  let originURL;
-  try {
-    originURL = new URL(origin);
-  } catch {
-    return res.status(403).json({ error: "Bad Origin" });
-  }
-
-  // ✅ get the "real" host the request came in on (works behind proxies)
-  const forwardedHost = (req.get("x-forwarded-host") || "").split(",")[0].trim();
-  const hostHeader = (forwardedHost || req.get("host") || "").split(",")[0].trim();
-
-  const requestHost = hostHeader.split(":")[0]; // strip port
-  const originHost = originURL.hostname;
-
-  const normalize = (h) => String(h || "").toLowerCase().replace(/^www\./, "");
-
-  // ✅ Dev exception: localhost vs 127.0.0.1
-  if (process.env.NODE_ENV !== "production") {
-    const devHosts = new Set(["localhost", "127.0.0.1"]);
-    if (devHosts.has(normalize(originHost)) && devHosts.has(normalize(requestHost))) {
-      return next();
-    }
-  }
-
-  if (normalize(originHost) !== normalize(requestHost)) {
-    // 👇 add this log temporarily so we can see what it's comparing
-    console.error("Bad Origin:", { originHost, requestHost, origin, hostHeader, forwardedHost });
-    return res.status(403).json({ error: "Bad Origin" });
-  }
-
-  next();
-}
-
-// ✅ Auth guard
+//Auth guard
 function requireAdmin(req, res, next) {
   if (!req.session?.loggedIn) return res.status(403).json({ error: "Unauthorized" });
   next();
 }
 
-// ✅ Strict index parsing (prevents weird keys like "__proto__")
+//Strict index parsing (prevents weird keys like "__proto__")
 function parseIndex(val) {
   const i = Number(val);
   if (!Number.isInteger(i) || i < 0) return null;
   return i;
 }
 
-// ✅ Basic string length limits to prevent abuse / huge payloads
+//Basic string length limits to prevent abuse / huge payloads
 function clampString(val, maxLen) {
   if (val === null || val === undefined) return null;
   const s = String(val);
   return s.length > maxLen ? s.slice(0, maxLen) : s;
 }
 
-/* ======================================================
-   ✅ TRUSTED DEVICE (Remember for 30 days)
-====================================================== */
+/* TRUSTED DEVICE (Remember for 30 days) */
 
 if (!process.env.ADMIN_TOTP_SECRET) {
   throw new Error("❌ ADMIN_TOTP_SECRET is missing. Refusing to start for safety.");
@@ -143,9 +103,7 @@ function cleanupExpiredDevices(data) {
 }
 
 
-/* ======================================================
-   ✅ UPLOAD HARDENING (EVENTS + FACULTY)
-====================================================== */
+/*  UPLOAD HARDENING (EVENTS + FACULTY) */
 
 const ALLOWED_IMAGE_MIME = new Set([
   "image/jpeg",
@@ -155,7 +113,7 @@ const ALLOWED_IMAGE_MIME = new Set([
 ]);
 
 function imageFileFilter(req, file, cb) {
-  // ✅ Block SVG (common XSS vector if served as image/svg+xml)
+  //Block SVG (common XSS vector if served as image/svg+xml)
   if (file.mimetype === "image/svg+xml") {
     return cb(new Error("SVG uploads are not allowed."), false);
   }
@@ -172,9 +130,7 @@ function safeRandomFilename(originalname) {
   return `${unique}${safeExt}`;
 }
 
-/* ------------------------------------------------------
-   🏠 Admin Login Page
------------------------------------------------------- */
+/* 🏠 Admin Login Page */
 router.get("/login", (req, res) => {
   if (req.session.loggedIn) {
     return res.redirect("/admin/dashboard");
@@ -182,13 +138,11 @@ router.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "../../public/html/school/admin.html"));
 });
 
-/* ------------------------------------------------------
-   🔐 Handle Login (Password + 2FA + Remember Device)
------------------------------------------------------- */
+/* Handle Login (Password + 2FA + Remember Device) */
 router.post("/login", loginLimiter, (req, res) => {
   const { password, token, rememberDevice } = req.body;
 
-  // ✅ 1) Check if this browser is already trusted
+  // 1) Check if this browser is already trusted
   let deviceTrusted = false;
   const trustedCookie = req.cookies?.ml_trusted;
 
@@ -204,10 +158,10 @@ router.post("/login", loginLimiter, (req, res) => {
     }
   }
 
-  // ✅ 2) Password check
+  // 2) Password check
   const passwordOk = timingSafeEqualString(password, ADMIN_PASSWORD);
 
-  // ✅ 3) 2FA check (skip if trusted)
+  // 3) 2FA check (skip if trusted)
   const tokenOk = deviceTrusted
     ? true
     : speakeasy.totp.verify({
@@ -224,7 +178,7 @@ router.post("/login", loginLimiter, (req, res) => {
       req.session.loggedIn = true;
       req.session.isAdmin = true;
 
-      // ✅ 4) If they checked "Remember this device", set 30-day trusted cookie
+      //4) If they checked "Remember this device", set 30-day trusted cookie
       if (rememberDevice && !deviceTrusted) {
         const rawToken = crypto.randomBytes(32).toString("hex");
         const hashed = hashToken(rawToken);
@@ -249,7 +203,7 @@ router.post("/login", loginLimiter, (req, res) => {
     });
   }
 
-  // ✅ generic error (don’t reveal if password or token was wrong)
+  //eneric error 
   const errorHTML = `
 <!DOCTYPE html>
 <html lang="en">
@@ -297,7 +251,7 @@ router.post("/login", loginLimiter, (req, res) => {
             required
           />
 
-          <!-- ✅ add checkbox here too, otherwise it disappears on error -->
+          <!-- add checkbox here too, otherwise it disappears on error -->
           <label class="remember-device">
             <input type="checkbox" name="rememberDevice" />
             Remember this device for 30 days
@@ -321,9 +275,7 @@ router.post("/login", loginLimiter, (req, res) => {
 
   return res.status(401).send(errorHTML);
 });
-/* ------------------------------------------------------
-   🧩 Protected Dashboard
------------------------------------------------------- */
+/* Protected Dashboard */
 router.get("/dashboard", (req, res) => {
   if (!req.session.loggedIn) return res.redirect("/admin/login");
 
@@ -336,9 +288,7 @@ router.get("/dashboard", (req, res) => {
   );
 });
 
-/* ------------------------------------------------------
-   🚪 Logout (POST) — for fetch() / idle timeout
------------------------------------------------------- */
+/* Logout (POST) — for fetch() / idle timeout */
 router.post("/logout", (req, res) => {
   const done = () => {
     // clear session cookie (your session name is ml.sid)
@@ -360,29 +310,24 @@ router.post("/logout", (req, res) => {
 
   req.session.destroy(() => done());
 });
-/* ------------------------------------------------------
-   🧠 Session Check Endpoint
------------------------------------------------------- */
+/* Session Check Endpoint */
 router.get("/check", (req, res) => {
   res.json({ loggedIn: !!req.session.loggedIn });
 });
 
-/* ------------------------------------------------------
-   🧩 Update Event Title/Date/Image/Notes
------------------------------------------------------- */
+/* Update Event Title/Date/Image/Notes*/
 router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
   const filePath = path.resolve(process.cwd(), "server/content/events.json");
 
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
 
-  // ✅ Allow empty strings if you ever want to clear a field.
-  // clampString() returns null for empty string, so for notes we handle separately.
+  //Allow empty strings if you ever want to clear a field.
   const title = clampString(req.body?.title, 120);
   const date = clampString(req.body?.date, 80);
   const image = clampString(req.body?.image, 300);
 
-  // ✅ NEW: Notes can be long and can be empty; keep it exactly as sent
+  //Notes can be long and can be empty; keep it exactly as sent
   let notes = req.body?.notes;
   if (notes !== undefined) {
     notes = String(notes).replace(/\r\n/g, "\n"); // normalize newlines
@@ -390,7 +335,7 @@ router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
     if (notes.length > 12000) notes = notes.slice(0, 12000);
   }
 
-  // ✅ If image is provided, force it to be site-relative under /images/
+  //If image is provided, force it to be site-relative under /images/
   if (image && !image.startsWith("/images/")) {
     return res.status(400).json({ error: "Invalid image path" });
   }
@@ -405,12 +350,12 @@ router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
       return res.status(404).json({ error: "Event not found" });
     }
 
-    // ✅ only update fields that were actually provided
+    //only update fields that were actually provided
     if (title !== null) data.events[i].title = title;
     if (date !== null) data.events[i].date = date;
     if (image !== null) data.events[i].image = image;
 
-    // ✅ NEW: save notes (even if empty string)
+    //save notes (even if empty string)
     if (notes !== undefined) data.events[i].notes = notes;
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
@@ -422,9 +367,7 @@ router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
 });
 
 
-/* ------------------------------------------------------
-   📸 Upload Event Image
------------------------------------------------------- */
+/* -Upload Event Image */
 const uploadDir = path.resolve(process.cwd(), "public/images/events");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -436,7 +379,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 3 * 1024 * 1024 }, // ✅ 3MB
+  limits: { fileSize: 3 * 1024 * 1024 }, //3MB
 });
 
 router.post(
@@ -452,6 +395,11 @@ router.post(
     const filePath = path.resolve(process.cwd(), "server/content/events.json");
 
     try {
+      if (!hasValidImageSignature(req.file.path, req.file.mimetype)) {
+        try { fs.unlinkSync(req.file.path); } catch {}
+        return res.status(400).json({ error: "Invalid image content" });
+      }
+
       const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
       if (!Array.isArray(data.events) || !data.events[i]) {
         return res.status(404).json({ error: "Event not found" });
@@ -468,9 +416,7 @@ router.post(
   }
 );
 
-/* ------------------------------------------------------
-   📥 Serve events.json for homepage
------------------------------------------------------- */
+/*Serve events.json for homepage */
 router.get("/events.json", (req, res) => {
   const filePath = path.resolve(process.cwd(), "server/content/events.json");
 
@@ -488,9 +434,7 @@ router.get("/events.json", (req, res) => {
   }
 });
 
-/* ======================================================
-   📚📚📚  FACULTY SYSTEM
-====================================================== */
+/*FACULTY SYSTEM*/
 
 const facultyFilePath = path.resolve(process.cwd(), "server/content/faculty.json");
 
@@ -503,13 +447,13 @@ function readFacultyFile() {
         image: "/images/PlaceHolder.jpg",
       },
 
-      // ⭐ ADMIN
+      
       admin: [],
 
-      // ⭐ FACULTY (TEACHERS)
+      
       teachers: [],
 
-      // ⭐ STAFF (NEW)
+     
       staff: [],
     };
     fs.writeFileSync(facultyFilePath, JSON.stringify(defaultData, null, 2));
@@ -522,9 +466,7 @@ function writeFacultyFile(data) {
   fs.writeFileSync(facultyFilePath, JSON.stringify(data, null, 2));
 }
 
-/* ------------------------------------------------------
-   📤 Serve faculty.json
------------------------------------------------------- */
+/*Serve faculty.json */
 router.get("/faculty.json", (req, res) => {
   try {
     const data = readFacultyFile();
@@ -535,9 +477,7 @@ router.get("/faculty.json", (req, res) => {
   }
 });
 
-/* ------------------------------------------------------
-   ➕ Add Teacher
------------------------------------------------------- */
+/* Add Teacher */
 router.post("/faculty/add", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const data = readFacultyFile();
@@ -561,9 +501,7 @@ router.post("/faculty/add", requireSameOrigin, requireAdmin, (req, res) => {
   }
 });
 
-/* ------------------------------------------------------
-   🔀 Reorder Events (drag & drop)
------------------------------------------------------- */
+/* Reorder Events (drag & drop)*/
 router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
   const filePath = path.resolve(process.cwd(), "server/content/events.json");
 
@@ -608,9 +546,7 @@ router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
 });
 
 
-/* ------------------------------------------------------
-   ⭐ ADD ADMIN MEMBER
------------------------------------------------------- */
+/* ADD ADMIN MEMBER */
 router.post("/faculty/add-admin", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const data = readFacultyFile();
@@ -635,9 +571,7 @@ router.post("/faculty/add-admin", requireSameOrigin, requireAdmin, (req, res) =>
   }
 });
 
-/* ------------------------------------------------------
-   ⭐ ADD STAFF MEMBER (NEW)
------------------------------------------------------- */
+/* ADD STAFF MEMBER (NEW) */
 router.post("/faculty/add-staff", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const data = readFacultyFile();
@@ -662,16 +596,14 @@ router.post("/faculty/add-staff", requireSameOrigin, requireAdmin, (req, res) =>
   }
 });
 
-/* ------------------------------------------------------
-   ✏️ Update Teacher / Principal / Staff
------------------------------------------------------- */
+/* Update Teacher / Principal / Staff*/
 router.post("/faculty/update", requireSameOrigin, requireAdmin, (req, res) => {
   const role = String(req.body?.role || "");
   const name = clampString(req.body?.name, 120);
   const subject = clampString(req.body?.subject, 120);
   const image = clampString(req.body?.image, 300);
 
-  // ✅ Only allow site-relative image paths under /images/
+  //Only allow site-relative image paths under /images/
   if (image && !image.startsWith("/images/")) {
     return res.status(400).json({ error: "Invalid image path" });
   }
@@ -731,9 +663,7 @@ router.post("/faculty/update", requireSameOrigin, requireAdmin, (req, res) => {
   }
 });
 
-/* ------------------------------------------------------
-   ⭐ UPDATE ADMIN MEMBER
------------------------------------------------------- */
+/* UPDATE ADMIN MEMBER*/
 router.post("/faculty/update-admin", requireSameOrigin, requireAdmin, (req, res) => {
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
@@ -762,9 +692,7 @@ router.post("/faculty/update-admin", requireSameOrigin, requireAdmin, (req, res)
   }
 });
 
-/* ------------------------------------------------------
-   ❌ DELETE TEACHER
------------------------------------------------------- */
+/*DELETE TEACHER */
 router.post("/faculty/delete", requireSameOrigin, requireAdmin, (req, res) => {
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
@@ -782,9 +710,7 @@ router.post("/faculty/delete", requireSameOrigin, requireAdmin, (req, res) => {
   }
 });
 
-/* ------------------------------------------------------
-   ⭐ DELETE ADMIN MEMBER
------------------------------------------------------- */
+/* DELETE ADMIN MEMBER*/
 router.post("/faculty/delete-admin", requireSameOrigin, requireAdmin, (req, res) => {
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
@@ -802,9 +728,7 @@ router.post("/faculty/delete-admin", requireSameOrigin, requireAdmin, (req, res)
   }
 });
 
-/* ------------------------------------------------------
-   ⭐ DELETE STAFF MEMBER (NEW)
------------------------------------------------------- */
+/* DELETE STAFF MEMBER (NEW) */
 router.post("/faculty/delete-staff", requireSameOrigin, requireAdmin, (req, res) => {
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
@@ -822,9 +746,7 @@ router.post("/faculty/delete-staff", requireSameOrigin, requireAdmin, (req, res)
   }
 });
 
-/* ------------------------------------------------------
-   📸 Faculty image upload
------------------------------------------------------- */
+/* Faculty image upload */
 const facultyUploadDir = path.resolve(process.cwd(), "public/images/faculty");
 if (!fs.existsSync(facultyUploadDir))
   fs.mkdirSync(facultyUploadDir, { recursive: true });
@@ -837,7 +759,7 @@ const facultyStorage = multer.diskStorage({
 const uploadFaculty = multer({
   storage: facultyStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 3 * 1024 * 1024 }, // ✅ 3MB
+  limits: { fileSize: 3 * 1024 * 1024 }, //3MB
 });
 
 router.post(
@@ -855,6 +777,11 @@ router.post(
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
     try {
+      if (!hasValidImageSignature(req.file.path, req.file.mimetype)) {
+        try { fs.unlinkSync(req.file.path); } catch {}
+        return res.status(400).json({ error: "Invalid image content" });
+      }
+
       const data = readFacultyFile();
       const rel = `/images/faculty/${req.file.filename}`;
 
@@ -921,9 +848,7 @@ function normalizeSuggestion(body) {
   return { page: page.trim(), changeType, fromText, toText, description };
 }
 
-/* ------------------------------------------------------
-   ✅ GET /admin/suggestions  (admin-only)
------------------------------------------------------- */
+/* GET /admin/suggestions  (admin-only)*/
 router.get("/suggestions", requireAdmin, (req, res) => {
   try {
     res.set("Cache-Control", "no-store");
@@ -945,9 +870,7 @@ router.get("/suggestions", requireAdmin, (req, res) => {
   }
 });
 
-/* ------------------------------------------------------
-   ✅ PATCH /admin/suggestions/:id  (status: new / in_progress / done)
------------------------------------------------------- */
+/*  PATCH /admin/suggestions/:id  (status: new / in_progress / done) */
 router.patch("/suggestions/:id", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -967,9 +890,7 @@ router.patch("/suggestions/:id", requireSameOrigin, requireAdmin, (req, res) => 
   }
 });
 
-/* ------------------------------------------------------
-   ✅ DELETE /admin/suggestions/:id
------------------------------------------------------- */
+/* DELETE /admin/suggestions/:id*/
 router.delete("/suggestions/:id", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -985,9 +906,7 @@ router.delete("/suggestions/:id", requireSameOrigin, requireAdmin, (req, res) =>
   }
 });
 
-/* ------------------------------------------------------
-   ✅ POST /admin/suggestions  (admin-only)
------------------------------------------------------- */
+/* /admin/suggestions  (admin-only)*/
 router.post("/suggestions", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const cleaned = normalizeSuggestion(req.body);

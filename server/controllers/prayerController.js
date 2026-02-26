@@ -24,13 +24,18 @@ const transporter =
       })
     : null;
 
-// ✅ Simple CRLF strip to prevent header injection attempts
+//Simple CRLF strip to prevent header injection attempts
 function stripCRLF(value) {
   return String(value ?? "").replace(/[\r\n]+/g, " ").trim();
 }
 
+function isValidEmail(value) {
+  const v = String(value ?? "").trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
 export const sendPrayerRequest = async (req, res) => {
-  // ✅ Don’t log full body (contains sensitive prayer text). Log minimal metadata.
+  //Don’t log full body (contains sensitive prayer text). Log minimal metadata.
   console.log("📩 Prayer request hit:", {
     ip: req.ip,
     hasBody: !!req.body,
@@ -44,7 +49,7 @@ export const sendPrayerRequest = async (req, res) => {
 
   const { name, email, prayer, share } = req.body;
 
-  // ✅ Fail closed if email isn't configured
+  //Fail closed if email isn't configured
   if (!smtpUser || !smtpPass || !transporter) {
     return res
       .status(500)
@@ -63,11 +68,12 @@ export const sendPrayerRequest = async (req, res) => {
     const safeShare = stripCRLF(share);
 
     const subject = `🙏 New Prayer Request from ${safeName || "Visitor"}`;
+    const replyTo = isValidEmail(safeEmail) ? safeEmail : undefined;
 
     await transporter.sendMail({
       from: `"ML Prayer Request" <${smtpUser}>`,
       to: prayerTo,
-      replyTo: safeEmail, // ✅ stripped of CR/LF defensively
+      ...(replyTo ? { replyTo } : {}),
       subject: stripCRLF(subject),
       text: `
 New Prayer Request Submitted:
@@ -84,7 +90,7 @@ ${String(prayer ?? "").trim()}
     console.log("✅ Prayer request sent successfully!");
     return res.json({ ok: true });
   } catch (err) {
-    console.error("💥 Prayer request error:", err);
+    console.error("💥 Prayer request error:", err?.message || err);
     return res
       .status(500)
       .json({ ok: false, error: "Failed to send prayer request." });

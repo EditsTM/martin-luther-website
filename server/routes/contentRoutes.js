@@ -1,9 +1,9 @@
-// ✅ server/routes/contentRoutes.js
+//server/routes/contentRoutes.js
 import express from "express";
 import path from "path";
-import fs from "fs";
 import { promises as fsp } from "fs";
 import { fileURLToPath } from "url";
+import { enforceTrustedOrigin } from "../middleware/requestSecurity.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -11,30 +11,9 @@ const __dirname = path.dirname(__filename);
 
 const EVENTS_PATH = path.join(__dirname, "../content/events.json");
 
-// ✅ Allow only same-origin requests for admin POST (helps against CSRF)
-// (Still works for your normal site/admin calls)
-function requireSameOrigin(req, res, next) {
-  const origin = req.get("origin");
-  const host = req.get("host");
+const requireSameOrigin = enforceTrustedOrigin({ allowNoOrigin: false });
 
-  // If no Origin header (some non-browser clients), allow.
-  if (!origin) return next();
-
-  let originHost;
-  try {
-    originHost = new URL(origin).host;
-  } catch {
-    return res.status(403).json({ error: "Bad origin" });
-  }
-
-  if (originHost !== host) {
-    return res.status(403).json({ error: "Cross-site request blocked" });
-  }
-
-  return next();
-}
-
-// ✅ Minimal schema-ish validation to prevent saving garbage / huge content
+//Minimal schema-ish validation to prevent saving garbage / huge content
 function validateEventsPayload(req, res, next) {
   const body = req.body;
 
@@ -48,7 +27,7 @@ function validateEventsPayload(req, res, next) {
     return res.status(400).json({ error: "Invalid events format" });
   }
 
-  // ✅ Prevent very large saves (DoS-ish) without changing your functionality
+  //Prevent very large saves (DoS-ish) without changing your functionality
   // (If you have bigger files, bump this number)
   const jsonString = JSON.stringify(body);
   const MAX_BYTES = 200 * 1024; // 200KB

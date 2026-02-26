@@ -6,7 +6,10 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+    "dev": "nodemon server/server.js",
+    "security:check": "node scripts/security-check.mjs",
+    "security:audit": "npm audit --omit=dev --json",
+    "security:full": "npm run security:check && npm run security:audit"
   },
   "keywords": [
     "express",

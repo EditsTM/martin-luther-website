@@ -6,10 +6,10 @@ const smtpUser = process.env.SMTP_USER;
 const smtpPass = process.env.SMTP_PASS;
 const contactTo = process.env.CONTACT_TO;
 
-// ✅ Optional safe debug flag (NEVER logs secrets)
+//Optional safe debug flag 
 const DEBUG_EMAIL = process.env.NODE_ENV !== "production" && process.env.DEBUG_EMAIL === "true";
 
-// ✅ Log only safe configuration status (no values)
+//Log only safe configuration status (no values)
 if (DEBUG_EMAIL) {
   console.log("📧 Email config status:", {
     hasSmtpUser: !!smtpUser,
@@ -27,10 +27,10 @@ if (!contactTo) {
   console.error("❌ Missing CONTACT_TO in env (contact).");
 }
 
-// ✅ Create transporter once (reuse)
+//Create transporter once (reuse)
 const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
 const smtpPort = Number(process.env.SMTP_PORT) || 465;
-// ✅ secure should typically be true for 465, false for 587
+//secure should typically be true for 465, false for 587
 const smtpSecure =
   process.env.SMTP_SECURE != null ? process.env.SMTP_SECURE === "true" : smtpPort === 465;
 
@@ -44,19 +44,19 @@ const transporter =
       })
     : null;
 
-// ✅ Simple CRLF strip to prevent header injection attempts
+//Simple CRLF strip to prevent header injection attempts
 function stripCRLF(value) {
   return String(value ?? "").replace(/[\r\n]+/g, " ").trim();
 }
 
-// ✅ Basic email format check (keeps replyTo safe/valid)
+//Basic email format check (keeps replyTo safe/valid)
 function isValidEmail(value) {
   const v = String(value ?? "").trim();
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
 export const sendContactEmail = async (req, res) => {
-  // ✅ Don’t log full body (contains PII). Log minimal metadata.
+  //Don’t log full body (contains PII). Log minimal metadata.
   console.log("📨 Contact form hit:", {
     ip: req.ip,
     hasBody: !!req.body,
@@ -70,7 +70,7 @@ export const sendContactEmail = async (req, res) => {
 
   const { firstName, lastName, email, phone, reason, message } = req.body;
 
-  // ✅ Fail closed if email isn't configured
+  //Fail closed if email isn't configured
   if (!smtpUser || !smtpPass || !transporter) {
     return res.status(500).json({
       ok: false,
@@ -95,7 +95,7 @@ export const sendContactEmail = async (req, res) => {
     const fullName = [safeFirst, safeLast].filter(Boolean).join(" ").trim();
     const subject = `📬 New Contact Message from ${fullName || "Visitor"}`;
 
-    // ✅ Only set replyTo if it's a valid email
+    //Only set replyTo if it's a valid email
     const replyTo = isValidEmail(safeEmail) ? safeEmail : undefined;
 
     await transporter.sendMail({
@@ -116,10 +116,10 @@ ${String(message ?? "").trim()}
       `.trim(),
     });
 
-    console.log("✅ Contact email sent successfully.");
+    console.log("Contact email sent successfully.");
     return res.json({ ok: true });
   } catch (err) {
-    // ✅ Avoid dumping full objects that might include request data
+    //Avoid dumping full objects that might include request data
     console.error("💥 Contact email error:", err?.message || err);
     return res.status(500).json({ ok: false, error: "Failed to send message." });
   }

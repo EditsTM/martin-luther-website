@@ -1,4 +1,4 @@
-// ✅ public/js/header.js
+//public/js/header.js
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const headerEl = document.getElementById("header");
@@ -88,7 +88,7 @@ function setupDropdownMenu() {
       }, 150);
     });
 
-    /* ---------- 📱 MOBILE TAP LOGIC ---------- */
+    /* ---------- MOBILE TAP LOGIC ---------- */
     if (trigger) {
       let tappedOnce = false;
 

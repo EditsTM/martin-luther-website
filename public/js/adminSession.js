@@ -1,5 +1,5 @@
-// ✅ public/js/adminSession.js
-// 🕒 Auto logout after 15 minutes of inactivity
+//public/js/adminSession.js
+//Auto logout after 15 minutes of inactivity
 const IDLE_LIMIT = 15 * 60 * 1000; // 15 minutes
 let idleTimer;
 
