@@ -71,7 +71,7 @@ if (container) {
       const validEvents = events.filter((ev) => {
         const title = String(ev.title ?? "").trim();
         const image = String(ev.image ?? "").trim();
-        return title !== "" && image !== "";
+        return title !== "" || image !== "";
       });
 
       // Show up to the first 3 valid events in events-page order.
