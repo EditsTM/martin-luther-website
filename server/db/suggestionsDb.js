@@ -333,8 +333,55 @@ function seedTeamFromJsonIfNeeded() {
   tx(rows);
 }
 
+function seedEventsFromJsonIfNeeded() {
+  const count = db.prepare("SELECT COUNT(*) AS count FROM events").get()?.count ?? 0;
+  if (Number(count) > 0) return;
+
+  const eventsSeedPath = path.resolve(process.cwd(), "server/content/events.seed.json");
+  if (!fs.existsSync(eventsSeedPath)) return;
+
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(eventsSeedPath, "utf8"));
+  } catch {
+    return;
+  }
+
+  const rows = (Array.isArray(raw?.events) ? raw.events : [])
+    .map((x, idx) => ({
+      title: String(x?.title ?? ""),
+      date: String(x?.date ?? ""),
+      description: String(x?.description ?? ""),
+      image: String(x?.image ?? ""),
+      notes: String(x?.notes ?? ""),
+      sortOrder: idx,
+    }))
+    .filter(
+      (x) =>
+        x.title.trim() ||
+        x.date.trim() ||
+        x.description.trim() ||
+        x.image.trim() ||
+        x.notes.trim()
+    );
+
+  if (!rows.length) return;
+
+  const insert = db.prepare(
+    `
+    INSERT INTO events (title, date, description, image, notes, sortOrder, updatedAt)
+    VALUES (@title, @date, @description, @image, @notes, @sortOrder, datetime('now'))
+  `
+  );
+  const tx = db.transaction((items) => {
+    items.forEach((row) => insert.run(row));
+  });
+  tx(rows);
+}
+
 seedFacultyFromJsonIfNeeded();
 seedTeamFromJsonIfNeeded();
+seedEventsFromJsonIfNeeded();
 
 db.prepare(
   `

@@ -4,6 +4,18 @@
  */
 // public/js/eventsLoader.js
 document.addEventListener("DOMContentLoaded", async () => {
+  const grid = document.getElementById("events-grid");
+  if (!grid) return;
+
+  const renderMessage = (message) => {
+    grid.innerHTML = `
+      <section style="padding:40px 20px; text-align:center; width:100%;">
+        <h2 style="margin:0 0 10px 0; color:#000;">Events</h2>
+        <p style="margin:0; color:#333;">${message}</p>
+      </section>
+    `;
+  };
+
   try {
     const escapeHTML = (v) =>
       String(v ?? "")
@@ -20,26 +32,34 @@ document.addEventListener("DOMContentLoaded", async () => {
       return String(el.value ?? "").replace(/\r\n/g, "\n"); // normalize newlines
     };
 
-    //Check admin session
-    const sessionRes = await fetch("/admin/check", {
-      cache: "no-store",
-      credentials: "same-origin",
-    });
-    const sessionData = await sessionRes.json();
-    const isAdmin = sessionData.loggedIn === true;
+    //Check admin session, but do not fail page rendering if this endpoint errors.
+    let isAdmin = false;
+    try {
+      const sessionRes = await fetch("/admin/check", {
+        cache: "no-store",
+        credentials: "same-origin",
+      });
+      if (sessionRes.ok) {
+        const sessionData = await sessionRes.json();
+        isAdmin = sessionData.loggedIn === true;
+      }
+    } catch {
+      isAdmin = false;
+    }
 
     //Load events.json
     const res = await fetch("/content/events.json", {
       cache: "no-store",
       credentials: "same-origin",
     });
-    if (!res.ok) throw new Error("Failed to load events.json");
+    if (!res.ok) throw new Error(`Failed to load events.json (${res.status})`);
     const data = await res.json();
 
-    const grid = document.getElementById("events-grid");
-    if (!grid) return;
-
     const events = Array.isArray(data.events) ? data.events : [];
+    if (!events.length) {
+      renderMessage("No events are available yet. Please check back soon.");
+      return;
+    }
 
     //Modal elements (added in events.html below)
     const modalOverlay = document.getElementById("eventModalOverlay");
@@ -485,5 +505,6 @@ if (isAdmin) {
     }
   } catch (err) {
     console.error("[ERROR] Error loading events:", err);
+    renderMessage("Unable to load events right now. Please try again shortly.");
   }
 });
