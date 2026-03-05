@@ -68,23 +68,23 @@ if (container) {
     .then((data) => {
       const events = Array.isArray(data.events) ? data.events : [];
 
-      //Keep events if they have AT LEAST a title OR date OR image
+      // Keep events only if they have BOTH a title and an image.
       const validEvents = events.filter((ev) => {
         const title = String(ev.title ?? "").trim();
-        const date = String(ev.date ?? "").trim();
         const image = String(ev.image ?? "").trim();
-
-        // Show it if ANY of these exist
-        return title !== "" || date !== "" || image !== "";
+        return title !== "" && image !== "";
       });
 
-      //Show only the first 3 valid events
+      // Show only the first 3 valid events (top of events order).
       const top3 = validEvents.slice(0, 3);
 
-      //If nothing valid exists, show nothing
-      if (top3.length === 0) {
-        container.replaceChildren();
-        return;
+      // Always render 3 cards on homepage.
+      while (top3.length < 3) {
+        top3.push({
+          title: "Event Coming Soon",
+          date: "",
+          image: "/images/Placeholder.jpg",
+        });
       }
 
       // Render cards with safe DOM APIs to avoid HTML injection.

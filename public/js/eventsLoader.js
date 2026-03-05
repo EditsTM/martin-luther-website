@@ -5,6 +5,7 @@
 // public/js/eventsLoader.js
 document.addEventListener("DOMContentLoaded", async () => {
   const grid = document.getElementById("events-grid");
+  const addEventBtn = document.getElementById("add-event-btn");
   if (!grid) return;
 
   const renderMessage = (message) => {
@@ -47,6 +48,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       isAdmin = false;
     }
 
+    if (isAdmin) {
+      document.body.classList.add("admin-mode");
+      if (addEventBtn) {
+        addEventBtn.addEventListener("click", async () => {
+          try {
+            const addRes = await fetch("/admin/add-event", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "same-origin",
+              body: JSON.stringify({}),
+            });
+
+            const addData = await addRes.json();
+            if (!addData.success) {
+              throw new Error(addData.error || "Failed to add event");
+            }
+
+            location.reload();
+          } catch (err) {
+            console.error(err);
+            alert("[ERROR] Failed to add event.");
+          }
+        });
+      }
+    }
+
     //Load events.json
     const res = await fetch("/content/events.json", {
       cache: "no-store",
@@ -56,10 +83,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await res.json();
 
     const events = Array.isArray(data.events) ? data.events : [];
-    if (!events.length) {
-      renderMessage("No events are available yet. Please check back soon.");
-      return;
-    }
 
     //Modal elements (added in events.html below)
     const modalOverlay = document.getElementById("eventModalOverlay");
@@ -281,8 +304,30 @@ if (modalRemovePhotoBtn) {
 
     // (Optional) Delete button – disabled by default
     if (modalDeleteBtn) {
-      modalDeleteBtn.addEventListener("click", () => {
-        alert("Delete isn’t wired for events yet (no delete endpoint).");
+      modalDeleteBtn.addEventListener("click", async () => {
+        try {
+          if (currentIndex === null) return;
+          if (!confirm("Delete this event?")) return;
+
+          const res = await fetch("/admin/delete-event", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ index: currentIndex }),
+          });
+
+          const result = await res.json();
+          if (!result.success) {
+            throw new Error(result.error || "Delete failed");
+          }
+
+          alert("[OK] Event deleted.");
+          closeModal();
+          location.reload();
+        } catch (err) {
+          console.error(err);
+          alert("[ERROR] Failed to delete event.");
+        }
       });
     }
 
@@ -359,6 +404,11 @@ if (modalRemovePhotoBtn) {
 
       })
       .join("");
+
+    if (!eventHTML) {
+      renderMessage("No events are available yet. Please check back soon.");
+      return;
+    }
 
     grid.innerHTML = eventHTML;
 

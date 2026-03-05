@@ -162,6 +162,36 @@
 }
 
 /* =============================
+   ADMIN ADD BUTTON
+============================= */
+.add-btn-wrapper{
+  display: none;
+  width: 100%;
+  max-width: 1200px;
+  margin: 14px auto 24px auto;
+  justify-content: center;
+}
+
+.add-event-btn{
+  display: inline-block;
+}
+
+body.admin-mode .add-btn-wrapper{
+  display: flex;
+}
+
+body.admin-mode .add-event-btn{
+  background: #ff9f45;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* =============================
    MODAL (matches screenshot)
 ============================= */
 .event-modal-overlay{

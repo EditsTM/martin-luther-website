@@ -503,6 +503,54 @@ router.get("/check", (req, res) => {
 });
 
 /* Update Event Title/Date/Image/Notes*/
+router.post("/add-event", requireSameOrigin, requireAdmin, (req, res) => {
+  try {
+    const countRow = db.prepare("SELECT COUNT(*) AS count FROM events").get();
+    const sortOrder = Number(countRow?.count || 0);
+
+    const created = db
+      .prepare(
+        `
+        INSERT INTO events (title, date, description, image, notes, sortOrder, updatedAt)
+        VALUES (@title, @date, @description, @image, @notes, @sortOrder, datetime('now'))
+      `
+      )
+      .run({
+        title: "",
+        date: "",
+        description: "",
+        image: "",
+        notes: "",
+        sortOrder,
+      });
+
+    return res.json({
+      success: true,
+      index: sortOrder,
+      id: Number(created.lastInsertRowid),
+    });
+  } catch (err) {
+    console.error("add-event failed:", err);
+    return res.status(500).json({ error: "Failed to add event" });
+  }
+});
+
+router.post("/delete-event", requireSameOrigin, requireAdmin, (req, res) => {
+  const i = parseIndex(req.body?.index);
+  if (i === null) return res.status(400).json({ error: "Invalid index" });
+
+  try {
+    const eventId = getEventIdByIndex(i);
+    if (!eventId) return res.status(404).json({ error: "Event not found" });
+
+    db.prepare("DELETE FROM events WHERE id = ?").run(eventId);
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("delete-event failed:", err);
+    return res.status(500).json({ error: "Failed to delete event" });
+  }
+});
+
 router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
