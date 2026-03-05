@@ -2,6 +2,7 @@
  * File: public\css\header.css
  * Purpose: Defines presentation styles for the header interface.
  */
+@import url('/css/site.css');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
 /* Prevent header/footer pop-in while they load */

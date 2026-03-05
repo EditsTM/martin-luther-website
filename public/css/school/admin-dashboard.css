@@ -235,6 +235,17 @@ body{
 
 .field-group.is-hidden{ display:none; }
 
+.footer-time-form{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-time-form__actions{
+  display: flex;
+  justify-content: flex-end;
+}
+
 .modal__footer{
   display:flex;
   justify-content:flex-end;

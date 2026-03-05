@@ -34,6 +34,7 @@
         <button class="admin-nav__item is-active" data-view="faculty" type="button">Manage Faculty</button>
         <button class="admin-nav__item" data-view="pastors" type="button">Manage Pastors</button>
         <button class="admin-nav__item" data-view="events" type="button">Manage Events</button>
+        <button class="admin-nav__item" data-view="service-times" type="button">Manage Service Times</button>
         <button class="admin-nav__item" data-view="suggestions" type="button">Suggest Improvements</button>
 
         <button class="admin-nav__item admin-nav__item--logout" id="logoutBtn" type="button">
@@ -52,6 +53,34 @@
 
   <!-- EVENTS VIEW -->
   <div class="admin-view" id="view-events"></div>
+
+  <!-- SERVICE TIMES VIEW -->
+  <div class="admin-view" id="view-service-times">
+    <div class="panel">
+      <div class="panel__header">
+        <h2 class="panel__title">Manage Footer Time</h2>
+      </div>
+      <div class="panel__body">
+        <form id="footerTimeForm" class="footer-time-form">
+          <label class="field">
+            <span class="field__label">Small Note</span>
+            <input id="footerTimeNote" type="text" maxlength="200" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Line 1</span>
+            <input id="footerTimeLineOne" type="text" maxlength="120" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Line 2</span>
+            <input id="footerTimeLineTwo" type="text" maxlength="120" required />
+          </label>
+          <div class="footer-time-form__actions">
+            <button class="btn btn--primary" type="submit">Save Footer Time</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- SUGGESTIONS VIEW -->
   <div class="admin-view" id="view-suggestions">

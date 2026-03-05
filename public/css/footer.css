@@ -76,6 +76,12 @@
   text-align: center;
 }
 
+.footer-service-time-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .footer-column h3 {
   font-size: 23px;
   margin-bottom: 8px;

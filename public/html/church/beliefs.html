@@ -83,7 +83,7 @@
 
       <!-- CAROUSEL -->
       <div class="carousel">
-        <button class="carousel__arrow carousel__arrow--prev" aria-label="Previous">&#10094;</button>
+        <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Previous">&#10094;</button>
 
         <div class="carousel__viewport">
           <ul class="carousel__track">
@@ -151,12 +151,12 @@
           </ul>
         </div>
 
-        <button class="carousel__arrow carousel__arrow--next" aria-label="Next">&#10095;</button>
+        <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Next">&#10095;</button>
       </div>
 
       <!-- Expand Button BELOW -->
       <div class="expand-btn-wrapper">
-        <button id="expandToggle" class="expand-toggle">Expand All</button>
+        <button id="expandToggle" class="expand-toggle" type="button">Expand All</button>
       </div>
     </section>
   </main>
@@ -169,75 +169,6 @@
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>
   <script src="/js/reveal.js"></script>
-
-  <!-- Carousel JS -->
-  <script>
-    (function () {
-      const track = document.querySelector('.carousel__track');
-      const prevBtn = document.querySelector('.carousel__arrow--prev');
-      const nextBtn = document.querySelector('.carousel__arrow--next');
-      const cards = Array.from(document.querySelectorAll('.belief-card'));
-      let index = 0;
-
-      function perView() {
-        if (window.matchMedia('(max-width: 680px)').matches) return 1;
-        if (window.matchMedia('(max-width: 1024px)').matches) return 2;
-        return 3;
-      }
-
-      function update() {
-        const styles = getComputedStyle(track);
-        const gap = parseFloat(styles.columnGap || styles.gap) || 24;
-        const visible = perView();
-        const cardWidth = cards[0].getBoundingClientRect().width;
-        const offset = index * (cardWidth + gap);
-        track.style.transform = `translateX(-${offset}px)`;
-        prevBtn.disabled = index === 0;
-        nextBtn.disabled = index >= cards.length - visible;
-      }
-
-      nextBtn.addEventListener('click', () => {
-        const visible = perView();
-        if (index < cards.length - visible) index++;
-        update();
-      });
-
-      prevBtn.addEventListener('click', () => {
-        if (index > 0) index--;
-        update();
-      });
-
-      window.addEventListener('resize', update);
-      window.requestAnimationFrame(update);
-    })();
-  </script>
-
-  <!-- Expand / Collapse Script -->
-  <script>
-    (function () {
-      const toggleBtn = document.getElementById('expandToggle');
-      const carousel = document.querySelector('.carousel');
-      let expanded = false;
-
-      toggleBtn.addEventListener('click', () => {
-        expanded = !expanded;
-        carousel.classList.toggle('expanded', expanded);
-        toggleBtn.textContent = expanded ? 'Collapse' : 'Expand All';
-      });
-    })();
-
-    // [OK] Tab switching logic (still safe with 1 tab)
-    document.querySelectorAll('.tab-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const tab = button.getAttribute('data-tab');
-
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-        button.classList.add('active');
-        document.getElementById(tab).classList.add('active');
-      });
-    });
-  </script>
+  <script src="/js/beliefs.js"></script>
 </body>
 </html>

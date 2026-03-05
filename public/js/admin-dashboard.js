@@ -30,6 +30,11 @@ function showView(name) {
     setPreview("/html/school/faculty.html");
   } else if (name === "pastors") {
     setPreview("/html/church/team.html");
+  } else if (name === "service-times") {
+    setPreview("/html/church/time.html");
+    loadFooterTime().catch((err) => {
+      console.error(err);
+    });
   } else if (name === "suggestions") {
     // Hide preview completely for Suggestions
     previewPanel?.classList.add("is-hidden");
@@ -75,9 +80,14 @@ const suggestionForm = document.getElementById("suggestionForm");
 const changeType = document.getElementById("changeType");
 const wordingFields = document.getElementById("wordingFields");
 const descriptionField = document.getElementById("descriptionField");
+const footerTimeForm = document.getElementById("footerTimeForm");
+const footerTimeNote = document.getElementById("footerTimeNote");
+const footerTimeLineOne = document.getElementById("footerTimeLineOne");
+const footerTimeLineTwo = document.getElementById("footerTimeLineTwo");
 
 let allOpen = false;
 let suggestionsCache = [];
+let footerTimeLoaded = false;
 
 function escapeHtml(str) {
   return String(str ?? "")
@@ -92,6 +102,22 @@ function statusLabel(status) {
   if (status === "in_progress") return "In progress";
   if (status === "done") return "Done";
   return "New";
+}
+
+async function loadFooterTime() {
+  if (!footerTimeForm || footerTimeLoaded) return;
+  const res = await fetch("/admin/footer-time", {
+    headers: { Accept: "application/json" },
+    credentials: "include",
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("Failed to load footer time");
+
+  const data = await res.json();
+  if (footerTimeNote) footerTimeNote.value = String(data.note || "");
+  if (footerTimeLineOne) footerTimeLineOne.value = String(data.lineOne || "");
+  if (footerTimeLineTwo) footerTimeLineTwo.value = String(data.lineTwo || "");
+  footerTimeLoaded = true;
 }
 
 function bellIconSvg() {
@@ -290,6 +316,31 @@ modalBackdrop?.addEventListener("click", (e) => {
 
 changeType?.addEventListener("change", applyConditionalFields);
 
+footerTimeForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    note: String(footerTimeNote?.value || "").trim(),
+    lineOne: String(footerTimeLineOne?.value || "").trim(),
+    lineTwo: String(footerTimeLineTwo?.value || "").trim(),
+  };
+
+  const res = await fetch("/admin/footer-time", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    alert("Could not save footer time.");
+    return;
+  }
+
+  alert("Footer time saved.");
+  setPreview("/html/church/time.html");
+});
+
 suggestionForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -330,6 +381,10 @@ suggestionForm?.addEventListener("submit", async (e) => {
 // Initial load behavior
 // -------------------------
 showView("faculty");
+
+loadFooterTime().catch((err) => {
+  console.error(err);
+});
 
 loadSuggestions().catch((err) => {
   console.error(err);

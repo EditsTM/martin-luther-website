@@ -6,37 +6,19 @@
    HERO SECTION - OUR BELIEFS
 ============================= */
 .beliefs-hero {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center 70%;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-position: center 70%;
 }
 
 .beliefs-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(30, 42, 87, 0.85); /* match Expectations overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--hero-overlay); /* match Expectations overlay */
   flex-direction: column;
   text-align: center;
   padding: 0 20px;
 }
 
 .beliefs-overlay h1 {
-  color: white;
   font-size: 50px;
   font-weight: 800;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
   text-transform: uppercase;
   margin-bottom: 12px;
 }

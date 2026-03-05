@@ -3,45 +3,15 @@
  * Purpose: Defines presentation styles for the member interface.
  */
 /* =============================
-   GLOBAL
-============================= */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
-
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  background-color: #fff;
-  color: #2c3e50;
-}
-
-/* =============================
    HERO
 ============================= */
-.member-hero {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .member-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--hero-overlay);
 }
 
 .member-overlay h1 {
-  color: white;
   font-size: 50px;
   font-weight: 700; /* match other page headers */
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
   text-transform: none; /* consistent with Expectations/Beliefs */
 }
 

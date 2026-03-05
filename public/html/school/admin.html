@@ -38,7 +38,25 @@
         <p>Sign in to manage website content</p>
 
             <form action="/admin/login" method="POST" class="login-form">
-              <input type="password" name="password" placeholder="Enter Password" required />
+              <div class="password-field">
+                <input
+                  id="admin-password"
+                  type="password"
+                  name="password"
+                  placeholder="Enter Password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  data-password-toggle
+                  data-target="admin-password"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                >
+                  <span class="password-toggle__icon" aria-hidden="true"></span>
+                </button>
+              </div>
 
               <!-- 2FA Code -->
               <input
@@ -50,12 +68,6 @@
                 pattern="[0-9]{6}"
                 required
               />
-
-              <!-- [OK] Remember Device Checkbox -->
-              <label class="remember-device">
-                <input type="checkbox" name="rememberDevice" />
-                Remember this device for 30 days
-              </label>
 
               <button type="submit">Login</button>
             </form>
@@ -71,6 +83,7 @@
   <!-- JS -->
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
+  <script src="/js/admin-login.js"></script>
   <script src="/js/layoutReady.js"></script>
   <script src="/js/reveal.js"></script>
 </body>

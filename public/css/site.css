@@ -1,0 +1,141 @@
+:root {
+  --ml-blue: #1e2a57;
+  --ml-blue-strong: #282f7f;
+  --ml-blue-light: #4279bc;
+  --ml-grey: #eaf0fa;
+  --ml-border-soft: rgba(30, 42, 87, 0.22);
+  --text-primary: #2c3e50;
+  --text-muted: #333333;
+  --surface-white: #ffffff;
+  --hero-overlay: rgba(30, 42, 87, 0.85);
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--surface-white);
+}
+
+.beliefs-hero,
+.biblestudies-hero,
+.calendar-hero,
+.church-hero,
+.child-hero,
+.community-hero,
+.enroll-hero,
+.events-hero,
+.expectations-hero,
+.faculty-hero,
+.financial-hero,
+.forms-hero,
+.give-hero,
+.member-hero,
+.school-hero,
+.story-hero,
+.team-hero,
+.time-hero,
+.youtube-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("../images/Prayer.jpg") no-repeat center center / cover;
+}
+
+.beliefs-overlay,
+.biblestudies-overlay,
+.calendar-overlay,
+.church-overlay,
+.community-overlay,
+.enroll-overlay,
+.events-overlay,
+.expectations-overlay,
+.faculty-overlay,
+.forms-overlay,
+.member-overlay,
+.school-overlay,
+.story-overlay,
+.team-overlay,
+.time-overlay,
+.youtube-overlay,
+.prayer-overlay,
+.child-overlay,
+.admin-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.beliefs-overlay h1,
+.biblestudies-overlay h1,
+.calendar-overlay h1,
+.church-overlay h1,
+.community-overlay h1,
+.enroll-overlay h1,
+.events-overlay h1,
+.expectations-overlay h1,
+.faculty-overlay h1,
+.forms-overlay h1,
+.member-overlay h1,
+.school-overlay h1,
+.story-overlay h1,
+.team-overlay h1,
+.time-overlay h1,
+.youtube-overlay h1,
+.prayer-overlay h1,
+.child-overlay h1,
+.admin-overlay h1 {
+  color: #fff;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.church-content,
+.biblestudies-content,
+.school-content,
+.community-content {
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 30px;
+  text-align: center;
+}
+
+.church-content h2,
+.biblestudies-content h2,
+.school-content h2 {
+  color: var(--ml-blue-strong);
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.church-content p,
+.biblestudies-content p,
+.school-content p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+@media (max-width: 950px) {
+  .church-content h2,
+  .biblestudies-content h2,
+  .school-content h2 {
+    font-size: 28px;
+  }
+
+  .church-content p,
+  .biblestudies-content p,
+  .school-content p {
+    font-size: 17px;
+  }
+}

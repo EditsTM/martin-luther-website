@@ -61,11 +61,114 @@ function parseIndex(val) {
   return i;
 }
 
+function parseIdList(values) {
+  if (!Array.isArray(values)) return null;
+  const list = values.map((v) => Number(v));
+  if (!list.length) return [];
+  if (!list.every((v) => Number.isInteger(v) && v > 0)) return null;
+  if (new Set(list).size !== list.length) return null;
+  return list;
+}
+
 //Basic string length limits to prevent abuse / huge payloads
 function clampString(val, maxLen) {
   if (val === null || val === undefined) return null;
   const s = String(val);
   return s.length > maxLen ? s.slice(0, maxLen) : s;
+}
+
+function defaultServiceTimesCard() {
+  return {
+    title: "Service Times",
+    note: "*Summer hours will differ",
+    sections: [
+      { label: "Sunday Mornings", timeText: "8:00am & 10:30am" },
+      { label: "Monday Evenings", timeText: "6:00pm" },
+    ],
+  };
+}
+
+function normalizeServiceTimesCardPayload(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return null;
+
+  const fallback = defaultServiceTimesCard();
+  const sectionsIn = Array.isArray(body.sections) ? body.sections : fallback.sections;
+  const sections = sectionsIn
+    .map((s) => ({
+      label: clampString(s?.label, 120) ?? "",
+      timeText: clampString(s?.timeText, 120) ?? "",
+    }))
+    .map((s) => ({
+      label: s.label.trim() || "Service Label",
+      timeText: s.timeText.trim() || "Service Time",
+    }))
+    .slice(0, 12);
+
+  if (!sections.length) {
+    sections.push({ label: "Service Label", timeText: "Service Time" });
+  }
+
+  return {
+    title: (clampString(body.title, 80) ?? fallback.title).trim() || fallback.title,
+    note: clampString(body.note, 200) ?? fallback.note,
+    sections,
+  };
+}
+
+function defaultFooterTimeSettings() {
+  return {
+    note: "*Summer hours vary*",
+    lineOne: "Sundays - 8am & 10:30am",
+    lineTwo: "Mondays - 6pm",
+  };
+}
+
+function normalizeFooterTimePayload(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return null;
+
+  const fallback = defaultFooterTimeSettings();
+
+  return {
+    note: (clampString(body.note, 200) ?? fallback.note).trim() || fallback.note,
+    lineOne: (clampString(body.lineOne, 120) ?? fallback.lineOne).trim() || fallback.lineOne,
+    lineTwo: (clampString(body.lineTwo, 120) ?? fallback.lineTwo).trim() || fallback.lineTwo,
+  };
+}
+
+function normalizeEventRecord(row) {
+  return {
+    title: String(row?.title ?? ""),
+    date: String(row?.date ?? ""),
+    description: String(row?.description ?? ""),
+    image: String(row?.image ?? ""),
+    notes: String(row?.notes ?? ""),
+  };
+}
+
+function listEventsOrdered() {
+  return db
+    .prepare(
+      `
+      SELECT id, title, date, description, image, notes, sortOrder
+      FROM events
+      ORDER BY sortOrder ASC, id ASC
+    `
+    )
+    .all();
+}
+
+function getEventIdByIndex(index) {
+  const row = db
+    .prepare(
+      `
+      SELECT id
+      FROM events
+      ORDER BY sortOrder ASC, id ASC
+      LIMIT 1 OFFSET ?
+    `
+    )
+    .get(index);
+  return row ? Number(row.id) : null;
 }
 
 /* TRUSTED DEVICE (Remember for 30 days) */
@@ -306,7 +409,25 @@ router.post("/login", loginLimiter, (req, res) => {
         <p>Sign in to manage website content</p>
 
         <form action="/admin/login" method="POST" class="login-form">
-          <input type="password" name="password" placeholder="Enter Password" required />
+          <div class="password-field">
+            <input
+              id="admin-password"
+              type="password"
+              name="password"
+              placeholder="Enter Password"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              data-password-toggle
+              data-target="admin-password"
+              aria-label="Show password"
+              aria-pressed="false"
+            >
+              <span class="password-toggle__icon" aria-hidden="true"></span>
+            </button>
+          </div>
 
           <input
             type="text"
@@ -317,12 +438,6 @@ router.post("/login", loginLimiter, (req, res) => {
             pattern="[0-9]{6}"
             required
           />
-
-          <!-- add checkbox here too, otherwise it disappears on error -->
-          <label class="remember-device">
-            <input type="checkbox" name="rememberDevice" />
-            Remember this device for 30 days
-          </label>
 
           <button type="submit">Login</button>
         </form>
@@ -336,6 +451,7 @@ router.post("/login", loginLimiter, (req, res) => {
   <div id="footer"></div>
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
+  <script src="/js/admin-login.js"></script>
 </body>
 </html>
   `;
@@ -388,8 +504,6 @@ router.get("/check", (req, res) => {
 
 /* Update Event Title/Date/Image/Notes*/
 router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
-  const filePath = path.resolve(process.cwd(), "server/content/events.json");
-
   const i = parseIndex(req.body?.index);
   if (i === null) return res.status(400).json({ error: "Invalid index" });
 
@@ -412,25 +526,45 @@ router.post("/update-event", requireSameOrigin, requireAdmin, (req, res) => {
   }
 
   try {
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "events.json not found" });
-    }
+    const eventId = getEventIdByIndex(i);
+    if (!eventId) return res.status(404).json({ error: "Event not found" });
 
-    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    if (!Array.isArray(data.events) || !data.events[i]) {
-      return res.status(404).json({ error: "Event not found" });
-    }
+    const current = db
+      .prepare(
+        `
+        SELECT id, title, date, description, image, notes
+        FROM events
+        WHERE id = ?
+      `
+      )
+      .get(eventId);
+    if (!current) return res.status(404).json({ error: "Event not found" });
 
-    //only update fields that were actually provided
-    if (title !== null) data.events[i].title = title;
-    if (date !== null) data.events[i].date = date;
-    if (image !== null) data.events[i].image = image;
+    const next = {
+      title: title !== null ? title : String(current.title ?? ""),
+      date: date !== null ? date : String(current.date ?? ""),
+      description: String(current.description ?? ""),
+      image: image !== null ? image : String(current.image ?? ""),
+      notes: notes !== undefined ? notes : String(current.notes ?? ""),
+    };
 
-    //save notes (even if empty string)
-    if (notes !== undefined) data.events[i].notes = notes;
+    db.prepare(
+      `
+      UPDATE events
+      SET title = @title,
+          date = @date,
+          description = @description,
+          image = @image,
+          notes = @notes,
+          updatedAt = datetime('now')
+      WHERE id = @id
+    `
+    ).run({
+      id: eventId,
+      ...next,
+    });
 
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    res.json({ success: true, updated: data.events[i] });
+    res.json({ success: true, updated: normalizeEventRecord(next) });
   } catch (err) {
     console.error("update-event failed:", err);
     res.status(500).json({ error: "Failed to update event" });
@@ -463,23 +597,24 @@ router.post(
     if (i === null) return res.status(400).json({ error: "Invalid index" });
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
-    const filePath = path.resolve(process.cwd(), "server/content/events.json");
-
     try {
       if (!hasValidImageSignature(req.file.path, req.file.mimetype)) {
         try { fs.unlinkSync(req.file.path); } catch {}
         return res.status(400).json({ error: "Invalid image content" });
       }
 
-      const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-      if (!Array.isArray(data.events) || !data.events[i]) {
-        return res.status(404).json({ error: "Event not found" });
-      }
+      const eventId = getEventIdByIndex(i);
+      if (!eventId) return res.status(404).json({ error: "Event not found" });
 
       const rel = `/images/events/${req.file.filename}`;
-      data.events[i].image = rel;
-
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      db.prepare(
+        `
+        UPDATE events
+        SET image = ?,
+            updatedAt = datetime('now')
+        WHERE id = ?
+      `
+      ).run(rel, eventId);
       res.json({ success: true, image: rel });
     } catch (err) {
       res.status(500).json({ error: "Failed to upload image" });
@@ -489,58 +624,375 @@ router.post(
 
 /*Serve events.json for homepage */
 router.get("/events.json", (req, res) => {
-  const filePath = path.resolve(process.cwd(), "server/content/events.json");
-
   try {
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "events.json not found" });
-    }
-
-    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const events = listEventsOrdered().map((row) => normalizeEventRecord(row));
     res.set("Cache-Control", "no-store");
-    res.json(data);
+    res.json({ events });
   } catch (err) {
     console.error("Failed to load events.json:", err);
     res.status(500).json({ error: "Failed to load events.json" });
   }
 });
 
-/*FACULTY SYSTEM*/
+router.post("/service-times/card", requireSameOrigin, requireAdmin, (req, res) => {
+  try {
+    const count = db
+      .prepare("SELECT COUNT(*) AS count FROM service_time_cards")
+      .get()?.count;
+    const sortOrder = Number(count || 0);
 
-const facultyFilePath = path.resolve(process.cwd(), "server/content/faculty.json");
-
-function readFacultyFile() {
-  if (!fs.existsSync(facultyFilePath)) {
-    const defaultData = {
-      principal: {
-        name: "Name",
-        subject: "Principal",
-        image: "/images/PlaceHolder.jpg",
-      },
-
-      
-      admin: [],
-
-      
-      teachers: [],
-
-     
-      staff: [],
+    const seed = {
+      title: "Service Times",
+      note: "",
+      sections: [{ label: "Service Label", timeText: "Service Time" }],
     };
-    fs.writeFileSync(facultyFilePath, JSON.stringify(defaultData, null, 2));
-    return defaultData;
+
+    const out = db.transaction(() => {
+      const cardInfo = db
+        .prepare(
+          `
+          INSERT INTO service_time_cards (title, note, isAdminOnly, sortOrder, updatedAt)
+          VALUES (@title, @note, 1, @sortOrder, datetime('now'))
+        `
+        )
+        .run({
+          title: seed.title,
+          note: seed.note,
+          sortOrder,
+        });
+
+      const cardId = Number(cardInfo.lastInsertRowid);
+
+      db.prepare(
+        `
+        INSERT INTO service_time_sections (cardId, label, timeText, sortOrder, updatedAt)
+        VALUES (@cardId, @label, @timeText, 0, datetime('now'))
+      `
+      ).run({
+        cardId,
+        label: seed.sections[0].label,
+        timeText: seed.sections[0].timeText,
+      });
+
+      return {
+        id: cardId,
+        title: seed.title,
+        note: seed.note,
+        isAdminOnly: true,
+        sections: seed.sections,
+      };
+    })();
+
+    return res.json({ success: true, card: out });
+  } catch (err) {
+    console.error("Failed to create service time card:", err);
+    return res.status(500).json({ error: "Failed to create service time card" });
   }
-  return JSON.parse(fs.readFileSync(facultyFilePath, "utf8"));
+});
+
+router.post("/service-times/card/:id", requireSameOrigin, requireAdmin, (req, res) => {
+  const cardId = parseIndex(req.params.id);
+  if (cardId === null) return res.status(400).json({ error: "Invalid card id" });
+
+  const payload = normalizeServiceTimesCardPayload(req.body);
+  if (!payload) return res.status(400).json({ error: "Invalid payload" });
+
+  try {
+    const existing = db
+      .prepare(
+        `
+        SELECT id, isAdminOnly
+        FROM service_time_cards
+        WHERE id = ?
+      `
+      )
+      .get(cardId);
+    if (!existing) return res.status(404).json({ error: "Card not found" });
+
+    db.transaction(() => {
+      db.prepare(
+        `
+        UPDATE service_time_cards
+        SET title = @title,
+            note = @note,
+            updatedAt = datetime('now')
+        WHERE id = @id
+      `
+      ).run({
+        id: cardId,
+        title: payload.title,
+        note: payload.note,
+      });
+
+      db.prepare("DELETE FROM service_time_sections WHERE cardId = ?").run(cardId);
+      const insertSection = db.prepare(
+        `
+        INSERT INTO service_time_sections (cardId, label, timeText, sortOrder, updatedAt)
+        VALUES (@cardId, @label, @timeText, @sortOrder, datetime('now'))
+      `
+      );
+      payload.sections.forEach((section, idx) => {
+        insertSection.run({
+          cardId,
+          label: section.label,
+          timeText: section.timeText,
+          sortOrder: idx,
+        });
+      });
+    })();
+
+    return res.json({
+      success: true,
+      card: {
+        id: cardId,
+        title: payload.title,
+        note: payload.note,
+        isAdminOnly: !!Number(existing.isAdminOnly),
+        sections: payload.sections,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to update service time card:", err);
+    return res.status(500).json({ error: "Failed to update service time card" });
+  }
+});
+
+router.delete("/service-times/card/:id", requireSameOrigin, requireAdmin, (req, res) => {
+  const cardId = parseIndex(req.params.id);
+  if (cardId === null) return res.status(400).json({ error: "Invalid card id" });
+
+  try {
+    const card = db
+      .prepare(
+        `
+        SELECT id, isAdminOnly
+        FROM service_time_cards
+        WHERE id = ?
+      `
+      )
+      .get(cardId);
+
+    if (!card) return res.status(404).json({ error: "Card not found" });
+    if (!Number(card.isAdminOnly)) {
+      return res.status(400).json({ error: "Default service times card cannot be deleted" });
+    }
+
+    db.transaction(() => {
+      db.prepare("DELETE FROM service_time_sections WHERE cardId = ?").run(cardId);
+      db.prepare("DELETE FROM service_time_cards WHERE id = ?").run(cardId);
+    })();
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("Failed to delete service time card:", err);
+    return res.status(500).json({ error: "Failed to delete service time card" });
+  }
+});
+
+router.post("/service-times/reorder", requireSameOrigin, requireAdmin, (req, res) => {
+  const adminCardIds = parseIdList(req.body?.cardIds);
+  if (!adminCardIds) return res.status(400).json({ error: "Invalid cardIds payload" });
+
+  try {
+    const allCards = db
+      .prepare(
+        `
+        SELECT id, isAdminOnly
+        FROM service_time_cards
+        ORDER BY sortOrder ASC, id ASC
+      `
+      )
+      .all();
+
+    const baseCards = allCards.filter((card) => !Number(card.isAdminOnly));
+    const existingAdminIds = allCards
+      .filter((card) => Number(card.isAdminOnly))
+      .map((card) => Number(card.id));
+
+    if (adminCardIds.length !== existingAdminIds.length) {
+      return res.status(400).json({ error: "cardIds length mismatch" });
+    }
+
+    const requested = new Set(adminCardIds);
+    const sameIds =
+      existingAdminIds.length === adminCardIds.length &&
+      existingAdminIds.every((id) => requested.has(id));
+    if (!sameIds) {
+      return res.status(400).json({ error: "cardIds must match existing admin-only cards" });
+    }
+
+    db.transaction(() => {
+      const updateSort = db.prepare(
+        `
+        UPDATE service_time_cards
+        SET sortOrder = @sortOrder,
+            updatedAt = datetime('now')
+        WHERE id = @id
+      `
+      );
+
+      baseCards.forEach((card, idx) => {
+        updateSort.run({
+          id: Number(card.id),
+          sortOrder: idx,
+        });
+      });
+
+      adminCardIds.forEach((id, idx) => {
+        updateSort.run({
+          id,
+          sortOrder: baseCards.length + idx,
+        });
+      });
+    })();
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("Failed to reorder service time cards:", err);
+    return res.status(500).json({ error: "Failed to reorder service time cards" });
+  }
+});
+
+router.get("/footer-time", requireAdmin, (req, res) => {
+  try {
+    const row = db
+      .prepare(
+        `
+        SELECT note, lineOne, lineTwo
+        FROM footer_time_settings
+        WHERE id = 1
+      `
+      )
+      .get();
+
+    const fallback = defaultFooterTimeSettings();
+    const out = {
+      note: String(row?.note ?? fallback.note),
+      lineOne: String(row?.lineOne ?? fallback.lineOne),
+      lineTwo: String(row?.lineTwo ?? fallback.lineTwo),
+    };
+
+    res.set("Cache-Control", "no-store");
+    return res.json(out);
+  } catch (err) {
+    console.error("Failed to load footer time settings:", err);
+    return res.status(500).json({ error: "Failed to load footer time settings" });
+  }
+});
+
+router.post("/footer-time", requireSameOrigin, requireAdmin, (req, res) => {
+  const payload = normalizeFooterTimePayload(req.body);
+  if (!payload) return res.status(400).json({ error: "Invalid payload" });
+
+  try {
+    db.prepare(
+      `
+      INSERT INTO footer_time_settings (id, note, lineOne, lineTwo, updatedAt)
+      VALUES (1, @note, @lineOne, @lineTwo, datetime('now'))
+      ON CONFLICT(id) DO UPDATE SET
+        note = excluded.note,
+        lineOne = excluded.lineOne,
+        lineTwo = excluded.lineTwo,
+        updatedAt = datetime('now')
+    `
+    ).run(payload);
+
+    return res.json({ success: true, ...payload });
+  } catch (err) {
+    console.error("Failed to save footer time settings:", err);
+    return res.status(500).json({ error: "Failed to save footer time settings" });
+  }
+});
+
+/*FACULTY SYSTEM*/
+const FACULTY_DEFAULT_IMAGE = "/images/faculty/PlaceHolder.jpg";
+
+function listFacultyRowsByRole(role) {
+  return db
+    .prepare(
+      `
+      SELECT id, role, name, subject, image, sortOrder
+      FROM faculty_entries
+      WHERE role = ?
+      ORDER BY sortOrder ASC, id ASC
+    `
+    )
+    .all(role);
 }
 
-function writeFacultyFile(data) {
-  fs.writeFileSync(facultyFilePath, JSON.stringify(data, null, 2));
+function normalizeFacultyCard(row, fallbackSubject = "Subject") {
+  return {
+    name: String(row?.name ?? "Name"),
+    subject: String(row?.subject ?? fallbackSubject),
+    image: String(row?.image ?? FACULTY_DEFAULT_IMAGE),
+  };
+}
+
+function facultyPayloadFromDb() {
+  const principalRows = listFacultyRowsByRole("principal");
+  const adminRows = listFacultyRowsByRole("admin");
+  const teacherRows = listFacultyRowsByRole("teacher");
+  const staffRows = listFacultyRowsByRole("staff");
+
+  return {
+    principal: normalizeFacultyCard(principalRows[0], "Principal"),
+    admin: adminRows.map((r) => normalizeFacultyCard(r, "Administrator")),
+    teachers: teacherRows.map((r) => normalizeFacultyCard(r, "Subject")),
+    staff: staffRows.map((r) => normalizeFacultyCard(r, "Staff")),
+  };
+}
+
+function getFacultyRowByRoleIndex(role, index) {
+  const rows = listFacultyRowsByRole(role);
+  if (!Number.isInteger(index) || index < 0 || index >= rows.length) return null;
+  return rows[index];
+}
+
+function insertFacultyRow(role, defaults) {
+  const count = db
+    .prepare("SELECT COUNT(*) AS count FROM faculty_entries WHERE role = ?")
+    .get(role)?.count;
+  const sortOrder = Number(count || 0);
+
+  const info = db
+    .prepare(
+      `
+      INSERT INTO faculty_entries (role, name, subject, image, sortOrder, updatedAt)
+      VALUES (@role, @name, @subject, @image, @sortOrder, datetime('now'))
+    `
+    )
+    .run({
+      role,
+      name: String(defaults?.name ?? "Name"),
+      subject: String(defaults?.subject ?? "Subject"),
+      image: String(defaults?.image ?? FACULTY_DEFAULT_IMAGE),
+      sortOrder,
+    });
+
+  return {
+    id: Number(info.lastInsertRowid),
+    role,
+    name: String(defaults?.name ?? "Name"),
+    subject: String(defaults?.subject ?? "Subject"),
+    image: String(defaults?.image ?? FACULTY_DEFAULT_IMAGE),
+    sortOrder,
+  };
+}
+
+function ensurePrincipalRow() {
+  const principal = listFacultyRowsByRole("principal")[0];
+  if (principal) return principal;
+  return insertFacultyRow("principal", {
+    name: "Name",
+    subject: "Principal",
+    image: FACULTY_DEFAULT_IMAGE,
+  });
 }
 
 /*Serve faculty.json */
 router.get("/faculty.json", (req, res) => {
   try {
-    const data = readFacultyFile();
+    const data = facultyPayloadFromDb();
     res.set("Cache-Control", "no-store");
     res.json(data);
   } catch (err) {
@@ -551,20 +1003,16 @@ router.get("/faculty.json", (req, res) => {
 /* Add Teacher */
 router.post("/faculty/add", requireSameOrigin, requireAdmin, (req, res) => {
   try {
-    const data = readFacultyFile();
-
-    const newTeacher = {
+    const created = insertFacultyRow("teacher", {
       name: "Name",
       subject: "Subject",
-      image: "/images/faculty/PlaceHolder.jpg",
-    };
-
-    data.teachers.push(newTeacher);
-    writeFacultyFile(data);
+      image: FACULTY_DEFAULT_IMAGE,
+    });
+    const newTeacher = normalizeFacultyCard(created, "Subject");
 
     res.json({
       success: true,
-      index: data.teachers.length - 1,
+      index: Number(created.sortOrder),
       teacher: newTeacher,
     });
   } catch (err) {
@@ -572,10 +1020,58 @@ router.post("/faculty/add", requireSameOrigin, requireAdmin, (req, res) => {
   }
 });
 
+router.post("/faculty/reorder", requireSameOrigin, requireAdmin, (req, res) => {
+  const role = String(req.body?.role || "").trim();
+  const allowedRoles = new Set(["admin", "teacher", "staff"]);
+  if (!allowedRoles.has(role)) {
+    return res.status(400).json({ error: "Invalid role" });
+  }
+
+  const order = req.body?.order;
+  if (!Array.isArray(order) || order.length === 0) {
+    return res.status(400).json({ error: "Invalid order" });
+  }
+
+  const clean = order.map(Number);
+  if (!clean.every(Number.isInteger)) {
+    return res.status(400).json({ error: "Order must be integer indices" });
+  }
+  if (new Set(clean).size !== clean.length) {
+    return res.status(400).json({ error: "Order has duplicates" });
+  }
+
+  try {
+    const rows = listFacultyRowsByRole(role);
+    if (clean.length !== rows.length) {
+      return res.status(400).json({ error: "Order length mismatch" });
+    }
+    if (!clean.every((i) => i >= 0 && i < rows.length)) {
+      return res.status(400).json({ error: "Order contains out-of-range index" });
+    }
+
+    const orderedIds = clean.map((i) => Number(rows[i].id));
+    const updateStmt = db.prepare(
+      `
+      UPDATE faculty_entries
+      SET sortOrder = ?,
+          updatedAt = datetime('now')
+      WHERE id = ?
+    `
+    );
+    const tx = db.transaction((ids) => {
+      ids.forEach((id, idx) => updateStmt.run(idx, id));
+    });
+    tx(orderedIds);
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("faculty/reorder failed:", err);
+    return res.status(500).json({ error: "Failed to reorder faculty" });
+  }
+});
+
 /* Reorder Events (drag & drop)*/
 router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
-  const filePath = path.resolve(process.cwd(), "server/content/events.json");
-
   const order = req.body?.order;
   if (!Array.isArray(order) || order.length === 0) {
     return res.status(400).json({ error: "Invalid order" });
@@ -592,12 +1088,7 @@ router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
   }
 
   try {
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "events.json not found" });
-    }
-
-    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    const events = Array.isArray(data.events) ? data.events : [];
+    const events = listEventsOrdered();
 
     if (clean.length !== events.length) {
       return res.status(400).json({ error: "Order length mismatch" });
@@ -606,9 +1097,20 @@ router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
       return res.status(400).json({ error: "Order contains out-of-range index" });
     }
 
-    data.events = clean.map((i) => events[i]);
+    const orderedIds = clean.map((i) => Number(events[i].id));
+    const updateStmt = db.prepare(
+      `
+      UPDATE events
+      SET sortOrder = ?,
+          updatedAt = datetime('now')
+      WHERE id = ?
+    `
+    );
+    const tx = db.transaction((ids) => {
+      ids.forEach((id, idx) => updateStmt.run(idx, id));
+    });
+    tx(orderedIds);
 
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     res.json({ success: true });
   } catch (err) {
     console.error("reorder-events failed:", err);
@@ -620,21 +1122,16 @@ router.post("/reorder-events", requireSameOrigin, requireAdmin, (req, res) => {
 /* ADD ADMIN MEMBER */
 router.post("/faculty/add-admin", requireSameOrigin, requireAdmin, (req, res) => {
   try {
-    const data = readFacultyFile();
-
-    const newAdmin = {
+    const created = insertFacultyRow("admin", {
       name: "Name",
       subject: "Administrator",
-      image: "/images/faculty/PlaceHolder.jpg",
-    };
-
-    if (!data.admin) data.admin = [];
-    data.admin.push(newAdmin);
-    writeFacultyFile(data);
+      image: FACULTY_DEFAULT_IMAGE,
+    });
+    const newAdmin = normalizeFacultyCard(created, "Administrator");
 
     res.json({
       success: true,
-      index: data.admin.length - 1,
+      index: Number(created.sortOrder),
       admin: newAdmin,
     });
   } catch (err) {
@@ -645,21 +1142,16 @@ router.post("/faculty/add-admin", requireSameOrigin, requireAdmin, (req, res) =>
 /* ADD STAFF MEMBER (NEW) */
 router.post("/faculty/add-staff", requireSameOrigin, requireAdmin, (req, res) => {
   try {
-    const data = readFacultyFile();
-
-    const newStaff = {
+    const created = insertFacultyRow("staff", {
       name: "Name",
       subject: "Staff",
-      image: "/images/faculty/PlaceHolder.jpg",
-    };
-
-    if (!data.staff) data.staff = [];
-    data.staff.push(newStaff);
-    writeFacultyFile(data);
+      image: FACULTY_DEFAULT_IMAGE,
+    });
+    const newStaff = normalizeFacultyCard(created, "Staff");
 
     res.json({
       success: true,
-      index: data.staff.length - 1,
+      index: Number(created.sortOrder),
       staff: newStaff,
     });
   } catch (err) {
@@ -680,50 +1172,79 @@ router.post("/faculty/update", requireSameOrigin, requireAdmin, (req, res) => {
   }
 
   try {
-    const data = readFacultyFile();
-
-    // PRINCIPAL
     if (role === "principal") {
-      if (name) data.principal.name = name;
-      if (subject) data.principal.subject = subject;
-      if (image) data.principal.image = image;
-
-      writeFacultyFile(data);
-      return res.json({ success: true, principal: data.principal });
+      const principal = ensurePrincipalRow();
+      const next = {
+        id: Number(principal.id),
+        name: name || String(principal.name || "Name"),
+        subject: subject || String(principal.subject || "Principal"),
+        image: image || String(principal.image || FACULTY_DEFAULT_IMAGE),
+      };
+      db.prepare(
+        `
+        UPDATE faculty_entries
+        SET name = @name,
+            subject = @subject,
+            image = @image,
+            updatedAt = datetime('now')
+        WHERE id = @id
+      `
+      ).run(next);
+      return res.json({ success: true, principal: normalizeFacultyCard(next, "Principal") });
     }
 
-    // TEACHER
     if (role === "teacher") {
       const i = parseIndex(req.body?.index);
       if (i === null) return res.status(400).json({ error: "Invalid index" });
-      if (!data.teachers[i]) return res.status(404).json({ error: "Teacher not found" });
-
-      if (name) data.teachers[i].name = name;
-      if (subject) data.teachers[i].subject = subject;
-      if (image) data.teachers[i].image = image;
-
-      writeFacultyFile(data);
+      const row = getFacultyRowByRoleIndex("teacher", i);
+      if (!row) return res.status(404).json({ error: "Teacher not found" });
+      const next = {
+        id: Number(row.id),
+        name: name || String(row.name || "Name"),
+        subject: subject || String(row.subject || "Subject"),
+        image: image || String(row.image || FACULTY_DEFAULT_IMAGE),
+      };
+      db.prepare(
+        `
+        UPDATE faculty_entries
+        SET name = @name,
+            subject = @subject,
+            image = @image,
+            updatedAt = datetime('now')
+        WHERE id = @id
+      `
+      ).run(next);
       return res.json({
         success: true,
-        teacher: data.teachers[i],
+        teacher: normalizeFacultyCard(next, "Subject"),
         index: i,
       });
     }
 
-    // STAFF (NEW)
     if (role === "staff") {
       const i = parseIndex(req.body?.index);
       if (i === null) return res.status(400).json({ error: "Invalid index" });
-      if (!data.staff || !data.staff[i]) return res.status(404).json({ error: "Staff not found" });
-
-      if (name) data.staff[i].name = name;
-      if (subject) data.staff[i].subject = subject;
-      if (image) data.staff[i].image = image;
-
-      writeFacultyFile(data);
+      const row = getFacultyRowByRoleIndex("staff", i);
+      if (!row) return res.status(404).json({ error: "Staff not found" });
+      const next = {
+        id: Number(row.id),
+        name: name || String(row.name || "Name"),
+        subject: subject || String(row.subject || "Staff"),
+        image: image || String(row.image || FACULTY_DEFAULT_IMAGE),
+      };
+      db.prepare(
+        `
+        UPDATE faculty_entries
+        SET name = @name,
+            subject = @subject,
+            image = @image,
+            updatedAt = datetime('now')
+        WHERE id = @id
+      `
+      ).run(next);
       return res.json({
         success: true,
-        staff: data.staff[i],
+        staff: normalizeFacultyCard(next, "Staff"),
         index: i,
       });
     }
@@ -748,15 +1269,24 @@ router.post("/faculty/update-admin", requireSameOrigin, requireAdmin, (req, res)
   }
 
   try {
-    const data = readFacultyFile();
-
-    if (!data.admin || !data.admin[i]) return res.status(404).json({ error: "Admin not found" });
-
-    if (name) data.admin[i].name = name;
-    if (subject) data.admin[i].subject = subject;
-    if (image) data.admin[i].image = image;
-
-    writeFacultyFile(data);
+    const row = getFacultyRowByRoleIndex("admin", i);
+    if (!row) return res.status(404).json({ error: "Admin not found" });
+    const next = {
+      id: Number(row.id),
+      name: name || String(row.name || "Name"),
+      subject: subject || String(row.subject || "Administrator"),
+      image: image || String(row.image || FACULTY_DEFAULT_IMAGE),
+    };
+    db.prepare(
+      `
+      UPDATE faculty_entries
+      SET name = @name,
+          subject = @subject,
+          image = @image,
+          updatedAt = datetime('now')
+      WHERE id = @id
+    `
+    ).run(next);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: "Failed to update admin" });
@@ -769,11 +1299,9 @@ router.post("/faculty/delete", requireSameOrigin, requireAdmin, (req, res) => {
   if (i === null) return res.status(400).json({ error: "Invalid index" });
 
   try {
-    const data = readFacultyFile();
-    if (!data.teachers[i]) return res.status(404).json({ error: "Teacher not found" });
-
-    data.teachers.splice(i, 1);
-    writeFacultyFile(data);
+    const row = getFacultyRowByRoleIndex("teacher", i);
+    if (!row) return res.status(404).json({ error: "Teacher not found" });
+    db.prepare("DELETE FROM faculty_entries WHERE id = ?").run(Number(row.id));
 
     res.json({ success: true });
   } catch (err) {
@@ -787,11 +1315,9 @@ router.post("/faculty/delete-admin", requireSameOrigin, requireAdmin, (req, res)
   if (i === null) return res.status(400).json({ error: "Invalid index" });
 
   try {
-    const data = readFacultyFile();
-    if (!data.admin || !data.admin[i]) return res.status(404).json({ error: "Admin not found" });
-
-    data.admin.splice(i, 1);
-    writeFacultyFile(data);
+    const row = getFacultyRowByRoleIndex("admin", i);
+    if (!row) return res.status(404).json({ error: "Admin not found" });
+    db.prepare("DELETE FROM faculty_entries WHERE id = ?").run(Number(row.id));
 
     res.json({ success: true });
   } catch (err) {
@@ -805,11 +1331,9 @@ router.post("/faculty/delete-staff", requireSameOrigin, requireAdmin, (req, res)
   if (i === null) return res.status(400).json({ error: "Invalid index" });
 
   try {
-    const data = readFacultyFile();
-    if (!data.staff || !data.staff[i]) return res.status(404).json({ error: "Staff not found" });
-
-    data.staff.splice(i, 1);
-    writeFacultyFile(data);
+    const row = getFacultyRowByRoleIndex("staff", i);
+    if (!row) return res.status(404).json({ error: "Staff not found" });
+    db.prepare("DELETE FROM faculty_entries WHERE id = ?").run(Number(row.id));
 
     res.json({ success: true });
   } catch (err) {
@@ -853,33 +1377,60 @@ router.post(
         return res.status(400).json({ error: "Invalid image content" });
       }
 
-      const data = readFacultyFile();
       const rel = `/images/faculty/${req.file.filename}`;
 
       if (role === "principal") {
-        data.principal.image = rel;
-        writeFacultyFile(data);
+        const principal = ensurePrincipalRow();
+        db.prepare(
+          `
+          UPDATE faculty_entries
+          SET image = ?,
+              updatedAt = datetime('now')
+          WHERE id = ?
+        `
+        ).run(rel, Number(principal.id));
         return res.json({ success: true, image: rel });
       }
 
       if (role === "teacher") {
-        if (!data.teachers[idx]) return res.status(404).json({ error: "Teacher not found" });
-        data.teachers[idx].image = rel;
-        writeFacultyFile(data);
+        const row = getFacultyRowByRoleIndex("teacher", Number(idx));
+        if (!row) return res.status(404).json({ error: "Teacher not found" });
+        db.prepare(
+          `
+          UPDATE faculty_entries
+          SET image = ?,
+              updatedAt = datetime('now')
+          WHERE id = ?
+        `
+        ).run(rel, Number(row.id));
         return res.json({ success: true, image: rel });
       }
 
       if (role === "admin") {
-        if (!data.admin || !data.admin[idx]) return res.status(404).json({ error: "Admin not found" });
-        data.admin[idx].image = rel;
-        writeFacultyFile(data);
+        const row = getFacultyRowByRoleIndex("admin", Number(idx));
+        if (!row) return res.status(404).json({ error: "Admin not found" });
+        db.prepare(
+          `
+          UPDATE faculty_entries
+          SET image = ?,
+              updatedAt = datetime('now')
+          WHERE id = ?
+        `
+        ).run(rel, Number(row.id));
         return res.json({ success: true, image: rel });
       }
 
       if (role === "staff") {
-        if (!data.staff || !data.staff[idx]) return res.status(404).json({ error: "Staff not found" });
-        data.staff[idx].image = rel;
-        writeFacultyFile(data);
+        const row = getFacultyRowByRoleIndex("staff", Number(idx));
+        if (!row) return res.status(404).json({ error: "Staff not found" });
+        db.prepare(
+          `
+          UPDATE faculty_entries
+          SET image = ?,
+              updatedAt = datetime('now')
+          WHERE id = ?
+        `
+        ).run(rel, Number(row.id));
         return res.json({ success: true, image: rel });
       }
 

@@ -5,14 +5,11 @@
 /* =============================
    GLOBAL STYLES
 ============================= */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
 
 /* =============================
    BASE
 ============================= */
 body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
   background: #fff;
   color: #222;
 }
@@ -21,33 +18,16 @@ body {
    HERO SECTION
 ============================= */
 .time-hero {
-  position: relative;
-  width: 100%;
   height: 350px;
-  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .time-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--hero-overlay);
 }
 
 .time-overlay h1 {
-  color: #fff;
   font-size: 50px;
   font-weight: 800;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
   z-index: 2;
 }
 
@@ -538,4 +518,282 @@ body {
 /* Press effect */
 .christmas-link:active .christmas-card {
   transform: translateY(-2px) scale(0.995);
+}
+
+/* =============================
+   ADMIN EDITING (matches team/events)
+============================= */
+.admin-only {
+  display: none;
+}
+
+body.admin-mode .admin-only {
+  display: inline-block;
+}
+
+.service-times-admin-actions.admin-only {
+  display: none;
+}
+
+body.admin-mode .service-times-admin-actions.admin-only {
+  display: flex;
+}
+
+.edit-btn {
+  display: inline-block;
+  margin-top: 25px;
+  background: #1e2a57;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.admin-only.edit-btn {
+  display: none;
+}
+
+body.admin-mode .admin-only.edit-btn {
+  display: inline-block;
+}
+
+.edit-btn:hover {
+  background: #fff;
+  color: #1e2a57;
+  border: 2px solid #1e2a57;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+#service-times-card .edit-btn {
+  margin-top: 16px;
+}
+
+.add-service-time-btn {
+  margin-top: 16px;
+  background: #ff9f45;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  min-height: 48px;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-service-time-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.add-service-time-btn:hover {
+  filter: brightness(0.95);
+}
+
+.service-times-admin-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.service-times-extra-list {
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 40px;
+}
+
+.service-time-extra-card {
+  width: 100%;
+  justify-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-time-extra-card .card-body {
+  flex: 1 1 auto;
+}
+
+.service-time-extra-card .edit-btn {
+  margin-top: auto;
+  align-self: center;
+}
+
+.service-time-extra-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 520px;
+}
+
+.service-time-extra-card[draggable="true"] {
+  cursor: grab;
+}
+
+.service-time-extra-card.is-dragging {
+  opacity: 0.65;
+}
+
+.service-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.service-modal.open {
+  display: flex;
+}
+
+.service-modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 720px;
+  width: 100%;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px 28px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-title {
+  margin: 0 0 18px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #000000;
+  text-align: left;
+}
+
+.modal-form-section {
+  text-align: left;
+}
+
+.modal-label {
+  display: block;
+  margin-bottom: 14px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.modal-label input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccd3e4;
+  font-family: "Open Sans", sans-serif;
+}
+
+.service-modal-section {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #d5dbe8;
+  border-radius: 10px;
+}
+
+.service-modal-section + .service-modal-section {
+  margin-top: 12px;
+}
+
+.service-modal-section-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e2a57;
+}
+
+.service-modal-remove-section-btn {
+  margin-top: 4px;
+}
+
+.modal-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.save-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  background: #4279bc;
+}
+
+.event-modal-primary,
+.event-modal-delete {
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.event-modal-primary {
+  background: #1e2a57;
+}
+
+.event-modal-delete {
+  background: #b30000;
+}
+
+@media (max-width: 600px) {
+  .service-times-extra-list {
+    grid-template-columns: 1fr;
+    width: min(520px, calc(100% - 20px));
+  }
+
+  .service-time-extra-card:last-child:nth-child(odd) {
+    grid-column: auto;
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .service-modal-content {
+    padding: 20px;
+  }
+
+  .modal-title {
+    text-align: center;
+  }
 }

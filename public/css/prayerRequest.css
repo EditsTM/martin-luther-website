@@ -4,36 +4,21 @@
  */
 /* ------------------ HERO SECTION ------------------ */
 .prayer-hero {
-  position: relative;
-  width: 100%;
   height: 320px;
-  background: url("../images/prayer.jpg") no-repeat center center;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: url("../images/prayer.jpg") no-repeat center center / cover;
 }
 
 .prayer-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(30, 42, 87, 0.85); /* match Expectations & Member hero overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--hero-overlay); /* match Expectations & Member hero overlay */
   flex-direction: column;
   text-align: center;
   padding: 0 20px;
 }
 
 .prayer-overlay h1 {
-  color: white;
   font-size: 50px; /* match others */
   font-weight: 700; /* same as Become a Member & Beliefs */
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
   text-transform: none;
-  margin: 0;
 }
 
 

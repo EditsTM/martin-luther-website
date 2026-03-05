@@ -2,42 +2,17 @@
  * File: public\css\school\faculty.css
  * Purpose: Defines presentation styles for the faculty interface.
  */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
-
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  background: #fff;
-  color: #2c3e50;
-}
 
 /* HERO */
-.faculty-hero {
-  position: relative;
-  height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center/cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .faculty-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--hero-overlay);
 }
 
 /* MATCH CHURCH PAGE HERO HEADER */
 .faculty-overlay h1 {
-  color: white;
   font-size: 50px;
   font-weight: 800;
   letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 
@@ -100,6 +75,23 @@ body {
 .faculty-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 16px 35px rgba(0,0,0,0.12);
+}
+
+.faculty-grid.is-reordering .faculty-card {
+  transition: none !important;
+}
+
+.faculty-grid.is-reordering .faculty-card:hover {
+  transform: none !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.admin-mode .faculty-card--reorderable {
+  cursor: grab;
+}
+
+body.admin-mode .faculty-card--reorderable.is-dragging {
+  opacity: 0.65;
 }
 
 .faculty-image-wrapper {
@@ -284,6 +276,10 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   border-radius: 16px;
   max-width: 720px;
   width: 100%;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 24px 28px;
   box-shadow: 0 18px 45px rgba(0,0,0,0.25);
   position: relative;

@@ -363,6 +363,9 @@ function createFacultyCard(person, options) {
 
   // Only non-principal cards have array indexes
   if (role !== "principal") card.dataset.index = index;
+  if (isAdmin && role !== "principal") {
+    card.classList.add("faculty-card--reorderable");
+  }
 
   const imgWrapper = document.createElement("div");
   imgWrapper.className = "faculty-image-wrapper";
@@ -370,6 +373,7 @@ function createFacultyCard(person, options) {
   const img = document.createElement("img");
   img.src = person.image || "/images/faculty/PlaceHolder.jpg";
   img.alt = person.name ? `${person.name} photo` : "Faculty photo";
+  img.draggable = false;
   imgWrapper.appendChild(img);
 
   // Use textContent (not innerHTML) to avoid XSS sinks
@@ -392,6 +396,7 @@ function createFacultyCard(person, options) {
     editBtn.className = "edit-btn admin-only";
     editBtn.textContent = "Edit";
     editBtn.style.marginTop = "auto";
+    editBtn.draggable = false;
 
     editBtn.addEventListener("click", () => {
       openEditModal({
@@ -408,6 +413,285 @@ function createFacultyCard(person, options) {
   }
 
   return card;
+}
+
+function getFacultyInsertionReference(container, x, y, draggingEl, placeholderEl, role) {
+  const cards = Array.from(
+    container.querySelectorAll(`.faculty-card[data-role="${role}"]`)
+  );
+  const others = cards.filter(
+    (card) => card !== draggingEl && card !== placeholderEl
+  );
+  if (!others.length) return null;
+  const roleIndexMap = new Map(others.map((card, idx) => [card, idx]));
+  const slots = [];
+
+  others.forEach((card) => {
+    const rect = card.getBoundingClientRect();
+    const cy = rect.top + rect.height / 2;
+    const beforeX = rect.left + rect.width * 0.45;
+    const afterX = rect.left + rect.width * 0.55;
+    const idx = roleIndexMap.get(card);
+
+    slots.push({
+      x: beforeX,
+      y: cy,
+      refIndex: idx, // insert before this card
+    });
+
+    slots.push({
+      x: afterX,
+      y: cy,
+      refIndex: idx + 1, // insert after this card
+    });
+  });
+
+  let bestSlot = null;
+  let bestDist = Infinity;
+  for (const slot of slots) {
+    const dx = slot.x - x;
+    const dy = (slot.y - y) * 1.05; // keep row preference without sticky feel
+    const dist = Math.hypot(dx, dy);
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestSlot = slot;
+    }
+  }
+
+  if (!bestSlot) return null;
+  if (bestSlot.refIndex >= others.length) return null;
+  return others[bestSlot.refIndex];
+}
+
+function reindexRoleCards(role) {
+  document
+    .querySelectorAll(`.faculty-card[data-role="${role}"]`)
+    .forEach((card, idx) => {
+      card.dataset.index = String(idx);
+    });
+}
+
+function getRoleOrderFromDom(container, role) {
+  return Array.from(container.querySelectorAll(`.faculty-card[data-role="${role}"]`))
+    .map((el) => Number(el.dataset.index))
+    .filter((v) => Number.isInteger(v) && v >= 0);
+}
+
+function setupFacultyDragReorder(container, role) {
+  if (!container) return;
+
+  const boundKey = `dragBound${role}`;
+  if (container.dataset[boundKey] === "1") return;
+  container.dataset[boundKey] = "1";
+
+  let draggingEl = null;
+  let placeholderEl = null;
+  let startOrder = [];
+  let isDragging = false;
+  let pointerOffsetX = 0;
+  let pointerOffsetY = 0;
+  let autoScrollTimer = null;
+  let lastRefCard;
+  const EDGE = 110;
+  const SPEED = 16;
+  let savedBodyUserSelect = "";
+  let savedBodyCursor = "";
+  let lastPointerX = 0;
+  let lastPointerY = 0;
+
+  const onWheelWhileDragging = (e) => {
+    if (!isDragging) return;
+    window.scrollBy({
+      top: e.deltaY,
+      left: e.deltaX,
+      behavior: "auto",
+    });
+    e.preventDefault();
+  };
+  document.addEventListener("wheel", onWheelWhileDragging, { passive: false });
+
+  function startAutoScroll() {
+    if (autoScrollTimer) return;
+    autoScrollTimer = setInterval(() => {
+      if (!isDragging) return;
+      if (typeof window.__facultyDragY !== "number") return;
+      const y = window.__facultyDragY;
+      const vh = window.innerHeight;
+      if (y < EDGE) window.scrollBy(0, -SPEED);
+      else if (y > vh - EDGE) window.scrollBy(0, SPEED);
+      if (Number.isFinite(lastPointerX) && Number.isFinite(lastPointerY)) {
+        updatePlaceholder(lastPointerX, lastPointerY);
+      }
+    }, 16);
+  }
+
+  function stopAutoScroll() {
+    if (autoScrollTimer) clearInterval(autoScrollTimer);
+    autoScrollTimer = null;
+    window.__facultyDragY = undefined;
+  }
+
+  function applyFloatingCardPosition(clientX, clientY) {
+    if (!draggingEl) return;
+    const left = clientX - pointerOffsetX;
+    const top = clientY - pointerOffsetY;
+    draggingEl.style.left = `${left}px`;
+    draggingEl.style.top = `${top}px`;
+  }
+
+  function updatePlaceholder(clientX, clientY) {
+    if (!draggingEl || !placeholderEl) return;
+    const ref = getFacultyInsertionReference(
+      container,
+      clientX,
+      clientY,
+      draggingEl,
+      placeholderEl,
+      role
+    );
+    if (ref === lastRefCard) return;
+    lastRefCard = ref;
+
+    if (ref) {
+      container.insertBefore(placeholderEl, ref);
+    } else {
+      container.appendChild(placeholderEl);
+    }
+  }
+
+  function resetDraggingStyles(card) {
+    card.style.position = "";
+    card.style.left = "";
+    card.style.top = "";
+    card.style.width = "";
+    card.style.height = "";
+    card.style.zIndex = "";
+    card.style.pointerEvents = "";
+    card.style.margin = "";
+    card.style.transform = "";
+  }
+
+  async function endPointerDrag() {
+    if (!draggingEl) return;
+
+    if (placeholderEl && placeholderEl.parentNode) {
+      container.insertBefore(draggingEl, placeholderEl);
+      placeholderEl.remove();
+    }
+    placeholderEl = null;
+
+    resetDraggingStyles(draggingEl);
+    draggingEl.classList.remove("is-dragging");
+
+    const endOrder = getRoleOrderFromDom(container, role);
+
+    draggingEl = null;
+    lastRefCard = undefined;
+    isDragging = false;
+    stopAutoScroll();
+    container.classList.remove("is-reordering");
+    document.body.style.userSelect = savedBodyUserSelect;
+    document.body.style.cursor = savedBodyCursor;
+
+    if (!endOrder.length || JSON.stringify(endOrder) === JSON.stringify(startOrder)) {
+      return;
+    }
+
+    try {
+      const out = await postJson("/admin/faculty/reorder", { role, order: endOrder });
+      if (!out?.success) throw new Error("Failed to save faculty order");
+      reindexRoleCards(role);
+    } catch (err) {
+      console.error("Failed to reorder faculty cards:", err);
+      alert("Error saving new order.");
+      location.reload();
+    }
+  }
+
+  function onPointerMove(e) {
+    if (!draggingEl) return;
+    e.preventDefault();
+    window.__facultyDragY = e.clientY;
+    lastPointerX = e.clientX;
+    lastPointerY = e.clientY;
+    applyFloatingCardPosition(e.clientX, e.clientY);
+
+    updatePlaceholder(e.clientX, e.clientY);
+  }
+
+  function onPointerUp() {
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("pointercancel", onPointerUp);
+    endPointerDrag();
+  }
+
+  container.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    if (e.target.closest(".edit-btn")) return;
+
+    const card = e.target.closest(`.faculty-card[data-role="${role}"]`);
+    if (!card) return;
+
+    e.preventDefault();
+
+    const rect = card.getBoundingClientRect();
+    draggingEl = card;
+    startOrder = getRoleOrderFromDom(container, role);
+    isDragging = true;
+    lastRefCard = undefined;
+    pointerOffsetX = e.clientX - rect.left;
+    pointerOffsetY = e.clientY - rect.top;
+
+    placeholderEl = document.createElement("article");
+    placeholderEl.className = "faculty-card faculty-drag-placeholder";
+    placeholderEl.dataset.role = role;
+    placeholderEl.style.height = `${rect.height}px`;
+    placeholderEl.style.border = "2px dashed #9bb7df";
+    placeholderEl.style.background = "rgba(155, 183, 223, 0.14)";
+    placeholderEl.style.boxShadow = "none";
+    placeholderEl.style.transform = "none";
+    placeholderEl.style.pointerEvents = "none";
+    container.insertBefore(placeholderEl, card.nextSibling);
+
+    draggingEl.classList.add("is-dragging");
+    container.classList.add("is-reordering");
+    draggingEl.style.position = "fixed";
+    draggingEl.style.left = `${rect.left}px`;
+    draggingEl.style.top = `${rect.top}px`;
+    draggingEl.style.width = `${rect.width}px`;
+    draggingEl.style.height = `${rect.height}px`;
+    draggingEl.style.zIndex = "9999";
+    draggingEl.style.pointerEvents = "none";
+    draggingEl.style.margin = "0";
+
+    savedBodyUserSelect = document.body.style.userSelect;
+    savedBodyCursor = document.body.style.cursor;
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "grabbing";
+
+    window.__facultyDragY = e.clientY;
+    lastPointerX = e.clientX;
+    lastPointerY = e.clientY;
+    startAutoScroll();
+
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+  });
+
+  window.addEventListener("blur", () => {
+    if (!isDragging) return;
+    onPointerUp();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (!isDragging) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      onPointerUp();
+    }
+  });
 }
 
 // ---------- INIT PAGE ----------
@@ -456,6 +740,12 @@ async function initFacultyPage() {
         createFacultyCard(s, { role: "staff", index: idx, isAdmin })
       );
     });
+  }
+
+  if (isAdmin) {
+    setupFacultyDragReorder(adminGrid, "admin");
+    setupFacultyDragReorder(facultyGrid, "teacher");
+    if (staffGrid) setupFacultyDragReorder(staffGrid, "staff");
   }
 
   // ADD ADMIN

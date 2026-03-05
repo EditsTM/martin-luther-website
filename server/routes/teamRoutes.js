@@ -2,25 +2,19 @@
  * File: server\routes\teamRoutes.js
  * Purpose: Defines HTTP route handlers and request validation for teamRoutes operations.
  */
-//server/routes/teamRoutes.js
+// server/routes/teamRoutes.js
 import express from "express";
 import fs from "fs";
 import { promises as fsp } from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import multer from "multer";
 import { enforceTrustedOrigin } from "../middleware/requestSecurity.js";
 import { hasValidImageSignature } from "../middleware/uploadValidation.js";
+import { db } from "../db/suggestionsDb.js";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-//Path to server/content/team.json
-const TEAM_PATH = path.join(__dirname, "../content/team.json");
-
-//Upload directory for team images (public/images/team)
+// Upload directory for team images (public/images/team)
 const publicDir = path.join(process.cwd(), "public");
 const uploadDir = path.join(publicDir, "images", "team");
 
@@ -28,8 +22,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-
-//Admin guard (same concept as your other routes)
 function requireAdmin(req, res, next) {
   if (!req.session || !req.session.isAdmin) {
     return res.status(403).json({ error: "Unauthorized" });
@@ -42,12 +34,9 @@ const requireSameOrigin = enforceTrustedOrigin({ allowNoOrigin: false });
 const LIMITS = {
   name: 80,
   subject: 120,
-
-  // [OK] CHANGE: store bio as ONE string; cap total size only
   bioTotal: 24000,
 };
 
-// [OK] Normalize/validate strings (prevents huge payloads + downstream XSS risk)
 function cleanString(v, max) {
   if (v === undefined || v === null) return undefined;
   const s = String(v).trim();
@@ -55,70 +44,47 @@ function cleanString(v, max) {
   return s.length > max ? s.slice(0, max) : s;
 }
 
-function normalizeBio(bio) {
+function normalizeBioText(bio) {
   if (bio === undefined) return undefined;
-
-  const keepIndent = (s) =>
-    String(s ?? "")
-      .replace(/\r\n/g, "\n")
-      .replace(/[ \t]+$/gm, "");
-
-  let parts = [];
-  if (Array.isArray(bio)) {
-    parts = bio.map((p) => keepIndent(p));
-  } else {
-    parts = String(bio ?? "")
-      .replace(/\r\n/g, "\n")
-      .split("\n\n")
-      .map((p) => keepIndent(p));
-  }
-
-  parts = parts.filter((p) => p.length > 0).slice(0, LIMITS.bioParagraphs);
-  parts = parts.map((p) =>
-    p.length > LIMITS.bioParagraphLen ? p.slice(0, LIMITS.bioParagraphLen) : p
-  );
-
-  // keep your total limit logic the same
-  const total = parts.reduce((sum, p) => sum + p.length, 0);
-  if (total > LIMITS.bioTotal) {
-    let remaining = LIMITS.bioTotal;
-    const trimmed = [];
-    for (const p of parts) {
-      if (remaining <= 0) break;
-      const take = Math.min(p.length, remaining);
-      trimmed.push(p.slice(0, take));
-      remaining -= take;
-    }
-    return trimmed.filter((p) => p.length > 0);
-  }
-
-  return parts;
+  const raw = Array.isArray(bio)
+    ? bio.map((p) => String(p ?? "")).join("\n\n")
+    : String(bio ?? "");
+  const normalized = raw
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+$/gm, "");
+  return normalized.length > LIMITS.bioTotal
+    ? normalized.slice(0, LIMITS.bioTotal)
+    : normalized;
 }
 
-
-// [OK] Atomic JSON write to avoid partial/corrupt file
-async function atomicWriteJson(filePath, dataObj) {
-  const dir = path.dirname(filePath);
-  const tmpPath = path.join(
-    dir,
-    `.tmp-${path.basename(filePath)}-${process.pid}-${Date.now()}`
-  );
-  const json = JSON.stringify(dataObj, null, 2);
-  await fsp.writeFile(tmpPath, json, "utf8");
-  await fsp.rename(tmpPath, filePath);
+function listTeamRows() {
+  return db
+    .prepare(
+      `
+      SELECT id, name, subject, image, bio, sortOrder
+      FROM team_members
+      ORDER BY sortOrder ASC, id ASC
+    `
+    )
+    .all();
 }
 
-// [OK] Read team.json safely
-function readTeam() {
-  const raw = fs.readFileSync(TEAM_PATH, "utf8");
-  const parsed = JSON.parse(raw);
-  // Ensure shape doesn't explode your code
-  if (!parsed || typeof parsed !== "object") return { team: [] };
-  if (!Array.isArray(parsed.team)) parsed.team = [];
-  return parsed;
+function teamPayloadFromDb() {
+  const team = listTeamRows().map((row) => ({
+    name: String(row?.name ?? "Name"),
+    subject: String(row?.subject ?? "Pastor"),
+    image: String(row?.image ?? "/images/Placeholder.jpg"),
+    bio: String(row?.bio ?? ""),
+  }));
+  return { team };
 }
 
-// [OK] Multer storage config (safe filenames)
+function getTeamRowByIndex(index) {
+  const rows = listTeamRows();
+  if (!Number.isInteger(index) || index < 0 || index >= rows.length) return null;
+  return rows[index];
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
@@ -132,15 +98,13 @@ const storage = multer.diskStorage({
   },
 });
 
-// [OK] Upload restrictions (blocks dangerous types + disk fill)
 const upload = multer({
   storage,
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB
+    fileSize: 2 * 1024 * 1024,
     files: 1,
   },
   fileFilter: (req, file, cb) => {
-    // Block SVG (common stored XSS vector) + only allow common raster formats
     const allowed = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
     if (!allowed.has(file.mimetype)) {
       return cb(new Error("Invalid file type"));
@@ -149,131 +113,118 @@ const upload = multer({
   },
 });
 
-// [OK] Friendly multer error handler (so invalid files don't crash / leak stack)
 function multerErrorHandler(err, req, res, next) {
   if (!err) return next();
   return res.status(400).json({ success: false, error: err.message || "Upload failed" });
 }
 
-/* =========================
-   PUBLIC: GET TEAM
-   GET /api/team  (mounted in server.js)
-========================= */
 router.get("/", (req, res) => {
   try {
-    const data = readTeam();
+    const data = teamPayloadFromDb();
     res.json(data);
   } catch (err) {
-    console.error("Error reading team.json", err);
+    console.error("Error reading team data", err);
     res.status(500).json({ error: "Failed to read team data" });
   }
 });
 
-/* =========================
-   ADMIN: ADD MEMBER
-   POST /api/team
-   body: { name, subject, image, bio }
-========================= */
-router.post("/", requireSameOrigin, requireAdmin, async (req, res) => {
+router.post("/", requireSameOrigin, requireAdmin, (req, res) => {
   try {
     const name = cleanString(req.body?.name, LIMITS.name);
     const subject = cleanString(req.body?.subject, LIMITS.subject);
     const image = cleanString(req.body?.image, 300);
-    const bio = normalizeBio(req.body?.bio);
+    const bio = normalizeBioText(req.body?.bio);
 
     if (!name || !subject) {
       return res.status(400).json({ error: "name and subject are required fields" });
     }
+    if (image && !image.startsWith("/images/")) {
+      return res.status(400).json({ error: "Invalid image path" });
+    }
 
-    const data = readTeam();
+    const count = db.prepare("SELECT COUNT(*) AS count FROM team_members").get()?.count;
+    const sortOrder = Number(count || 0);
 
-    const newMember = {
+    db.prepare(
+      `
+      INSERT INTO team_members (name, subject, image, bio, sortOrder, updatedAt)
+      VALUES (@name, @subject, @image, @bio, @sortOrder, datetime('now'))
+    `
+    ).run({
       name,
       subject,
       image: image || "/images/Placeholder.jpg",
-
-      // [OK] CHANGE: bio is a STRING now (not an array)
       bio: bio ?? "",
-    };
+      sortOrder,
+    });
 
-    data.team.push(newMember);
-    await atomicWriteJson(TEAM_PATH, data);
-
-    res.json(data);
+    res.json(teamPayloadFromDb());
   } catch (err) {
     console.error("Error adding team member", err);
     res.status(500).json({ error: "Failed to add team member" });
   }
 });
 
-/* =========================
-   ADMIN: UPDATE MEMBER
-   PUT /api/team/:index
-========================= */
-router.put("/:index", requireSameOrigin, requireAdmin, async (req, res) => {
+router.put("/:index", requireSameOrigin, requireAdmin, (req, res) => {
   try {
-    const idx = parseInt(req.params.index, 10);
-    const data = readTeam();
+    const idx = Number.parseInt(req.params.index, 10);
+    const row = getTeamRowByIndex(idx);
 
-    if (Number.isNaN(idx) || idx < 0 || idx >= data.team.length) {
-      return res.status(400).json({ error: "Invalid member index" });
-    }
+    if (!row) return res.status(400).json({ error: "Invalid member index" });
 
-    const member = data.team[idx];
+    const next = {
+      id: Number(row.id),
+      name: req.body?.name !== undefined ? cleanString(req.body.name, LIMITS.name) : String(row.name ?? ""),
+      subject:
+        req.body?.subject !== undefined
+          ? cleanString(req.body.subject, LIMITS.subject)
+          : String(row.subject ?? ""),
+      image: String(row.image ?? "/images/Placeholder.jpg"),
+      bio: req.body?.bio !== undefined ? normalizeBioText(req.body.bio) ?? "" : String(row.bio ?? ""),
+    };
 
-    if (req.body?.name !== undefined) member.name = cleanString(req.body.name, LIMITS.name);
-    if (req.body?.subject !== undefined) member.subject = cleanString(req.body.subject, LIMITS.subject);
-
-    // Only allow local image paths (prevents javascript: / weird schemes)
     if (req.body?.image !== undefined) {
       const img = cleanString(req.body.image, 300);
       if (img && !img.startsWith("/images/")) {
         return res.status(400).json({ error: "Invalid image path" });
       }
-      member.image = img || "/images/Placeholder.jpg";
+      next.image = img || "/images/Placeholder.jpg";
     }
 
-    if (req.body?.bio !== undefined) {
-      // [OK] CHANGE: store as STRING
-      member.bio = normalizeBio(req.body.bio) ?? "";
-    }
+    db.prepare(
+      `
+      UPDATE team_members
+      SET name = @name,
+          subject = @subject,
+          image = @image,
+          bio = @bio,
+          updatedAt = datetime('now')
+      WHERE id = @id
+    `
+    ).run(next);
 
-    await atomicWriteJson(TEAM_PATH, data);
-    res.json(data);
+    res.json(teamPayloadFromDb());
   } catch (err) {
     console.error("Error updating team member", err);
     res.status(500).json({ error: "Failed to update team member" });
   }
 });
 
-/* =========================
-   ADMIN: DELETE MEMBER
-   DELETE /api/team/:index
-========================= */
-router.delete("/:index", requireSameOrigin, requireAdmin, async (req, res) => {
+router.delete("/:index", requireSameOrigin, requireAdmin, (req, res) => {
   try {
-    const idx = parseInt(req.params.index, 10);
-    const data = readTeam();
+    const idx = Number.parseInt(req.params.index, 10);
+    const row = getTeamRowByIndex(idx);
 
-    if (Number.isNaN(idx) || idx < 0 || idx >= data.team.length) {
-      return res.status(400).json({ error: "Invalid member index" });
-    }
+    if (!row) return res.status(400).json({ error: "Invalid member index" });
 
-    data.team.splice(idx, 1);
-    await atomicWriteJson(TEAM_PATH, data);
-
-    res.json(data);
+    db.prepare("DELETE FROM team_members WHERE id = ?").run(Number(row.id));
+    res.json(teamPayloadFromDb());
   } catch (err) {
     console.error("Error deleting team member", err);
     res.status(500).json({ error: "Failed to delete team member" });
   }
 });
 
-/* =========================
-   ADMIN: UPLOAD IMAGE
-   POST /api/team/upload-image
-   form-data: image (file), index (number)
-========================= */
 router.post(
   "/upload-image",
   requireSameOrigin,
@@ -282,7 +233,7 @@ router.post(
   multerErrorHandler,
   async (req, res) => {
     try {
-      const idx = parseInt(req.body?.index, 10);
+      const idx = Number.parseInt(req.body?.index, 10);
 
       if (!req.file) {
         return res.status(400).json({ success: false, error: "No file uploaded" });
@@ -293,18 +244,21 @@ router.post(
         return res.status(400).json({ success: false, error: "Invalid image content" });
       }
 
-      const data = readTeam();
-
-      if (Number.isNaN(idx) || idx < 0 || idx >= data.team.length) {
-        // Cleanup uploaded file if index is invalid
+      const row = getTeamRowByIndex(idx);
+      if (!row) {
         try { await fsp.unlink(req.file.path); } catch {}
         return res.status(400).json({ success: false, error: "Invalid member index" });
       }
 
       const relPath = `images/team/${req.file.filename}`;
-      data.team[idx].image = "/" + relPath;
-
-      await atomicWriteJson(TEAM_PATH, data);
+      db.prepare(
+        `
+        UPDATE team_members
+        SET image = ?,
+            updatedAt = datetime('now')
+        WHERE id = ?
+      `
+      ).run("/" + relPath, Number(row.id));
 
       res.json({ success: true, image: relPath });
     } catch (err) {

@@ -2,7 +2,6 @@
  * File: public\css\church\events.css
  * Purpose: Defines presentation styles for the events interface.
  */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
 
 :root{
   --blue: #282f7f;
@@ -12,43 +11,19 @@
 }
 
 /* =============================
-   GLOBAL
-============================= */
-body{
-  margin: 0;
-  font-family: "Open Sans", sans-serif;
-  color: #2c3e50;
-  background: #fff;
-}
-
-/* =============================
    HERO SECTION
 ============================= */
 .events-hero{
-  position: relative;
-  width: 100%;
-  height: 300px;
   background: url("/images/Prayer.jpg") no-repeat center/cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .events-overlay{
-  position: absolute;
-  inset: 0;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--hero-overlay);
 }
 
 .events-overlay h1{
-  color: #fff;
   font-size: 50px;
   font-weight: 700;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
 }
 
 /* =============================
@@ -80,23 +55,26 @@ body{
 }
 
 .grid-item.grey{
-  background: var(--grey);
+  background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
   min-height: 400px;
   padding-bottom: 20px;
+  border: 2px solid #000;
 }
 
 .grid-item.white{
-  background: #fff;
+  background: var(--grey);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
   min-height: 400px;
+  box-sizing: border-box;
+  border: 2px solid #000;
 }
 
 /* =============================
@@ -199,7 +177,9 @@ body{
 .event-modal{
   width: min(920px, 92vw);
   max-height: 90vh;
-  overflow: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   background: #fff;
   border-radius: 16px;
   padding: 22px 26px;

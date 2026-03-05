@@ -42,19 +42,20 @@
     <div class="times-cards">
 
       <!-- Service Times -->
-      <div class="time-card">
+      <div class="time-card" id="service-times-card">
         <div class="card-header">
           <img src="/images/time.png" alt="Clock icon" />
-          <h2>Service Times</h2>
+          <h2 id="service-title">Service Times</h2>
         </div>
-        <div class="card-body">
-          <h3>Sunday Mornings</h3>
-          <p>8:00am & 10:30am</p>
+        <div class="card-body" id="service-times-body">
+          <h3 id="service-first-label">Sunday Mornings</h3>
+          <p id="service-first-time">8:00am & 10:30am</p>
           <hr />
-          <h3>Monday Evenings</h3>
-          <p>6:00pm</p>
-          <p class="small-note">*Summer hours will differ</p>
+          <h3 id="service-second-label">Monday Evenings</h3>
+          <p id="service-second-time">6:00pm</p>
+          <p class="small-note" id="service-note">*Summer hours will differ</p>
         </div>
+        <button id="edit-service-times-btn" class="edit-btn admin-only" type="button">Edit</button>
       </div>
 
       <!-- Our Location -->
@@ -81,7 +82,41 @@
       </div>
 
     </div>
+    <div class="service-times-admin-actions admin-only">
+      <button id="add-service-time-btn" class="add-service-time-btn" type="button">
+        <span class="add-service-time-plus">+</span>
+        <span>New Service Time</span>
+      </button>
+    </div>
+    <div id="service-times-extra-list" class="service-times-extra-list"></div>
   </section>
+
+  <div id="service-times-modal" class="service-modal">
+    <div class="service-modal-content">
+      <button id="service-modal-close-btn" class="modal-close-btn" type="button" aria-label="Close">&times;</button>
+      <h2 class="modal-title">Edit Service Times</h2>
+
+      <div class="modal-form-section">
+        <label class="modal-label">
+          Card Title
+          <input type="text" id="service-modal-title" />
+        </label>
+
+        <label class="modal-label">
+          Small Note
+          <input type="text" id="service-modal-note" />
+        </label>
+
+        <div id="service-modal-sections-list"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="service-modal-add-section-btn" class="event-modal-primary" type="button">Add Section</button>
+        <button id="service-modal-delete-btn" class="event-modal-delete" type="button">Delete</button>
+        <button id="service-modal-save-btn" class="save-btn" type="button">Save</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 🔹 MAP SECTION -->
   <section class="map-section">
@@ -133,6 +168,7 @@
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>
+  <script src="/js/time.js"></script>
   <script src="/js/reveal.js"></script>
 </body>
 </html>

@@ -2,13 +2,13 @@
  * File: public\css\school\information.css
  * Purpose: Defines presentation styles for the information interface.
  */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
 
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  color: #2c3e50;
-  background: #fff;
+:root {
+  --ml-navy: #1e2a57;
+  --triangle-width: clamp(320px, 70vw, 600px);
+  --triangle-height: clamp(260px, 55vw, 450px);
+  --triangle-box-w: clamp(170px, 32vw, 230px);
+  --triangle-box-h: clamp(120px, 26vw, 170px);
 }
 
 /* =============================
@@ -18,47 +18,28 @@ body {
   position: relative;
   width: 100%;
   height: 300px;
-  background-color: white;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* ensures extended image doesn't leak out */
+  overflow: hidden;
 }
 
-/* pseudo-element holds the image and can be stretched safely */
 .info-hero::before {
   content: "";
   position: absolute;
   inset: 0;
-
-  background-image: url("../../images/Eagle.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
-
-  /* horizontal-only stretch */
-  transform: scaleX(1.08);
-
-  /* keep image centered after scaling */
-  transform-origin: center;
-
-  z-index: 1;
-}
-
-/* keep your text content above the image */
-.info-overlay {
-  position: relative;
-  z-index: 2;
+  background: url("/images/Eagle.jpg") no-repeat center center / contain;
 }
 
 .info-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(30, 42, 87, 0.85);
+  background: var(--hero-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 /* MATCH CHURCH PAGE HERO TITLE */
@@ -85,32 +66,12 @@ body {
   margin: 0 auto;
 }
 
-/* INTRO (not currently used but kept for consistency) */
-.info-intro-section {
-  text-align: center;
-  max-width: 900px;
-  margin: 0 auto 60px;
-}
-
-.info-heading {
-  font-size: 36px;
-  color: #282f7f;
-  font-weight: 800;
-  margin-bottom: 15px;
-}
-
-.info-intro {
-  font-size: 18px;
-  color: #555;
-  line-height: 1.7;
-}
-
 /* =============================
    SHARED SECTION STYLES
 ============================= */
 .section-tag {
   display: inline-block;
-  background: #282f7f;
+  background: var(--ml-navy);
   color: white;
   padding: 8px 20px;
   font-size: 15px;
@@ -159,14 +120,12 @@ body {
   margin-bottom: 40px;
 }
 
-/* [OK] NEW: Triangle column always centers itself in its grid cell */
 .about-main-image {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* [OK] NEW: Prevent any clipping inside the triangle column */
 .about-main-image,
 .triangle-area {
   overflow: visible;
@@ -189,7 +148,7 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: #282f7f;
+  background: var(--ml-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,41 +170,6 @@ body {
 .about-feature-text {
   font-size: 14px;
   color: #666;
-}
-
-.about-image-wrapper {
-  position: relative;
-}
-
-.about-main-image img {
-  width: 100%;
-  border-radius: 20px;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-  display: block;
-}
-
-.about-wels-badge {
-  position: absolute;
-  right: -20px;
-  bottom: -20px;
-  padding: 16px 18px;
-  max-width: 260px;
-  border-radius: 16px;
-  background: #282f7f;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
-  color: white;
-}
-
-.about-wels-text {
-  font-size: 28px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-
-.about-wels-badge p {
-  font-size: 14px;
-  margin: 0;
-  color: #e2e6ff;
 }
 
 .about-card-grid {
@@ -274,7 +198,7 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: #282f7f;
+  background: var(--ml-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -321,7 +245,7 @@ body {
 ============================= */
 .stats-section {
   padding: 50px 0;
-  background: #282f7f;
+  background: var(--ml-navy);
 }
 
 .stats-inner {
@@ -367,7 +291,7 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 18px;
-  background: #282f7f;
+  background: var(--ml-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -463,7 +387,7 @@ body {
 .mission-body { font-size: 17px; color: #555; line-height: 1.7; margin-bottom: 18px; }
 
 .mission-wels-box {
-  background: #282f7f;
+  background: var(--ml-navy);
   border-radius: 14px;
   padding: 18px 20px;
   color: white;
@@ -483,14 +407,14 @@ body {
   border-radius: 14px;
   padding: 18px 18px 20px;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-  border-top: 4px solid #282f7f;
+  border-top: 4px solid var(--ml-navy);
 }
 
 .value-icon {
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: #282f7f;
+  background: var(--ml-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -500,52 +424,6 @@ body {
 .value-icon img { width: 26px; height: 26px; }
 .value-card h4 { margin: 0 0 6px; font-size: 17px; color: #000; }
 .value-card p { margin: 0; font-size: 14px; color: #666; }
-
-/* =============================
-   BEYOND THE CLASSROOM
-============================= */
-.beyond-section {
-  padding: 80px 0;
-  background: linear-gradient(to bottom right, #282f7f, #1e245f);
-  color: white;
-}
-
-.beyond-inner { max-width: 1200px; }
-
-.beyond-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
-  gap: 40px;
-  align-items: center;
-}
-
-.beyond-image-wrapper img {
-  width: 100%;
-  border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-  display: block;
-}
-
-.beyond-heading { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: white; }
-.beyond-text { font-size: 17px; color: #e0e3ff; margin-bottom: 22px; }
-
-.beyond-items { display: grid; gap: 16px; }
-.beyond-item { display: flex; gap: 14px; align-items: flex-start; }
-
-.beyond-item-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.beyond-item-icon img { width: 26px; height: 26px; }
-.beyond-item-title { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
-.beyond-item-text { font-size: 14px; color: #d3d7ff; }
 
 /* =============================
    WHY FAMILIES CHOOSE US
@@ -568,7 +446,7 @@ body {
   border-radius: 14px;
   padding: 18px 18px 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid #282f7f;
+  border-left: 4px solid var(--ml-navy);
   display: flex;
   gap: 12px;
   align-items: flex-start;
@@ -578,7 +456,7 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: #282f7f;
+  background: var(--ml-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -593,7 +471,6 @@ body {
    GLOBAL HEADERS
 ============================= */
 h2, h3, h4 { color: #000; }
-.info-overlay h1 { color: white; }
 
 /* =============================
    ICON COLOR LOGIC
@@ -602,14 +479,11 @@ h2, h3, h4 { color: #000; }
 .info-card-icon img,
 .card-icon-circle img,
 .value-icon img,
-.beyond-item-icon img,
 .why-icon-circle img {
   filter: brightness(0) invert(1);
 }
 
-.about-main-image img,
-.mission-image img,
-.beyond-image-wrapper img {
+.mission-image img {
   filter: none;
 }
 
@@ -617,7 +491,6 @@ h2, h3, h4 { color: #000; }
    RESPONSIVE
 ============================= */
 
-/* [OK] NEW: Wrap triangle UNDER text BEFORE it ever gets cut off */
 @media (max-width: 1250px) {
   .about-grid {
     grid-template-columns: 1fr;
@@ -629,15 +502,12 @@ h2, h3, h4 { color: #000; }
 }
 
 @media (max-width: 1100px) {
-  .mission-grid,
-  .beyond-grid {
+  .mission-grid {
     grid-template-columns: 1fr;
   }
 
   .mission-image-wrapper { order: 1; }
   .mission-text { order: 2; }
-
-  .about-wels-badge { position: static; margin-top: 12px; }
 }
 
 @media (max-width: 900px) {
@@ -647,67 +517,12 @@ h2, h3, h4 { color: #000; }
     padding: 0 16px;
   }
 
-  .info-heading { font-size: 28px; }
-  .info-intro { font-size: 16px; }
   .section-title { font-size: 26px; }
   .section-description { font-size: 16px; }
 
   .about-feature-grid { grid-template-columns: 1fr; }
   .stats-inner { grid-template-columns: 1fr; }
-  .beyond-section { padding: 60px 0; }
 }
-
-@media (max-width: 600px) {
-  .about-wels-badge { padding: 12px 14px; }
-}
-
-/* =============================
-   COLOR UPDATE ONLY
-============================= */
-:root {
-  --ml-navy: rgba(41, 46, 124);
-}
-
-.info-heading { color: var(--ml-navy); }
-.section-tag { background: var(--ml-navy); }
-.about-feature-icon { background: var(--ml-navy); }
-.about-wels-badge { background: var(--ml-navy); }
-.info-card-icon { background: var(--ml-navy); }
-.stats-section { background: var(--ml-navy); }
-.card-icon-circle { background: var(--ml-navy); }
-.mission-wels-box { background: var(--ml-navy); }
-.value-card { border-top: 4px solid var(--ml-navy); }
-.value-icon { background: var(--ml-navy); }
-.beyond-section { background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57); }
-.why-card { border-left: 4px solid var(--ml-navy); }
-.why-icon-circle { background: var(--ml-navy); }
-
-.academic-card .card-list img {
-  filter: brightness(0) !important;
-  background: none !important;
-}
-
-/* =============================
-   FINAL COLOR UPDATE
-============================= */
-:root {
-  --ml-navy: #1e2a57;
-}
-
-.info-overlay { background: rgba(30, 42, 87, 0.85); }
-.info-heading { color: var(--ml-navy); }
-.section-tag { background: var(--ml-navy); }
-.about-feature-icon { background: var(--ml-navy); }
-.about-wels-badge { background: var(--ml-navy); }
-.info-card-icon { background: var(--ml-navy); }
-.stats-section { background: var(--ml-navy); }
-.card-icon-circle { background: var(--ml-navy); }
-.mission-wels-box { background: var(--ml-navy); }
-.value-card { border-top: 4px solid var(--ml-navy); }
-.value-icon { background: var(--ml-navy); }
-.beyond-section { background: linear-gradient(to bottom right, var(--ml-navy), #1e2a57); }
-.why-card { border-left: 4px solid var(--ml-navy); }
-.why-icon-circle { background: var(--ml-navy); }
 
 /* =============================
    FIX FOR STUDENT OPPORTUNITIES ICONS
@@ -724,19 +539,11 @@ h2, h3, h4 { color: #000; }
 
 /* =============================
    PERFECT TRIANGLE LAYOUT
-   [OK] Fluid sizing — NO transforms, NO clipping
-   [OK] Animations restored
+   Fluid sizing without transforms or clipping
 ============================= */
 
-/* Responsive sizing variables */
-:root {
-  --triangle-width: clamp(320px, 70vw, 600px);
-  --triangle-height: clamp(260px, 55vw, 450px);
-  --triangle-box-w: clamp(170px, 32vw, 230px);
-  --triangle-box-h: clamp(120px, 26vw, 170px);
-}
-
 .triangle-area {
+  margin-bottom: 28px; /* keeps it from crashing into stuff below */
   margin-top: 40px;
   display: flex;
   justify-content: center;
@@ -750,7 +557,6 @@ h2, h3, h4 { color: #000; }
   margin: 0 auto;
 }
 
-/* [OK] animations (restored) */
 @keyframes triangleGlow {
   0% { background-position: 0% 0%; filter: brightness(1); }
   50% { background-position: 100% 100%; filter: brightness(1.18); }
@@ -836,18 +642,12 @@ h2, h3, h4 { color: #000; }
   bottom: 0;
   right: 0;
 }
-/* [OK] Prevent overlap on small screens */
-.triangle-area{
-  margin-bottom: 28px; /* keeps it from crashing into stuff below */
-}
 
-/* [OK] Make the SVG always fill the wrapper */
 .triangle-lines{
   width: 100%;
   height: 100%;
 }
 
-/* [OK] Tighten everything up under 500px */
 @media (max-width: 500px){
   :root{
     --triangle-width: clamp(280px, 92vw, 420px);
@@ -867,7 +667,6 @@ h2, h3, h4 { color: #000; }
   }
 }
 
-/* [OK] Even tighter for tiny phones */
 @media (max-width: 380px){
   :root{
     --triangle-box-w: clamp(110px, 40vw, 150px);

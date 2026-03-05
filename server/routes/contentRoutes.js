@@ -4,16 +4,10 @@
  */
 //server/routes/contentRoutes.js
 import express from "express";
-import path from "path";
-import { promises as fsp } from "fs";
-import { fileURLToPath } from "url";
 import { enforceTrustedOrigin } from "../middleware/requestSecurity.js";
+import { db } from "../db/suggestionsDb.js";
 
 const router = express.Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const EVENTS_PATH = path.join(__dirname, "../content/events.json");
 
 const requireSameOrigin = enforceTrustedOrigin({ allowNoOrigin: false });
 
@@ -42,44 +36,163 @@ function validateEventsPayload(req, res, next) {
   return next();
 }
 
-// [OK] Atomic write to prevent partial/corrupt JSON on crash
-async function atomicWriteJson(filePath, dataObj) {
-  const dir = path.dirname(filePath);
-  const tmpPath = path.join(dir, `.tmp-${path.basename(filePath)}-${process.pid}-${Date.now()}`);
+function normalizeEventRow(row) {
+  return {
+    title: String(row?.title ?? ""),
+    date: String(row?.date ?? ""),
+    description: String(row?.description ?? ""),
+    image: String(row?.image ?? ""),
+    notes: String(row?.notes ?? ""),
+  };
+}
 
-  const json = JSON.stringify(dataObj, null, 2);
+function fetchEventsOrdered() {
+  return db
+    .prepare(
+      `
+      SELECT id, title, date, description, image, notes, sortOrder
+      FROM events
+      ORDER BY sortOrder ASC, id ASC
+    `
+    )
+    .all();
+}
 
-  await fsp.writeFile(tmpPath, json, "utf8");
-  await fsp.rename(tmpPath, filePath);
+function defaultFooterTimeSettings() {
+  return {
+    note: "*Summer hours vary*",
+    lineOne: "Sundays - 8am & 10:30am",
+    lineTwo: "Mondays - 6pm",
+  };
 }
 
 /* ======================================================
    ROUTES
 ====================================================== */
 
-// 🟢 Publicly serve the events.json file (everyone can view)
+// 🟢 Publicly serve events in the same JSON shape as before.
 router.get("/events.json", (req, res) => {
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  // If you update events often and want clients to always fetch fresh:
-  // res.setHeader("Cache-Control", "no-store");
-  res.sendFile(EVENTS_PATH);
+  try {
+    const events = fetchEventsOrdered().map((row) => normalizeEventRow(row));
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.json({ events });
+  } catch (err) {
+    console.error("Failed to load events:", err);
+    return res.status(500).json({ error: "Failed to load events" });
+  }
 });
 
-// 🔒 Admin can edit events.json (only when logged in)
+router.get("/service-times.json", (req, res) => {
+  try {
+    const cards = db
+      .prepare(
+        `
+        SELECT id, title, note, isAdminOnly, sortOrder
+        FROM service_time_cards
+        ORDER BY sortOrder ASC, id ASC
+      `
+      )
+      .all();
+
+    if (!Array.isArray(cards) || cards.length === 0) {
+      return res.json({ cards: [] });
+    }
+
+    const sections = db
+      .prepare(
+        `
+        SELECT id, cardId, label, timeText, sortOrder
+        FROM service_time_sections
+        ORDER BY cardId ASC, sortOrder ASC, id ASC
+      `
+      )
+      .all();
+
+    const cardsOut = cards.map((card) => ({
+      id: Number(card.id),
+      title: String(card.title || "Service Times"),
+      note: String(card.note || ""),
+      isAdminOnly: !!Number(card.isAdminOnly),
+      sections: sections
+        .filter((s) => Number(s.cardId) === Number(card.id))
+        .map((s) => ({
+          id: Number(s.id),
+          label: String(s.label || ""),
+          timeText: String(s.timeText || ""),
+        })),
+    }));
+
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.json({ cards: cardsOut });
+  } catch (err) {
+    console.error("Failed to load service times:", err);
+    return res.status(500).json({ error: "Failed to load service times" });
+  }
+});
+
+router.get("/footer-time.json", (req, res) => {
+  try {
+    const row = db
+      .prepare(
+        `
+        SELECT note, lineOne, lineTwo
+        FROM footer_time_settings
+        WHERE id = 1
+      `
+      )
+      .get();
+
+    const fallback = defaultFooterTimeSettings();
+    const out = {
+      note: String(row?.note ?? fallback.note),
+      lineOne: String(row?.lineOne ?? fallback.lineOne),
+      lineTwo: String(row?.lineTwo ?? fallback.lineTwo),
+    };
+
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.json(out);
+  } catch (err) {
+    console.error("Failed to load footer time:", err);
+    return res.status(500).json({ error: "Failed to load footer time" });
+  }
+});
+
+// 🔒 Admin can replace full events payload in DB (legacy endpoint kept same).
 router.post(
   "/events.json",
   requireSameOrigin,
   validateEventsPayload,
-  async (req, res) => {
+  (req, res) => {
     if (!req.session || !req.session.isAdmin) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
+    const listIn = Array.isArray(req.body?.events) ? req.body.events : [];
+    const rows = listIn.map((ev, idx) => ({
+      title: String(ev?.title ?? "").slice(0, 120),
+      date: String(ev?.date ?? "").slice(0, 80),
+      description: String(ev?.description ?? "").slice(0, 2000),
+      image: String(ev?.image ?? "").slice(0, 300),
+      notes: String(ev?.notes ?? "").slice(0, 12000),
+      sortOrder: idx,
+    }));
+
     try {
-      await atomicWriteJson(EVENTS_PATH, req.body);
+      db.transaction(() => {
+        db.prepare("DELETE FROM events").run();
+        if (!rows.length) return;
+
+        const insert = db.prepare(
+          `
+          INSERT INTO events (title, date, description, image, notes, sortOrder, updatedAt)
+          VALUES (@title, @date, @description, @image, @notes, @sortOrder, datetime('now'))
+        `
+        );
+        rows.forEach((row) => insert.run(row));
+      })();
       return res.json({ success: true });
     } catch (err) {
-      console.error("[ERROR] Error writing events.json:", err);
+      console.error("[ERROR] Error writing events:", err);
       return res.status(500).json({ error: "Failed to save content" });
     }
   }

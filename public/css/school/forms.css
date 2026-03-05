@@ -2,67 +2,33 @@
  * File: public\css\school\forms.css
  * Purpose: Defines presentation styles for the forms interface.
  */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
-
-:root {
-  --ml-blue: #1e2a57;
-  --light-blue: #4279bc;
-  --grey: #eaf0fa;
-  --border: rgba(30, 42, 87, 0.22);
-}
-
-/* =============================
-   HERO SECTION
-============================= */
-.forms-hero {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.forms-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .forms-overlay h1 {
-  color: white;
-  font-size: 48px;          /* [OK] same scale as other pages */
+  font-size: 48px;
   font-weight: 800;
-  letter-spacing: 1px;      /* [OK] subtle, not shouty */
-  margin: 0;
-  text-align: center;
+  letter-spacing: 1px;
 }
 
 
 /* =============================
-   MAIN CONTENT (UPDATED: BIGGER + CENTERED)
+   MAIN CONTENT
 ============================= */
 .forms-content {
-  max-width: 1200px;          /* [OK] bigger page width */
-  margin: 80px auto;          /* [OK] more breathing room */
+  max-width: 1200px;
+  margin: 80px auto;
   padding: 0 20px;
   font-family: "Open Sans", sans-serif;
 
-  display: flex;              /* [OK] centers the panel */
+  display: flex;
   justify-content: center;
 }
 
 /* =============================
-   NEW BIG CENTER PANEL (USE THIS)
+   BIG CENTER PANEL
 ============================= */
 .forms-panel {
   width: 100%;
-  max-width: 900px;           /* [OK] big but controlled */
+  max-width: 900px;
   background: #ffffff;
   border: 3px solid var(--ml-blue);
   padding: 60px 50px;
@@ -71,7 +37,7 @@
 
 .forms-panel h2 {
   margin: 0 0 20px;
-  font-size: 42px;            /* [OK] bigger headline */
+  font-size: 42px;
   font-weight: 800;
   color: var(--ml-blue);
 }
@@ -79,7 +45,7 @@
 .forms-panel p {
   margin: 0 auto 40px;
   max-width: 650px;
-  font-size: 20px;            /* [OK] bigger readable text */
+  font-size: 20px;
   line-height: 1.7;
   color: #000;
 }
@@ -116,141 +82,5 @@
 
   .forms-panel p {
     font-size: 18px;
-  }
-}
-
-/* =============================
-   (OLD) Grid so adding more cards later is easy
-   Keeping this so nothing breaks if you still use it
-============================= */
-.forms-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-
-/* =============================
-   (OLD) CARD (UPGRADED)
-   Keeping this too, but you can delete later if not used
-============================= */
-.form-card {
-  position: relative;
-  background: #ffffff;
-  border: 2px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
-  text-align: left;
-}
-
-.form-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 8px;
-  width: 100%;
-  background: linear-gradient(90deg, var(--ml-blue), var(--light-blue));
-}
-
-.form-card-top {
-  padding: 26px 24px 10px;
-}
-
-.form-badge {
-  display: inline-block;
-  background: rgba(30, 42, 87, 0.10);
-  color: #000;
-  border: 1px solid rgba(30, 42, 87, 0.20);
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 12px;
-  margin-bottom: 12px;
-}
-
-.form-card h2 {
-  margin: 0 0 10px;
-  color: #000;
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.form-card p {
-  margin: 0;
-  color: #000;
-  font-size: 16px;
-  line-height: 1.65;
-}
-
-.form-card-actions {
-  padding: 18px 24px 26px;
-  background: var(--grey);
-  border-top: 1px solid rgba(30, 42, 87, 0.12);
-}
-
-/* =============================
-   (OLD) BUTTON (UPGRADED)
-============================= */
-.form-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  min-width: 260px;
-  padding: 12px 18px;
-
-  background: var(--ml-blue);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 800;
-  border-radius: 10px;
-  border: 2px solid var(--ml-blue);
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
-  overflow: hidden;
-}
-
-.form-btn:hover {
-  background: #ffffff;
-  color: var(--ml-blue);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 20px rgba(30, 42, 87, 0.25);
-}
-
-.form-btn::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 45%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-20deg);
-}
-
-.form-btn:hover::after {
-  animation: shine 0.9s ease;
-}
-
-@keyframes shine {
-  0% { left: -75%; }
-  100% { left: 125%; }
-}
-
-.btn-arrow {
-  font-size: 18px;
-  line-height: 1;
-}
-
-@media (min-width: 900px) {
-  .forms-grid {
-    grid-template-columns: 1fr 1fr;
   }
 }

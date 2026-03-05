@@ -2,23 +2,8 @@
  * File: public\css\school\enrollment.css
  * Purpose: Defines presentation styles for the enrollment interface.
  */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap');
-
-:root {
-  --blue: #282f7f;
-  --light-blue: #4279bc;
-  --grey: #eaf0fa;
-  --orange: #ff9f45;
-  --orange-hover: #ffb366;
-}
-
-* { box-sizing: border-box; }
 
 body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  background: #fff;
-  color: #2c3e50;
   overflow-x: hidden;
 }
 
@@ -26,23 +11,7 @@ body {
    ENROLL HERO SECTION
 ============================= */
 .enroll-hero {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center/cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   text-align: center;
-}
-
-.enroll-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .enroll-hero-content {
@@ -55,14 +24,9 @@ body {
   color: #fff;
 }
 
-/* [OK] MATCH INFORMATION HERO TITLE EXACTLY */
 .enroll-overlay h1 {
-  color: #fff;
   font-size: 50px;
   font-weight: 800;
-  letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* =============================
@@ -74,43 +38,22 @@ body {
   gap: 30px;
 }
 
-.hero-buttons .btn {
-  display: inline-block;
-  background: transparent;
-  color: white;
-  border: 2.5px solid white;
-  padding: 18px 50px;
-  font-size: 22px;
-  font-weight: 700;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-}
-
-.hero-buttons .btn:hover {
-  background: white;
-  color: #1e2a57;
-  transform: scale(1.07);
-}
-
-/* =============================
-   PRIMARY BUTTON
-============================= */
+.hero-buttons .btn,
 .btn-primary {
   display: inline-block;
   background: transparent;
-  border: 2.5px solid white;
   color: white;
+  border: 2.5px solid white;
   padding: 18px 50px;
   font-size: 22px;
   font-weight: 700;
   border-radius: 6px;
   text-decoration: none;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
+  letter-spacing: 0.5px;
 }
 
+.hero-buttons .btn:hover,
 .btn-primary:hover {
   background: white;
   color: #1e2a57;
@@ -131,7 +74,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  background: var(--grey);
+  background: var(--ml-grey);
   overflow: visible;
   flex-wrap: wrap;
 }
@@ -154,7 +97,7 @@ body {
   position: absolute;
   inset: 0 0 0 auto;
   width: 55%;
-  background: var(--grey);
+  background: var(--ml-grey);
   clip-path: polygon(25% 0, 100% 0, 100% 100%, 5% 100%);
   z-index: 1;
 }
@@ -163,7 +106,7 @@ body {
   position: relative;
   z-index: 3;
   width: 45%;
-  background: var(--grey);
+  background: var(--ml-grey);
   padding-left: 6%;
 }
 
@@ -202,7 +145,6 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* [OK] UPDATED COLOR PALETTE */
   background: linear-gradient(
     135deg,
     rgba(30, 42, 87, 0.95),
@@ -228,7 +170,7 @@ body {
   z-index: 0;
 }
 
-/* [OK] BUBBLES — COLOR TUNED, ANIMATION UNCHANGED */
+/* Bubble animation layers */
 .enroll-steps::before {
   background-image:
     radial-gradient(circle 120px at 10% 90%, rgba(210,225,255,0.35) 20%, transparent 70%),
@@ -333,7 +275,7 @@ body {
   .step p { font-size: 15px; }
 }
 /* =============================
-   SPACING FIX – BUTTON BELOW STEPS
+   SPACING FIX: BUTTON BELOW STEPS
 ============================= */
 .steps-button {
   margin-top: 60px;

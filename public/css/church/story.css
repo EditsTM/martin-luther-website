@@ -2,44 +2,83 @@
  * File: public\css\church\story.css
  * Purpose: Defines presentation styles for the story interface.
  */
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  color: #2c3e50;
-  background-color: white;
-}
-
 /* HERO */
-.story-hero {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background: url("../../images/Prayer.jpg") no-repeat center center / cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .story-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(30, 42, 87, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--hero-overlay);
 }
 
 .story-overlay h1 {
-  color: white;
   font-size: clamp(28px, 5vw, 50px); /* [OK] scales cleanly on small screens */
   font-weight: 800;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  text-align: center;               /* [OK] force center */
   max-width: 1000px;                /* [OK] prevents weird wrapping */
   padding: 0 20px;                  /* [OK] breathing room on mobile */
+}
+
+.story-affiliation {
+  background: #ffffff;
+  padding: 34px 20px 28px;
+}
+
+.story-affiliation-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1.6fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.story-affiliation-logo-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.story-affiliation-logo {
+  width: min(250px, 100%);
+  height: auto;
+  display: block;
+}
+
+.story-affiliation-content h2 {
+  color: #282f7f;
+  font-size: clamp(30px, 3vw, 46px);
+  font-weight: 600;
+  line-height: 1.1;
+  margin: 0 0 8px;
+}
+
+.story-affiliation-content h3 {
+  color: #6c7380;
+  font-size: clamp(20px, 1.6vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.story-affiliation-content p {
+  color: #3f4652;
+  font-size: clamp(15px, 1.02vw, 18px);
+  line-height: 1.65;
+  margin: 0 0 12px;
+  max-width: 74ch;
+}
+
+.story-values-graphic {
+  padding: 28px 20px 26px;
+  background: #ffffff;
+}
+
+.story-section-separator {
+  width: 100%;
+  height: 2px;
+  margin: 0;
+  background: rgba(40, 47, 127, 0.28);
+}
+
+.wels-values-svg {
+  width: min(840px, 100%);
+  display: block;
+  margin: 0 auto;
 }
 
 
@@ -67,20 +106,41 @@ body {
 
 /* CORE TEACHINGS */
 .story-core {
-  background: #f8f8f8;
-  padding: 70px 20px;
+  background: #1e2a57;
+  padding: 28px 20px 34px;
   text-align: center;
 }
 
 .story-core h2 {
-  font-size: 36px;
-  color: black; /* [OK] black title */
+  font-size: clamp(28px, 2.4vw, 36px);
+  color: #fff !important;
+  margin: 0 0 8px;
 }
 
 .story-core .subtitle {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 40px;
+  font-size: clamp(15px, 1.1vw, 19px);
+  color: #fff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+  margin: 0 auto 18px;
+  max-width: 900px;
+}
+
+.story-core .btn {
+  display: inline-block;
+  border: 2px solid #fff;
+  color: #fff;
+  background: transparent;
+  padding: 12px 34px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.story-core .btn:hover {
+  background: #fff;
+  color: #1e2a57;
+  transform: scale(1.05);
 }
 
 /* Gospel Message */
@@ -157,159 +217,28 @@ body {
   font-weight: 700;
 }
 
-/* --- OUR MISSION SECTION --- */
-.story-mission {
-  max-width: 1100px;
-  margin: 80px auto;
-  text-align: center;
-  padding: 0 20px;
-}
-
-.story-mission h2 {
-  color: black;
-  font-size: 36px;
-  margin-bottom: 40px;
-  font-weight: 800;
-}
-
-.mission-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 25px;
-}
-
-/* Each mission card */
-.mission-card {
-  background: #fff;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  padding: 28px 30px;
-  text-align: left;
-  transition: transform 0.25s ease;
-}
-
-.mission-card:hover {
-  transform: translateY(-4px);
-}
-
-/* Top row inside the card (icon + title) */
-.mission-card-header {
-  display: flex;
-  align-items: center;        /* [OK] vertically centers icon & title */
-  gap: 14px;
-  margin-bottom: 12px;
-}
-
-/* Icon container */
-.mission-card .icon-box {
-  background: #f0f0f0;
-  padding: 14px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-/* [OK] Make world icon black only */
-.mission-card:nth-child(1) .icon-box img {
-  filter: brightness(0) saturate(100%);
-}
-
-.mission-card img {
-  width: 42px;
-  height: 42px;
-}
-
-/* Title text beside icon */
-.mission-card h4 {
-  color: #1e2a57;             /* [OK] consistent dark blue */
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-}
-
-/* Body text BELOW header row */
-.mission-card p {
-  color: #444;
-  font-size: 16px;
-  line-height: 1.55;
-  margin-top: 10px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
-  .mission-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* Text beside icon */
-.mission-card h4 {
-  color: #1e2a57;             /* [OK] Dark blue titles */
-  font-size: 20px;
-  margin: 0 0 6px;
-  font-weight: 700;
-}
-
-.mission-card p {
-  color: #444;
-  font-size: 16px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
-  .mission-grid {
-    grid-template-columns: 1fr;
-  }
-  .mission-card {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-
-/* LEARN MORE */
-.story-learn {
-  background: #f5f5f5;
-  text-align: center;
-  padding: 80px 20px;
-}
-
-.story-learn img {
-  width: 380px;
-  height: auto;
-  display: block;
-  margin: 0 auto 25px;
-}
-
-.learn-btn {
-  display: inline-block;
-  background: #1e2a57;
-  color: white;
-  text-decoration: none;
-  padding: 14px 90px; /* [OK] longer, slightly shorter height */
-  font-size: 20px;
-  font-weight: 700;
-  border-radius: 6px;
-  border: 2.5px solid #1e2a57;
-  transition: all 0.3s ease;
-}
-
-.learn-btn:hover {
-  background: white;
-  color: #1e2a57;
-  transform: scale(1.05);
-  box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
-}
-
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .mission-grid {
+  .story-affiliation {
+    padding: 26px 16px 22px;
+  }
+  .story-affiliation-inner {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .story-affiliation-logo {
+    width: min(200px, 72vw);
+  }
+  .story-affiliation-content h2,
+  .story-affiliation-content h3,
+  .story-affiliation-content p {
+    text-align: center;
+  }
+  .story-section-separator {
+    width: 100%;
+  }
+  .story-values-graphic {
+    padding-top: 22px;
   }
   .core-header, .core-card-header {
     flex-direction: column;
@@ -326,9 +255,11 @@ body {
 ============================= */
 .story-section h2,
 .story-core h2,
-.story-mission h2,
 .core-header h3,
-.core-card h4,
-.mission-card h4 {
+.core-card h4 {
   color: #000 !important;
+}
+
+.story-core h2 {
+  color: #fff !important;
 }
