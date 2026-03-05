@@ -55,11 +55,11 @@ const container = document.querySelector(".events-cards");
 
 function normalizeEventImagePath(path) {
   const raw = String(path ?? "").trim();
-  if (!raw) return "/images/Placeholder.jpg";
+  if (!raw) return "";
 
   const noOrigin = raw.replace(/^https?:\/\/[^/]+/i, "");
   const rel = noOrigin.startsWith("/") ? noOrigin : "/" + noOrigin;
-  return rel.startsWith("/images/") ? rel : "/images/Placeholder.jpg";
+  return rel.startsWith("/images/") ? rel : "";
 }
 
 if (container) {
@@ -92,7 +92,9 @@ if (container) {
           const date = String(ev.date ?? "");
 
           const img = document.createElement("img");
-          img.src = normalizeEventImagePath(ev.image);
+          const imagePath = normalizeEventImagePath(ev.image);
+          // 1x1 white pixel keeps the image area white when no event image is set.
+          img.src = imagePath || "data:image/gif;base64,R0lGODlhAQABAPAA/////wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
           img.alt = title;
 
           const h3 = document.createElement("h3");
