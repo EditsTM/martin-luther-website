@@ -58,7 +58,13 @@ function normalizeEventImagePath(path) {
   if (!raw) return "";
 
   const noOrigin = raw.replace(/^https?:\/\/[^/]+/i, "");
-  const rel = noOrigin.startsWith("/") ? noOrigin : "/" + noOrigin;
+  const noQuery = noOrigin.split(/[?#]/, 1)[0];
+  const normalizedSlashes = noQuery.replace(/\\/g, "/");
+  const withoutPublicPrefix = normalizedSlashes.replace(/^\/?public\//i, "/");
+  const rel = withoutPublicPrefix.startsWith("/")
+    ? withoutPublicPrefix
+    : "/" + withoutPublicPrefix.replace(/^\.?\//, "");
+
   return rel.startsWith("/images/") ? rel : "";
 }
 

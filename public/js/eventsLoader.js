@@ -8,6 +8,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const addEventBtn = document.getElementById("add-event-btn");
   if (!grid) return;
 
+  const normalizeEventImagePath = (path) => {
+    const raw = String(path ?? "").trim();
+    if (!raw) return "";
+
+    const noOrigin = raw.replace(/^https?:\/\/[^/]+/i, "");
+    const noQuery = noOrigin.split(/[?#]/, 1)[0];
+    const normalizedSlashes = noQuery.replace(/\\/g, "/");
+    const withoutPublicPrefix = normalizedSlashes.replace(/^\/?public\//i, "/");
+    const rel = withoutPublicPrefix.startsWith("/")
+      ? withoutPublicPrefix
+      : "/" + withoutPublicPrefix.replace(/^\.?\//, "");
+
+    return rel.startsWith("/images/") ? rel : "";
+  };
+
   const renderMessage = (message) => {
     grid.innerHTML = `
       <section style="padding:40px 20px; text-align:center; width:100%;">
@@ -115,9 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!ev) return;
 
       // image
-      let imgPathRaw = String(ev.image || "");
-      imgPathRaw = imgPathRaw.startsWith("/") ? imgPathRaw : "/" + imgPathRaw;
-      const imgPath = imgPathRaw.startsWith("/images/") ? imgPathRaw : "";
+      const imgPath = normalizeEventImagePath(ev.image);
       if (modalImg) modalImg.src = imgPath;
 
       // fields
@@ -340,10 +353,7 @@ if (modalRemovePhotoBtn) {
         const date = escapeHTML(ev.date);
         const desc = escapeHTML(ev.description || "");
 
-        let imgPathRaw = String(ev.image || "");
-        imgPathRaw = imgPathRaw.startsWith("/") ? imgPathRaw : "/" + imgPathRaw;
-
-        const imgPath = imgPathRaw.startsWith("/images/") ? imgPathRaw : "";
+        const imgPath = normalizeEventImagePath(ev.image);
         
         let notesRaw = String(ev.notes ?? "");
         notesRaw = notesRaw.replace(/\n{3,}/g, "\n\n").trim();

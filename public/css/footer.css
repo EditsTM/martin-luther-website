@@ -58,8 +58,8 @@
   flex-direction: column;
   align-items: center;
   flex: 1;
-  position: relative;
-  top: 40px; /* lowers text to align with logo middle */
+  padding-top: 40px; /* lowers text while still reserving layout space */
+  gap: 24px;
 }
 
 /* =============================
@@ -125,6 +125,7 @@
   font-size: 16px;
   overflow: hidden;                /* keep shine inside */
   text-align: center;
+  margin-bottom: 12px;
 }
 
 .footer .btn:hover {
@@ -211,7 +212,7 @@
   }
 
   .footer-text-group {
-    top: 0; /* reset offset */
+    padding-top: 0; /* reset offset */
     align-items: center;
     text-align: center;
     width: 100%;
@@ -264,7 +265,7 @@
 }
 /* FORCE footer button to be wider */
 footer .footer-text-group .btn {
-  width: 500px !important;
+  width: min(500px, 100%) !important;
   padding: 10px 0 !important;  /* keeps it same height, not taller */
   display: inline-block !important;
 }
