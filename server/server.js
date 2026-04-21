@@ -237,8 +237,15 @@ app.get("/api/youtube", youtubeLimiter, async (req, res) => {
 /* STATIC FILES*/
 app.use(
   express.static(path.join(__dirname, "../public"), {
-    setHeaders: (res) => {
+    setHeaders: (res, filePath) => {
       res.setHeader("X-Content-Type-Options", "nosniff");
+
+      const ext = path.extname(filePath).toLowerCase();
+      if ([".avif", ".webp", ".jpg", ".jpeg", ".png", ".svg", ".ico", ".mp4"].includes(ext)) {
+        res.setHeader("Cache-Control", "public, max-age=2592000");
+      } else if ([".css", ".js", ".json", ".webmanifest"].includes(ext)) {
+        res.setHeader("Cache-Control", "public, max-age=3600");
+      }
     },
   })
 );

@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const res = await fetch("/html/footer.html", {
-      cache: "no-store",
       credentials: "same-origin",
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

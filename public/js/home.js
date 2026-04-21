@@ -3,31 +3,24 @@
  * Purpose: Implements client-side behavior for the home experience.
  */
 // Rotating hero background images
-// These are relative to the page where this script runs.
-// Make sure the files exist at these paths in /public/images.
 const heroImages = [
-  "../images/HomeRotatingImage1.webp",
-  "../images/HomeRotatingImage2.webp",
-  "../images/HomeRotatingImage3.png",
+  "/images/HomeRotatingImage1.webp",
+  "/images/HomeRotatingImage2.webp",
+  "/images/HomeRotatingImage3.webp",
 ];
 
 // Grab the hero section element that gets the rotating background
 const heroSection = document.querySelector(".hero");
 
-// Debug helper: lets you confirm the selector is correct
-console.log("Hero section found:", !!heroSection);
-
 if (heroSection) {
   let currentImage = 0;
 
-  // Preload images so the first time they appear there’s less flicker/blank loading
-  // (Browser caches them after load, making rotation smoother.)
-  heroImages.forEach((img) => {
+  // Preload the next hero only, keeping the initial page load focused on the LCP image.
+  heroImages.slice(1, 2).forEach((img) => {
     const preload = new Image();
+    preload.decoding = "async";
     preload.src = img;
 
-    // Optional logs to verify files/paths are correct
-    preload.onload = () => console.log(`[OK] Loaded: ${img}`);
     preload.onerror = () => console.error(`[ERROR] Failed to load: ${img}`);
   });
 
