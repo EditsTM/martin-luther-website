@@ -57,8 +57,256 @@
 
   <!-- [OK] Corrected CSS Paths -->
   <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/home.css?v=20260514-4">
+  <link rel="stylesheet" href="/css/church/time.css">
   <link rel="stylesheet" href="/css/footer.css">
+  <style>
+    .calendar-showcase {
+      background: #1e2a57;
+      padding: 64px 24px 72px;
+    }
+
+    .calendar-showcase__inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .calendar-showcase__intro {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 38px;
+    }
+
+    .calendar-showcase__intro h2 {
+      color: #ffffff;
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0 0 14px;
+    }
+
+    .calendar-showcase__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .calendar-promo {
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 48px 32px;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 2px solid rgba(255,255,255,0.3);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: flex-start;
+      min-height: 390px;
+    }
+
+    .calendar-promo::before,
+    .calendar-promo::after {
+      content: none;
+      display: none;
+    }
+
+    .calendar-promo:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .calendar-promo__icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      height: auto;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .calendar-promo__icon-wrap img {
+      width: 82px;
+      height: 82px;
+      display: block;
+      margin-bottom: 32px;
+      filter: brightness(0) invert(1);
+    }
+
+    .calendar-promo h3 {
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin: 0 0 18px;
+    }
+
+    .calendar-promo__text {
+      color: #eaf0fa;
+      font-size: 20px;
+      line-height: 1.6;
+      margin: 0 auto 36px;
+      max-width: 380px;
+    }
+
+    .calendar-promo__button {
+      display: inline-block;
+      margin-top: auto;
+      background: transparent;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      border-radius: 6px;
+      padding: 18px 46px;
+      font-weight: 600;
+      font-size: 18px;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, transform 0.2s;
+    }
+
+    .calendar-promo__button:hover,
+    .calendar-promo__button:focus-visible {
+      background: #ffffff;
+      color: #1e2a57;
+      transform: scale(1.05);
+      box-shadow: none;
+    }
+
+    .calendar-promo__button:focus-visible {
+      outline: 3px solid #4279bc;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 980px) {
+      .calendar-showcase__grid {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .calendar-showcase {
+        padding: 52px 18px 56px;
+      }
+
+      .calendar-showcase__intro h2 {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .calendar-promo {
+        padding: 28px 22px 24px;
+      }
+
+      .calendar-promo h3 {
+        font-size: 25px;
+      }
+
+      .calendar-promo__text {
+        font-size: 16px;
+      }
+    }
+
+    .home-times-section {
+      margin-top: 44px;
+      padding-top: 0 !important;
+      padding-bottom: 40px !important;
+    }
+
+    .home-times-section .times-cards {
+      align-items: flex-start;
+    }
+
+    .home-times-section .time-card {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .home-times-section .card-header {
+      margin-bottom: 18px;
+    }
+
+    .home-times-section .card-header img {
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .home-times-section .card-body {
+      padding-right: 28px;
+    }
+
+    .home-times-section .times-cards > .time-card:last-child .card-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 28px;
+    }
+
+    .home-times-section .times-cards > .time-card:last-child .card-body h3,
+    .home-times-section .times-cards > .time-card:last-child .card-body p {
+      grid-column: 1;
+    }
+
+    .home-times-section .times-cards > .time-card:last-child .card-body h3 {
+      margin: 8px 0 8px;
+      font-size: 22px;
+    }
+
+    .home-times-section .times-cards > .time-card:last-child .card-body p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .home-times-section .directions-btn {
+      display: inline-block;
+      width: auto;
+      min-width: 260px;
+      margin-top: 0;
+      margin-left: 0;
+      margin-right: 0;
+      align-self: center;
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+
+    .home-times-section .edit-btn {
+      margin-top: 18px;
+    }
+
+    @media (max-width: 850px) {
+      .home-times-section {
+        margin-top: 32px;
+      }
+
+      .home-times-section .card-body {
+        padding-right: 0;
+      }
+
+      .home-times-section .times-cards > .time-card:last-child .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .home-times-section .directions-btn {
+        margin-top: 24px;
+        margin-right: auto;
+        align-self: flex-start;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -70,56 +318,19 @@
     <div class="hero-content">
       <h1>Martin Luther Oshkosh</h1>
       <p>Grow in Christ! Go in Christ!</p>
+      <div class="hero-buttons">
+        <a href="/html/church/time.html" class="btn-outline">OUR CHURCH</a>
+        <a href="/html/school/information.html" class="btn-outline">OUR SCHOOL</a>
+      </div>
     </div>
   </section>
 
-  <nav class="quick-links" aria-label="Featured links">
-    <a class="quick-link" href="/html/school/information.html">
-      <img src="/images/graduate.svg" width="42" height="42" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <span>About MLS</span>
-    </a>
-    <a class="quick-link" href="/html/school/faculty.html">
-      <img src="/images/people.svg" width="42" height="42" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <span>Meet the Team</span>
-    </a>
-    <a class="quick-link" href="/html/school/forms.html">
-      <img src="/images/publish.svg" width="42" height="42" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <span>Forms</span>
-    </a>
-    <a class="quick-link" href="/html/school/calendar.html">
-      <img src="/images/schedule.svg" width="42" height="42" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <span>School Calendar</span>
-    </a>
-    <a class="quick-link" href="/html/church/time.html">
-      <img src="/images/church.svg" width="42" height="42" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <span>Church Services</span>
-    </a>
-  </nav>
-
   <!-- [OK] Events Section -->
   <section class="events-section">
-    <div class="book-parade" aria-hidden="true">
-      <div class="book-friend book-friend--three">
-        <span class="book-friend__cover"></span>
-        <span class="book-friend__arm book-friend__arm--left"></span>
-        <span class="book-friend__arm book-friend__arm--right"></span>
-      </div>
-      <div class="book-friend book-friend--red">
-        <span class="book-friend__cover"></span>
-        <span class="book-friend__arm book-friend__arm--left"></span>
-        <span class="book-friend__arm book-friend__arm--right"></span>
-      </div>
-    </div>
-
     <h2 class="events-title">Events at Martin Luther</h2>
 
-    <!-- [OK] Dynamic Events Container (Fixed) -->
-    <div class="events-carousel" aria-label="Featured events">
-      <button class="events-arrow events-arrow--prev" type="button" aria-label="Previous events">&#10094;</button>
-      <div class="events-cards" aria-live="polite">
-        <!-- Event cards will be dynamically loaded here -->
-      </div>
-      <button class="events-arrow events-arrow--next" type="button" aria-label="Next events">&#10095;</button>
+    <div class="events-cards" aria-live="polite">
+      <!-- Event cards will be dynamically loaded here -->
     </div>
 
     <div class="events-button">
@@ -128,126 +339,113 @@
   </section>
 
   <!-- [OK] Beliefs Section -->
-  <section class="beliefs-section">
-    <div class="beliefs-content">
-      <h2>Centered on Christ.</h2>
-      <p>
-        Martin Luther Church and School is a Christ-centered Lutheran church
-        and Christian school in Oshkosh, Wisconsin. United in God's Word, we
-        help children, families, and our community grow in faith, learning,
-        and service through the love Christ has given us.
-      </p>
-    </div>
-  </section>
+  <section class="calendar-showcase" aria-labelledby="calendar-showcase-title">
+    <div class="calendar-showcase__inner">
+      <div class="calendar-showcase__intro">
+        <h2 id="calendar-showcase-title">Stay Connected</h2>
+      </div>
 
-  <section class="home-affiliates" aria-label="Our affiliates">
-    <h2 class="home-affiliates__title">Affiliated with</h2>
-    <div class="home-affiliates__viewport">
-      <div class="home-affiliates__track">
-        <article class="home-affiliate-card">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/fvlhs.webp" width="851" height="542" alt="Fox Valley Lutheran High School Logo" loading="lazy" decoding="async">
+      <div class="calendar-showcase__grid">
+        <article class="calendar-promo calendar-promo--church">
+          <div class="calendar-promo__icon-wrap">
+            <img src="/images/church.svg" width="40" height="40" alt="" aria-hidden="true" loading="lazy" decoding="async">
           </div>
-          <p>Fox Valley Lutheran High School</p>
+          <h3>Church Calendar</h3>
+          <p class="calendar-promo__text">
+            See worship dates, church events, and the lectionary calendar.
+          </p>
+          <a href="/html/church/churchCalendar.html" class="calendar-promo__button">View Church Calendar</a>
         </article>
-        <article class="home-affiliate-card">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/cfs.png" width="915" height="1075" alt="Christian Family Solutions Logo" loading="lazy" decoding="async">
+
+        <article class="calendar-promo calendar-promo--school">
+          <div class="calendar-promo__icon-wrap">
+            <img src="/images/schedule.svg" width="40" height="40" alt="" aria-hidden="true" loading="lazy" decoding="async">
           </div>
-          <p>Christian Family Solutions</p>
-        </article>
-        <article class="home-affiliate-card">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/wla.webp" width="380" height="143" alt="Winnebago Lutheran Academy Logo" loading="lazy" decoding="async">
-          </div>
-          <p>Winnebago Lutheran Academy</p>
-        </article>
-        <article class="home-affiliate-card">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/mhw.png" width="193" height="143" alt="Men of His Word Logo" loading="lazy" decoding="async">
-          </div>
-          <p>Men of His Word</p>
-        </article>
-        <article class="home-affiliate-card">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/pwc.png" width="1080" height="1350" alt="Pathways to Christ Logo" loading="lazy" decoding="async">
-          </div>
-          <p>Pathways to Christ</p>
-        </article>
-        <article class="home-affiliate-card" aria-hidden="true">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/fvlhs.webp" width="851" height="542" alt="" loading="lazy" decoding="async">
-          </div>
-          <p>Fox Valley Lutheran High School</p>
-        </article>
-        <article class="home-affiliate-card" aria-hidden="true">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/cfs.png" width="915" height="1075" alt="" loading="lazy" decoding="async">
-          </div>
-          <p>Christian Family Solutions</p>
-        </article>
-        <article class="home-affiliate-card" aria-hidden="true">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/wla.webp" width="380" height="143" alt="" loading="lazy" decoding="async">
-          </div>
-          <p>Winnebago Lutheran Academy</p>
-        </article>
-        <article class="home-affiliate-card" aria-hidden="true">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/mhw.png" width="193" height="143" alt="" loading="lazy" decoding="async">
-          </div>
-          <p>Men of His Word</p>
-        </article>
-        <article class="home-affiliate-card" aria-hidden="true">
-          <div class="home-affiliate-card__logo">
-            <img src="/images/pwc.png" width="1080" height="1350" alt="" loading="lazy" decoding="async">
-          </div>
-          <p>Pathways to Christ</p>
+          <h3>School Calendar</h3>
+          <p class="calendar-promo__text">
+            Find all MLS events on our calendar page here.
+          </p>
+          <a href="/html/school/calendar.html" class="calendar-promo__button">View School Calendar</a>
         </article>
       </div>
     </div>
-    <div class="home-affiliates__button">
-      <a href="/html/church/affiliates.html" class="btn">Affiliates</a>
-    </div>
   </section>
 
-  <section class="school-merch" aria-labelledby="school-merch-title">
-    <div class="school-merch__content">
-      <div class="school-merch__copy">
-        <h2 id="school-merch-title">School Merch</h2>
-        <p>Show your Martin Luther school spirit with apparel and gear for students, families, and supporters.</p>
-        <a
-          class="school-merch__button"
-          href="https://www.allthatsticks.com/shop/martin-luther-oshkosh/PTG3NKT3QGXD3AQXDMIHZKAN"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Shop Merch
-        </a>
-      </div>
-
-      <a
-        class="school-merch__preview"
-        href="https://www.allthatsticks.com/shop/martin-luther-oshkosh/PTG3NKT3QGXD3AQXDMIHZKAN"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Open Martin Luther Oshkosh school merch store"
-      >
-        <div class="school-merch__browser">
-          <div class="school-merch__bar">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="school-merch__storefront">
-            <video class="school-merch__video" autoplay muted loop playsinline preload="metadata">
-              <source src="/images/SchoolMerchPreview.mp4" type="video/mp4">
-            </video>
-          </div>
+  <section class="times-cards-section home-times-section">
+    <div class="times-cards">
+      <div class="time-card" id="service-times-card">
+        <div class="card-header">
+          <img src="/images/time.png" alt="Clock icon" />
+          <h2 id="service-title">Service Times</h2>
         </div>
-      </a>
+        <div class="card-body" id="service-times-body">
+          <h3 id="service-first-label">Sunday Mornings</h3>
+          <p id="service-first-time">8:00am & 10:30am</p>
+          <hr />
+          <h3 id="service-second-label">Monday Evenings</h3>
+          <p id="service-second-time">6:00pm</p>
+          <p class="small-note" id="service-note">*Summer hours will differ</p>
+        </div>
+        <button id="edit-service-times-btn" class="edit-btn admin-only" type="button">Edit</button>
+      </div>
+
+      <div class="time-card">
+        <div class="card-header">
+          <img src="/images/location.png" alt="Location icon" />
+          <h2>Our Location</h2>
+        </div>
+        <div class="card-body">
+          <h3>Address</h3>
+          <p>
+            1526 Algoma Blvd<br />
+            Oshkosh, WI 54901<br />
+            (Next to Paine Arts Center)
+          </p>
+          <a
+            href="https://www.google.com/maps/place/1526+Algoma+Blvd,+Oshkosh,+WI+54901"
+            target="_blank"
+            class="directions-btn"
+          >
+            Get Directions
+          </a>
+        </div>
+      </div>
     </div>
+    <div class="service-times-admin-actions admin-only">
+      <button id="add-service-time-btn" class="add-service-time-btn" type="button">
+        <span class="add-service-time-plus">+</span>
+        <span>New Service Time</span>
+      </button>
+    </div>
+    <div id="service-times-extra-list" class="service-times-extra-list"></div>
   </section>
+
+  <div id="service-times-modal" class="service-modal">
+    <div class="service-modal-content">
+      <button id="service-modal-close-btn" class="modal-close-btn" type="button" aria-label="Close">&times;</button>
+      <h2 class="modal-title">Edit Service Times</h2>
+
+      <div class="modal-form-section">
+        <label class="modal-label">
+          Card Title
+          <input type="text" id="service-modal-title" />
+        </label>
+
+        <label class="modal-label">
+          Small Note
+          <input type="text" id="service-modal-note" />
+        </label>
+
+        <div id="service-modal-sections-list"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="service-modal-add-section-btn" class="event-modal-primary" type="button">Add Section</button>
+        <button id="service-modal-delete-btn" class="event-modal-delete" type="button">Delete</button>
+        <button id="service-modal-save-btn" class="save-btn" type="button">Save</button>
+      </div>
+    </div>
+  </div>
 
   <!-- [OK] Footer -->
   <div id="footer"></div>
@@ -256,7 +454,8 @@
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>
-  <script src="/js/home.js"></script>
+  <script src="/js/home.js?v=20260514-1"></script>
+  <script src="/js/time.js"></script>
   <script src="/js/reveal.js"></script>
 
   <!-- [OK] Added: Dynamic Events Loader -->

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+  File: public\html\church\churchCalendar.html
+  Purpose: Provides HTML markup for the church calendar page.
+-->
+
+<html lang="en">
+<head>
+  <script>
+    document.documentElement.style.visibility = "hidden";
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Church Calendar | Martin Luther</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/school/calendar.css">
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <section class="calendar-hero">
+    <div class="calendar-overlay">
+      <h1>Church Calendar</h1>
+    </div>
+  </section>
+
+  <main class="calendar-main">
+    <div class="calendar-container">
+      <h2 class="calendar-heading">Our Church Calendar</h2>
+      <p class="calendar-intro">
+        Stay up to date with church events, worship opportunities, and important dates at Martin Luther.
+      </p>
+
+      <div class="calendar-embed">
+        <iframe
+          src="https://calendar.google.com/calendar/embed?src=martinlutheroshkosh.com_uckf3mo3ludasu4iufiad84khg%40group.calendar.google.com&ctz=America%2FChicago"
+          style="border:0"
+          width="95%"
+          height="900"
+          frameborder="0"
+          scrolling="no">
+        </iframe>
+      </div>
+
+      <h2 class="calendar-heading">Lectionary Calendar</h2>
+      <p class="calendar-intro">
+        Identifies the Sundays of the Church Year and Church holidays, along with the readings that will be used.
+      </p>
+
+      <div class="calendar-embed">
+        <iframe
+          src="https://calendar.google.com/calendar/embed?src=c_61a4543308e7c7934308c604ba699109b31aa7429a5e386457b9e8cdd72b62bb%40group.calendar.google.com&ctz=America%2FChicago"
+          style="border:0"
+          width="95%"
+          height="900"
+          frameborder="0"
+          scrolling="no">
+        </iframe>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="/js/header.js"></script>
+  <script src="/js/footer.js"></script>
+  <script src="/js/layoutReady.js"></script>
+  <script src="/js/reveal.js"></script>
+</body>
+</html>

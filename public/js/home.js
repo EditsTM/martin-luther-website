@@ -45,11 +45,23 @@ if (heroSection) {
 
 //Load events onto homepage
 const container = document.querySelector(".events-cards");
-const prevEventsButton = document.querySelector(".events-arrow--prev");
-const nextEventsButton = document.querySelector(".events-arrow--next");
-const orangeBook = document.querySelector(".book-friend--three");
 
 if (container) {
+  const normalizeEventImagePath = (path) => {
+    const raw = String(path ?? "").trim();
+    if (!raw) return "";
+
+    const noOrigin = raw.replace(/^https?:\/\/[^/]+/i, "");
+    const noQuery = noOrigin.split(/[?#]/, 1)[0];
+    const normalizedSlashes = noQuery.replace(/\\/g, "/");
+    const withoutPublicPrefix = normalizedSlashes.replace(/^\/?public\//i, "/");
+    const rel = withoutPublicPrefix.startsWith("/")
+      ? withoutPublicPrefix
+      : "/" + withoutPublicPrefix.replace(/^\.?\//, "");
+
+    return rel.startsWith("/images/") ? rel : "";
+  };
+
   fetch("/content/events.json")
     .then((res) => res.json())
     .then((data) => {
@@ -57,98 +69,44 @@ if (container) {
 
       const validEvents = events.filter((ev) => {
         const title = String(ev.title ?? "").trim();
-        const date = String(ev.date ?? "").trim();
-        return title !== "" || date !== "";
+        const imgPath = normalizeEventImagePath(ev.image);
+        return title !== "" && imgPath !== "";
       });
 
-      if (validEvents.length === 0) {
+      const top3 = validEvents.slice(0, 3);
+
+      if (top3.length === 0) {
         container.replaceChildren();
-        [prevEventsButton, nextEventsButton].forEach((button) => {
-          if (!button) return;
-          button.classList.add("is-hidden");
-          button.disabled = true;
-        });
         return;
       }
 
-      const getPageSize = () => {
-        if (window.matchMedia("(max-width: 640px)").matches) return 1;
-        if (window.matchMedia("(max-width: 980px)").matches) return 2;
-        return 3;
-      };
-
-      let pageStart = 0;
-      let orangeBookTimeout = null;
-
-      const placeOrangeBook = () => {
-        if (!orangeBook) return;
-
-        const cards = Array.from(container.querySelectorAll(".event-card"));
-        const eventsSection = document.querySelector(".events-section");
-        if (!cards.length || !eventsSection) return;
-
-        orangeBook.classList.remove("is-peeking");
-
-        const index = cards.length === 1 ? 0 : Math.floor(Math.random() * cards.length);
-        const cardRect = cards[index].getBoundingClientRect();
-        const sectionRect = eventsSection.getBoundingClientRect();
-        const left = cardRect.left - sectionRect.left + cardRect.width / 2 - 27;
-        const top = cardRect.top - sectionRect.top - 34;
-
-        orangeBook.style.setProperty("--book-peek-left", `${left}px`);
-        orangeBook.style.setProperty("--book-peek-top", `${top}px`);
-
-        requestAnimationFrame(() => {
-          orangeBook.classList.add("is-peeking");
-        });
-      };
-
-      const scheduleOrangeBook = () => {
-        if (!orangeBook) return;
-        window.clearTimeout(orangeBookTimeout);
-
-        const run = () => {
-          placeOrangeBook();
-          orangeBookTimeout = window.setTimeout(run, 5200 + Math.random() * 2800);
-        };
-
-        orangeBookTimeout = window.setTimeout(run, 900);
-      };
-
-      const renderEvents = () => {
-        const pageSize = getPageSize();
-        const visibleEvents = Array.from({ length: Math.min(pageSize, validEvents.length) }, (_, offset) => {
-          const eventIndex = (pageStart + offset) % validEvents.length;
-          return validEvents[eventIndex];
-        });
-        container.style.setProperty("--event-card-count", String(visibleEvents.length));
-
-        container.replaceChildren(
-          ...visibleEvents.map((ev) => {
+      container.replaceChildren(
+        ...top3.map((ev) => {
           const card = document.createElement("div");
           card.className = "event-card";
           card.setAttribute("role", "link");
           card.tabIndex = 0;
 
-          const title = String(ev.title ?? "");
-          const date = String(ev.date ?? "");
-          if (date) {
-            const dateEl = document.createElement("p");
-            dateEl.className = "event-date";
-            dateEl.textContent = date;
-            card.append(dateEl);
-          }
+          const imgPath = normalizeEventImagePath(ev.image);
+          const img = document.createElement("img");
+          img.src = imgPath;
+          img.alt = String(ev.title ?? "Martin Luther event");
+          img.loading = "lazy";
+          img.decoding = "async";
+          card.append(img);
 
+          const title = String(ev.title ?? "");
           const h3 = document.createElement("h3");
           h3.className = "event-name";
           h3.textContent = title;
           card.append(h3);
 
-          return card;
-        })
-        );
+          const date = String(ev.date ?? "");
+          const dateEl = document.createElement("p");
+          dateEl.className = "event-date";
+          dateEl.textContent = date;
+          card.append(dateEl);
 
-        container.querySelectorAll(".event-card").forEach((card) => {
           card.addEventListener("click", () => {
             window.location.href = "/html/church/events.html";
           });
@@ -157,38 +115,10 @@ if (container) {
             event.preventDefault();
             window.location.href = "/html/church/events.html";
           });
-        });
 
-        const showArrows = validEvents.length > pageSize;
-        [prevEventsButton, nextEventsButton].forEach((button) => {
-          if (!button) return;
-          button.classList.toggle("is-hidden", !showArrows);
-          button.disabled = !showArrows;
-        });
-
-        placeOrangeBook();
-      };
-
-      if (prevEventsButton) {
-        prevEventsButton.addEventListener("click", () => {
-          pageStart = (pageStart - getPageSize() + validEvents.length) % validEvents.length;
-          renderEvents();
-        });
-      }
-
-      if (nextEventsButton) {
-        nextEventsButton.addEventListener("click", () => {
-          pageStart = (pageStart + getPageSize()) % validEvents.length;
-          renderEvents();
-        });
-      }
-
-      window.addEventListener("resize", () => {
-        renderEvents();
-        scheduleOrangeBook();
-      });
-      renderEvents();
-      scheduleOrangeBook();
+          return card;
+        })
+      );
     })
     .catch((err) => {
       console.error("[ERROR] Failed to load events on homepage:", err);
