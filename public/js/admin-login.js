@@ -1,7 +1,3 @@
-/**
- * File: public\js\admin-login.js
- * Purpose: Adds show/hide password toggle behavior for admin login forms.
- */
 document.addEventListener("DOMContentLoaded", () => {
   const toggles = document.querySelectorAll("[data-password-toggle]");
   if (!toggles.length) return;
