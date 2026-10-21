@@ -1,8 +1,8 @@
-/**
- * File: public\js\eventsLoader.js
- * Purpose: Implements client-side behavior for the eventsLoader experience.
- */
-// public/js/eventsLoader.js
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", async () => {
   const grid = document.getElementById("events-grid");
   const addEventBtn = document.getElementById("add-event-btn");
@@ -45,10 +45,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const getTextareaValueExact = (el) => {
       if (!el) return "";
-      return String(el.value ?? "").replace(/\r\n/g, "\n"); // normalize newlines
+      return String(el.value ?? "").replace(/\r\n/g, "\n");
     };
 
-    //Check admin session, but do not fail page rendering if this endpoint errors.
+
     let isAdmin = false;
     try {
       const sessionRes = await fetch("/admin/check", {
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    //Load events.json
+
     const res = await fetch("/content/events.json", {
       cache: "no-store",
       credentials: "same-origin",
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const events = Array.isArray(data.events) ? data.events : [];
 
-    //Modal elements (added in events.html below)
+
     const modalOverlay = document.getElementById("eventModalOverlay");
     const modal = document.getElementById("eventModal");
     const modalClose = document.getElementById("eventModalClose");
@@ -129,11 +129,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const ev = events[index];
       if (!ev) return;
 
-      // image
+
       const imgPath = normalizeEventImagePath(ev.image);
       if (modalImg) modalImg.src = imgPath;
 
-      // fields
+
       if (modalFieldTitle) modalFieldTitle.value = String(ev.title ?? "");
       if (modalFieldDate) modalFieldDate.value = String(ev.date ?? "");
       if (modalFieldNotes) modalFieldNotes.value = String(ev.notes ?? "");
@@ -143,11 +143,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (modalOverlay) modalOverlay.style.display = "flex";
       if (modal) modal.style.display = "block";
 
-      // prevent background scroll
+
       document.body.style.overflow = "hidden";
     }
 
-//Allow TAB to indent inside Notes textarea
+
 if (modalFieldNotes) {
   modalFieldNotes.addEventListener("keydown", (e) => {
     if (e.key === "Tab") {
@@ -158,13 +158,13 @@ if (modalFieldNotes) {
 
       const indent = "  ";
 
-      // Update textarea value
+
       modalFieldNotes.value =
         modalFieldNotes.value.substring(0, start) +
         indent +
         modalFieldNotes.value.substring(end);
 
-      // Move cursor forward
+
       modalFieldNotes.selectionStart = modalFieldNotes.selectionEnd =
         start + indent.length;
     }
@@ -187,7 +187,7 @@ if (modalFieldNotes) {
       });
     }
 
-    // Change Photo -> open file picker
+
     if (modalChangePhotoBtn && modalFileInput) {
       modalChangePhotoBtn.addEventListener("click", () => modalFileInput.click());
 
@@ -200,7 +200,7 @@ if (modalFieldNotes) {
         }
         pendingFile = file;
 
-        // preview
+
         if (modalImg) {
           const url = URL.createObjectURL(file);
           modalImg.src = url;
@@ -208,23 +208,23 @@ if (modalFieldNotes) {
       });
     }
 
-//Remove Photo button (sets image to blank)
+
 if (modalRemovePhotoBtn) {
   modalRemovePhotoBtn.addEventListener("click", async () => {
     try {
       if (currentIndex === null) return;
 
-      //clear any pending upload
+
       pendingFile = null;
       if (modalFileInput) modalFileInput.value = "";
 
-      //clear preview
+
       if (modalImg) modalImg.src = "";
 
-      //update local copy
+
       events[currentIndex].image = "";
 
-      //save BLANK image to events.json
+
       const res = await fetch("/admin/update-event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -264,7 +264,7 @@ if (modalRemovePhotoBtn) {
         throw new Error(result.error || "Upload failed");
       }
 
-      // update local copy so modal stays accurate
+
       events[index].image = result.image;
     }
 
@@ -287,18 +287,18 @@ if (modalRemovePhotoBtn) {
       }
     }
 
-    // Save button
+
     if (modalSaveBtn) {
       modalSaveBtn.addEventListener("click", async () => {
         try {
           if (currentIndex === null) return;
 
-          // 1) upload image if changed
+
           if (pendingFile) {
             await uploadImage(currentIndex, pendingFile);
           }
 
-          // 2) save text fields
+
           const newTitle = String(modalFieldTitle?.value ?? "");
           const newDate = String(modalFieldDate?.value ?? "");
           const newNotes = getTextareaValueExact(modalFieldNotes);
@@ -315,7 +315,7 @@ if (modalRemovePhotoBtn) {
       });
     }
 
-    // (Optional) Delete button – disabled by default
+
     if (modalDeleteBtn) {
       modalDeleteBtn.addEventListener("click", async () => {
         try {
@@ -344,7 +344,7 @@ if (modalRemovePhotoBtn) {
       });
     }
 
-    //Render events
+
     const eventHTML = events
       .map((ev, index) => {
         const isEven = index % 2 === 0;
@@ -354,7 +354,7 @@ if (modalRemovePhotoBtn) {
         const desc = escapeHTML(ev.description || "");
 
         const imgPath = normalizeEventImagePath(ev.image);
-        
+
         let notesRaw = String(ev.notes ?? "");
         notesRaw = notesRaw.replace(/\n{3,}/g, "\n\n").trim();
 
@@ -422,16 +422,16 @@ if (modalRemovePhotoBtn) {
 
     grid.innerHTML = eventHTML;
 
-//Drag & Drop reorder (ADMIN ONLY)
+
 if (isAdmin) {
   const rows = () => Array.from(grid.querySelectorAll(".event-row"));
 
-  // Make sure rows are draggable
+
   rows().forEach((r) => r.setAttribute("draggable", "true"));
 
   let isDragging = false;
 
-  //Save current DOM order to server
+
   async function saveOrderToServer() {
     const order = rows().map((r) => Number(r.getAttribute("data-event-index")));
 
@@ -446,7 +446,7 @@ if (isAdmin) {
     if (!result.success) throw new Error(result.error || "Failed to save order");
   }
 
-  // [OK] Wheel/trackpad scroll while dragging
+
   const onWheelWhileDragging = (e) => {
     if (!isDragging) return;
 
@@ -461,9 +461,9 @@ if (isAdmin) {
 
   document.addEventListener("wheel", onWheelWhileDragging, { passive: false });
 
-  //Auto-scroll near edges
-  const EDGE = 140;      // bigger = easier to trigger
-  const SPEED = 22;      // bigger = faster scroll
+
+  const EDGE = 140;
+  const SPEED = 22;
   let autoScrollTimer = null;
 
   function startAutoScroll() {
@@ -486,7 +486,7 @@ if (isAdmin) {
     window.__dragY = undefined;
   }
 
-  //Drag start / end
+
   rows().forEach((row) => {
     row.addEventListener("dragstart", (e) => {
       row.classList.add("dragging");
@@ -500,10 +500,10 @@ if (isAdmin) {
       isDragging = false;
       stopAutoScroll();
 
-      // Save after drop
+
       try {
         await saveOrderToServer();
-        location.reload(); // reload so indices match new JSON order
+        location.reload();
       } catch (err) {
         console.error(err);
         alert("[ERROR] Couldn't save new order: " + (err.message || "error"));
@@ -511,12 +511,12 @@ if (isAdmin) {
     });
   });
 
-  // BIG IMPROVEMENT: dragover on the GRID (not per-row)
-  // Much less “exact”
+
+
   grid.addEventListener("dragover", (e) => {
     e.preventDefault();
 
-    // Used for auto-scroll
+
     window.__dragY = e.clientY;
 
     const dragging = grid.querySelector(".event-row.dragging");
@@ -525,7 +525,7 @@ if (isAdmin) {
     const allRows = Array.from(grid.querySelectorAll(".event-row:not(.dragging)"));
     if (allRows.length === 0) return;
 
-    // Find the row whose CENTER is closest to mouse Y
+
     let closestRow = null;
     let closestDist = Infinity;
 
@@ -553,7 +553,7 @@ if (isAdmin) {
 }
 
 
-    //Hook up Edit buttons -> open modal
+
     if (isAdmin) {
       document.querySelectorAll("[data-edit-index]").forEach((btn) => {
         btn.addEventListener("click", () => {

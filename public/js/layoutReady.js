@@ -1,12 +1,12 @@
-/**
- * File: public\js\layoutReady.js
- * Purpose: Implements client-side behavior for the layoutReady experience.
- */
-// /js/layoutReady.js
+
+
+
+
+
 (() => {
   function show() {
     document.documentElement.style.visibility = "visible";
-    // optional: if you want a fade too, keep your html.loaded CSS and add this:
+
     document.documentElement.classList.add("loaded");
     window.dispatchEvent(new Event("layout:ready"));
   }
@@ -20,7 +20,7 @@
   const hasHeader = !!document.getElementById("header");
   const hasFooter = !!document.getElementById("footer");
 
-  // If a page doesn't have header/footer containers, don't block it
+
   if (!hasHeader || !hasFooter) {
     show();
     return;
@@ -33,7 +33,7 @@
     }
   }, 20);
 
-  // SAFETY: never keep the site hidden forever
+
   setTimeout(() => {
     clearInterval(t);
     show();

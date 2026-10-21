@@ -1,33 +1,33 @@
-/*
- * File: public\css\church\member.css
- * Purpose: Defines presentation styles for the member interface.
- */
-/* =============================
-   HERO
-============================= */
+
+
+
+
+
+
+
 .member-overlay {
   background: var(--hero-overlay);
 }
 
 .member-overlay h1 {
   font-size: 50px;
-  font-weight: 700; /* match other page headers */
-  text-transform: none; /* consistent with Expectations/Beliefs */
+  font-weight: 700;
+  text-transform: none;
 }
 
 
-/* =============================
-   CONTENT WRAPPER
-============================= */
+
+
+
 .member-wrapper {
   max-width: 1200px;
   margin: 80px auto;
   padding: 0 20px;
 }
 
-/* =============================
-   INTRO
-============================= */
+
+
+
 .member-intro {
   text-align: center;
   margin-bottom: 70px;
@@ -48,9 +48,9 @@
   line-height: 1.7;
 }
 
-/* =============================
-   GRID (CARDS)
-============================= */
+
+
+
 .member-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -73,11 +73,11 @@
 
 
 .member-card-header {
-  background: #1e2a57; /* same as .sunday and .monday cards */
+  background: #1e2a57;
   color: white;
   text-align: center;
   padding: 40px 20px;
-  border-bottom: 4px solid rgba(255, 255, 255, 0.15); /* subtle accent edge like expectations cards */
+  border-bottom: 4px solid rgba(255, 255, 255, 0.15);
 }
 
 
@@ -132,9 +132,9 @@
   color: #4279bc;
 }
 
-/* =============================
-   IMAGE SECTION
-============================= */
+
+
+
 .member-image-section {
   margin-bottom: 0;
 }
@@ -147,9 +147,9 @@
   box-shadow: none;
 }
 
-/* =============================
-   CTA SECTION (FULL WIDTH)
-============================= */
+
+
+
 .member-cta-full {
   width: 100vw;
   background: #f4f6fb;
@@ -185,7 +185,7 @@
   line-height: 1.6;
 }
 
-/* [OK] Expand-All Button Style — identical to Beliefs page */
+
 .expand-toggle {
   display: inline-block;
   margin: 5px auto 25px;
@@ -210,9 +210,9 @@
 }
 
 
-/* =============================
-   RESPONSIVE
-============================= */
+
+
+
 @media (max-width: 768px) {
   .member-intro h2 {
     font-size: 34px;

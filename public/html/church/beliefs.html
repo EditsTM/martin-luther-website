@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--
-  File: public\html\church\beliefs.html
-  Purpose: Provides HTML markup for the beliefs page.
--->
+
 
 <html lang="en">
 <head>
@@ -10,51 +7,48 @@
   <script>
     document.documentElement.style.visibility = "hidden";
   </script>
-  
+
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>What We Believe | Martin Luther</title>
 
-  <!-- Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <link rel="icon" href="/favicon.ico">
 
 
-  <!-- CSS -->
+
   <link rel="stylesheet" href="/css/header.css">
   <link rel="stylesheet" href="/css/footer.css">
   <link rel="stylesheet" href="/css/church/beliefs.css">
 </head>
 
 <body>
-  <!-- [OK] Header -->
+
   <div id="header"></div>
 
-  <!-- HERO -->
+
   <section class="beliefs-hero">
     <div class="beliefs-overlay">
       <h1>What We Believe</h1>
     </div>
   </section>
 
-  <!-- MAIN -->
+
   <main class="beliefs-content">
-    <!-- ============================================
-         CONFESSION TABS SECTION (NOW AT THE TOP)
-         Only Salvation + 3 boxes
-    =============================================== -->
+
     <section class="confession-tabs">
       <div class="tabs">
         <div class="tab-buttons">
-          <!-- 🔹 Only Salvation tab now -->
+
           <button class="tab-btn active" data-tab="salvation">Salvation</button>
         </div>
 
         <div class="tab-content-wrapper">
-          <!-- 🔹 Only Salvation content (3 cards) -->
+
           <div id="salvation" class="tab-content active">
             <div class="confession-card">
               <h3>The Problem</h3>
@@ -75,19 +69,17 @@
       </div>
     </section>
 
-    <!-- =============================
-         OUR BELIEFS CAROUSEL (BELOW)
-    ============================== -->
+
     <section class="beliefs-carousel">
       <h3 class="beliefs-carousel__title">Our Beliefs</h3>
 
-      <!-- CAROUSEL -->
+
       <div class="carousel">
         <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Previous">&#10094;</button>
 
         <div class="carousel__viewport">
           <ul class="carousel__track">
-            <!-- Belief Cards -->
+
             <li class="belief-card">
               <div class="belief-card__icon"><img src="/images/god.svg" alt="God"></div>
               <h4>God</h4>
@@ -154,17 +146,17 @@
         <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Next">&#10095;</button>
       </div>
 
-      <!-- Expand Button BELOW -->
+
       <div class="expand-btn-wrapper">
         <button id="expandToggle" class="expand-toggle" type="button">Expand All</button>
       </div>
     </section>
   </main>
 
-  <!-- [OK] Footer -->
+
   <div id="footer"></div>
 
-  <!-- JS -->
+
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>

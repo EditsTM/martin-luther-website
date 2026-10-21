@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--
-  File: public\html\church\team.html
-  Purpose: Provides HTML markup for the team page.
--->
+
 
 <html lang="en">
 <head>
@@ -13,56 +10,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meet Our Team | Martin Luther</title>
 
-  <!-- Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"rel="stylesheet">
   <link rel="icon" href="/favicon.ico">
 
 
-  <!-- CSS -->
+
   <link rel="stylesheet" href="/css/header.css">
   <link rel="stylesheet" href="/css/footer.css">
   <link rel="stylesheet" href="/css/church/team.css">
 </head>
 
 <body>
-  <!-- [OK] Dynamic Header -->
+
   <div id="header"></div>
 
-  <!-- HERO SECTION -->
+
   <section class="team-hero">
     <div class="team-overlay">
       <h1>Meet Our Team</h1>
     </div>
   </section>
 
-  <!-- MAIN CONTENT -->
+
   <main>
-    <!-- TEAM SECTION -->
+
     <section class="team-section">
       <div class="team-inner">
-        <!-- Centered Add Button for Admin -->
+
         <div class="add-btn-wrapper">
           <button id="add-team-btn" class="add-teacher-btn admin-only">+</button>
         </div>
 
-        <!-- Team cards -->
+
         <div class="team-grid" id="teamGrid">
-          <!-- JS injects cards -->
+
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ✳️ TEAM EDIT MODAL (same style as faculty, with extra Bio box) -->
+
   <div id="team-edit-modal" class="team-modal">
     <div class="team-modal-content">
       <button id="team-modal-close-btn" class="modal-close-btn">&times;</button>
       <h2 class="modal-title">Edit Team Member</h2>
 
       <div class="modal-body">
-        <!-- Image side -->
+
         <div class="modal-image-section">
           <img
             id="team-modal-photo-preview"
@@ -75,7 +72,7 @@
           </label>
         </div>
 
-        <!-- Form side -->
+
         <div class="modal-form-section">
           <label class="modal-label">
             Name
@@ -87,7 +84,7 @@
             <input type="text" id="team-modal-subject" />
           </label>
 
-          <!-- [OK] Extra box for Bio -->
+
           <label class="modal-label">
             Bio (use blank lines for new paragraphs)
             <textarea
@@ -113,10 +110,10 @@
     </div>
   </div>
 
-  <!-- [OK] Dynamic Footer -->
+
   <div id="footer"></div>
 
-  <!-- JS -->
+
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>

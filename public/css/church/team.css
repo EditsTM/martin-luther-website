@@ -1,12 +1,12 @@
-/*
- * File: public\css\church\team.css
- * Purpose: Defines presentation styles for the team interface.
- */
-/* =============================
-   HERO SECTION
-============================= */
+
+
+
+
+
+
+
 .team-overlay {
-  background: var(--hero-overlay); /* consistent ML blue overlay */
+  background: var(--hero-overlay);
 }
 
 .team-overlay h1 {
@@ -14,9 +14,9 @@
   font-weight: 700;
 }
 
-/* =============================
-   TEAM SECTION
-============================= */
+
+
+
 .team-section {
   width: 100%;
   margin: 0;
@@ -33,7 +33,7 @@
   position: relative;
 }
 
-/* vertical divider between team members */
+
 .team-grid::after {
   content: "";
   position: absolute;
@@ -45,7 +45,7 @@
   transform: translateX(-50%);
 }
 
-/* team member card */
+
 .team-member {
   text-align: center;
   padding: 60px 40px;
@@ -57,7 +57,7 @@
 }
 
 
-/* image */
+
 .team-member img {
   width: 100%;
   max-width: 400px;
@@ -66,7 +66,7 @@
   margin-bottom: 25px;
 }
 
-/* titles */
+
 .team-member h3 {
   font-size: 22px;
   font-weight: 800;
@@ -81,25 +81,25 @@
   margin-bottom: 16px;
 }
 
-/* bio text section */
+
 .bio-text {
   max-width: 500px;
   margin: 0 auto;
   text-align: left;
   flex-grow: 1;
 
-  /* [OK] THIS is what prevents “cut off” and keeps pasted line breaks */
-  white-space: pre-wrap;     /* keeps \n line breaks */
-  overflow-wrap: anywhere;   /* breaks long words/urls */
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   word-break: break-word;
   line-height: 1.6;
   font-size: 16px;
   color: #444;
 }
 
-/* =============================
-   RESPONSIVE
-============================= */
+
+
+
 @media (max-width: 950px) {
   .team-grid {
     grid-template-columns: 1fr;
@@ -121,9 +121,9 @@
     font-size: 38px;
   }
 }
-/* =============================
-   ADMIN CONTROLS (ONLY WHEN LOGGED IN)
-============================= */
+
+
+
 .team-admin-bar {
   max-width: 1200px;
   margin: 20px auto 0 auto;
@@ -148,7 +148,7 @@
   opacity: 0.9;
 }
 
-/* small admin controls overlay inside each card */
+
 .team-admin-controls {
   margin-top: 15px;
   display: flex;
@@ -188,11 +188,11 @@
     padding: 0 20px 10px 20px;
   }
 }
-/* =============================
-   ADMIN BUTTONS & MODAL (MATCH FACULTY)
-============================= */
 
-/* wrapper around + button */
+
+
+
+
 .add-btn-wrapper {
   width: 100%;
   max-width: 1200px;
@@ -201,9 +201,9 @@
   justify-content: center;
 }
 
-/* orange round + button, same as faculty */
+
 .add-teacher-btn {
-  display: none; /* hidden by default */
+  display: none;
 }
 
 body.admin-mode .add-teacher-btn {
@@ -218,7 +218,7 @@ body.admin-mode .add-teacher-btn {
   cursor: pointer;
 }
 
-/* admin-only toggles */
+
 .admin-only {
   display: none;
 }
@@ -226,12 +226,12 @@ body.admin-mode .admin-only {
   display: block;
 }
 
-/* [OK] Edit button styled like News & Events */
+
 .edit-btn {
   display: inline-block;
   margin-top: 25px;
 
-  background: #1e2a57; /* navy */
+  background: #1e2a57;
   color: white;
   font-size: 15px;
   font-weight: 700;
@@ -248,17 +248,17 @@ body.admin-mode .admin-only {
   transition: background 0.25s ease, transform 0.2s ease;
 }
 .edit-btn:hover {
-  background: white;         /* white fill */
-  color: #1e2a57;            /* navy text */
-  border: 2px solid #1e2a57; /* navy outline */
+  background: white;
+  color: #1e2a57;
+  border: 2px solid #1e2a57;
 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 
-/* =============================
-   MODAL STYLES (COPIED FROM FACULTY, RENAMED)
-============================= */
+
+
+
 
 .team-modal {
   position: fixed;
@@ -314,7 +314,7 @@ body.admin-mode .admin-only {
   gap: 20px;
 }
 
-/* Image side */
+
 .modal-image-section {
   flex: 1 1 100%;
   display: flex;
@@ -330,7 +330,7 @@ body.admin-mode .admin-only {
   margin-bottom: 14px;
 }
 
-/* Reuse upload-label but full width here */
+
 .upload-label input[type="file"] {
   display: none;
 }
@@ -346,7 +346,7 @@ body.admin-mode .admin-only {
   font-weight: 700;
 }
 
-/* Form side */
+
 .modal-form-section {
   flex: 1 1 50%;
   text-align: left;
@@ -368,7 +368,7 @@ body.admin-mode .admin-only {
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Actions */
+
 .modal-actions {
   margin-top: 18px;
   display: flex;
@@ -376,14 +376,14 @@ body.admin-mode .admin-only {
   gap: 10px;
 }
 
-/* Reuse save/delete-btn but width auto in modal */
+
 .modal-actions .save-btn,
 .modal-actions .delete-btn {
   width: auto;
   min-width: 110px;
 }
 
-/* Buttons themselves (copied) */
+
 .save-btn,
 .delete-btn {
   padding: 10px 14px;
@@ -398,7 +398,7 @@ body.admin-mode .admin-only {
 .delete-btn { background: #b30000; }
 .delete-btn:hover { background: #d00000; }
 
-/* Mobile modal tweaks */
+
 @media (max-width: 600px) {
   .team-modal-content {
     padding: 20px;

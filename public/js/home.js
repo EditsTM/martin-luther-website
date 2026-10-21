@@ -1,21 +1,21 @@
-/**
- * File: public\js\home.js
- * Purpose: Implements client-side behavior for the home experience.
- */
-// Rotating hero background images
+
+
+
+
+
 const heroImages = [
   "/images/HomeRotatingImage1.webp",
   "/images/HomeRotatingImage2.webp",
   "/images/HomeRotatingImage3.webp",
 ];
 
-// Grab the hero section element that gets the rotating background
+
 const heroSection = document.querySelector(".hero");
 
 if (heroSection) {
   let currentImage = 0;
 
-  // Preload the next hero only, keeping the initial page load focused on the LCP image.
+
   heroImages.slice(1, 2).forEach((img) => {
     const preload = new Image();
     preload.decoding = "async";
@@ -24,26 +24,26 @@ if (heroSection) {
     preload.onerror = () => console.error(`[ERROR] Failed to load: ${img}`);
   });
 
-  // Set the initial background image immediately on page load
+
   heroSection.style.backgroundImage = `url('${heroImages[currentImage]}')`;
 
-  // Add a transition for smoother swaps
-  // NOTE: background-image transitions can be inconsistent across browsers.
-  // If you ever want a guaranteed smooth fade, you’d use an overlay or pseudo-element.
+
+
+
   heroSection.style.transition = "background-image 1s ease-in-out";
 
-  // Rotate images on a fixed interval
-  // Mod (%) wraps the index back to 0 when it reaches the end of the array.
+
+
   setInterval(() => {
     currentImage = (currentImage + 1) % heroImages.length;
     heroSection.style.backgroundImage = `url('${heroImages[currentImage]}')`;
   }, 5000);
 } else {
-  // If the hero isn't on this page, avoid runtime errors
+
   console.error("[ERROR] Hero section not found in DOM");
 }
 
-//Load events onto homepage
+
 const container = document.querySelector(".events-cards");
 
 if (container) {

@@ -1,15 +1,15 @@
-/*
- * File: public\css\school\enrollment.css
- * Purpose: Defines presentation styles for the enrollment interface.
- */
+
+
+
+
 
 body {
   overflow-x: hidden;
 }
 
-/* =============================
-   ENROLL HERO SECTION
-============================= */
+
+
+
 .enroll-hero {
   text-align: center;
 }
@@ -29,9 +29,9 @@ body {
   font-weight: 800;
 }
 
-/* =============================
-   HERO BUTTONS
-============================= */
+
+
+
 .hero-buttons {
   display: flex;
   justify-content: center;
@@ -60,9 +60,9 @@ body {
   transform: scale(1.07);
 }
 
-/* =============================
-   ANGLED SECTION
-============================= */
+
+
+
 .enroll-banner {
   position: relative;
   width: 100vw;
@@ -138,9 +138,9 @@ body {
   line-height: 1.55;
 }
 
-/* =============================
-   ENROLLMENT STEPS
-============================= */
+
+
+
 .enroll-steps {
   position: relative;
   overflow: hidden;
@@ -170,7 +170,7 @@ body {
   z-index: 0;
 }
 
-/* Bubble animation layers */
+
 .enroll-steps::before {
   background-image:
     radial-gradient(circle 120px at 10% 90%, rgba(210,225,255,0.35) 20%, transparent 70%),
@@ -201,9 +201,9 @@ body {
   100% { background-position: 0% 100%, 100% 0%, 50% 30%; }
 }
 
-/* =============================
-   STEP CARDS
-============================= */
+
+
+
 .steps-container { position: relative; z-index: 2; }
 
 .steps-container h2 {
@@ -259,9 +259,9 @@ body {
   margin: 0 auto;
 }
 
-/* =============================
-   RESPONSIVE
-============================= */
+
+
+
 @media (max-width: 900px) {
   .enroll-overlay h1 {
     font-size: 48px;
@@ -274,9 +274,9 @@ body {
   .steps-container p { font-size: 16px; }
   .step p { font-size: 15px; }
 }
-/* =============================
-   SPACING FIX: BUTTON BELOW STEPS
-============================= */
+
+
+
 .steps-button {
   margin-top: 60px;
 }

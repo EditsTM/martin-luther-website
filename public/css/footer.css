@@ -1,10 +1,10 @@
-/*
- * File: public\css\footer.css
- * Purpose: Defines presentation styles for the footer interface.
- */
-/* =============================
-   FOOTER BASE STYLES
-============================= */
+
+
+
+
+
+
+
 .footer {
   width: 100%;
   background: white;
@@ -12,9 +12,9 @@
   overflow-x: hidden;
 }
 
-/* =============================
-   FOOTER TOP SECTION
-============================= */
+
+
+
 .footer-top {
   background: white;
   color: #2c3e50;
@@ -23,9 +23,9 @@
   margin: 0 auto;
 }
 
-/* =============================
-   MAIN LAYOUT (LOGO LEFT, TEXT RIGHT)
-============================= */
+
+
+
 .footer-columns {
   display: flex;
   align-items: flex-start;
@@ -35,9 +35,9 @@
   text-align: center;
 }
 
-/* =============================
-   LOGO
-============================= */
+
+
+
 .footer-logo {
   flex: 0 0 auto;
   display: flex;
@@ -50,21 +50,21 @@
   height: auto;
 }
 
-/* =============================
-   TEXT GROUP (ALL COLUMNS)
-============================= */
+
+
+
 .footer-text-group {
   display: flex;
   flex-direction: column;
   align-items: center;
   flex: 1;
-  padding-top: 40px; /* lowers text while still reserving layout space */
+  padding-top: 40px;
   gap: 24px;
 }
 
-/* =============================
-   INDIVIDUAL TEXT COLUMNS
-============================= */
+
+
+
 .footer-text-columns {
   display: flex;
   justify-content: center;
@@ -101,19 +101,19 @@
   text-decoration: underline;
 }
 
-/* =============================
-   PRAYER REQUEST / CONNECT BUTTON
-   Longer (wider), not taller
-============================= */
+
+
+
+
 .footer .btn {
-  position: relative;              /* for shine effect */
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  /* 👉 Wider left-to-right, shorter top-to-bottom */
+
   min-width: 260px;
-  padding: 6px 0;                  /* small vertical padding = not tall */
+  padding: 6px 0;
 
   background: #1e2a57 !important;
   color: white !important;
@@ -123,7 +123,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   font-size: 16px;
-  overflow: hidden;                /* keep shine inside */
+  overflow: hidden;
   text-align: center;
   margin-bottom: 12px;
 }
@@ -136,7 +136,7 @@
   box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
 }
 
-/* Shine effect */
+
 .footer .btn::after {
   content: "";
   position: absolute;
@@ -157,9 +157,9 @@
   100% { left: 125%; }
 }
 
-/* =============================
-   FOOTER BOTTOM
-============================= */
+
+
+
 .footer-bottom {
   background: #1e2a57;
   color: white;
@@ -170,31 +170,31 @@
   width: 100%;
 }
 
-/* =============================
-   RESPONSIVE ADJUSTMENTS
-============================= */
-/* =============================
-   MID-WIDTH SAFETY FIX (950px–1157px)
-============================= */
+
+
+
+
+
+
 @media (max-width: 1157px) and (min-width: 951px) {
   .footer-top {
-    padding-bottom: 60px; /* [OK] add extra space below button */
+    padding-bottom: 60px;
   }
 
   .footer .btn {
-    margin-bottom: 40px;  /* [OK] ensures button stays above copyright */
+    margin-bottom: 40px;
   }
 
   .footer-bottom {
-    padding-top: 10px;    /* [OK] extra visual gap for balance */
+    padding-top: 10px;
   }
 }
 
-/* Medium Screens (≤950px) */
+
 @media (max-width: 950px) {
   .footer-columns {
     flex-direction: column;
-    align-items: center; /* [OK] center logo + text group */
+    align-items: center;
     justify-content: center;
     gap: 30px;
     text-align: center;
@@ -212,7 +212,7 @@
   }
 
   .footer-text-group {
-    padding-top: 0; /* reset offset */
+    padding-top: 0;
     align-items: center;
     text-align: center;
     width: 100%;
@@ -225,12 +225,12 @@
 
   .footer .btn {
     font-size: 16px;
-    min-width: 240px;     /* still nice and wide */
-    padding: 6px 0;       /* keep it short */
+    min-width: 240px;
+    padding: 6px 0;
   }
 }
 
-/* Small Screens (≤600px) */
+
 @media (max-width: 600px) {
   .footer-text-columns {
     flex-direction: column;
@@ -258,15 +258,15 @@
 
   .footer .btn {
     font-size: 15px;
-    min-width: 220px;     /* still wider than default */
-    padding: 6px 0;       /* not tall */
+    min-width: 220px;
+    padding: 6px 0;
     max-width: 280px;
   }
 }
-/* FORCE footer button to be wider */
+
 footer .footer-text-group .btn {
   width: min(500px, 100%) !important;
-  padding: 10px 0 !important;  /* keeps it same height, not taller */
+  padding: 10px 0 !important;
   display: inline-block !important;
 }
 

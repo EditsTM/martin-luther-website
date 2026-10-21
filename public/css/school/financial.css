@@ -1,7 +1,7 @@
-/*
- * File: public\css\school\financial.css
- * Purpose: Defines presentation styles for the financial interface.
- */
+
+
+
+
 
 :root {
   --banner-dark: #3f3f3f;
@@ -27,7 +27,7 @@
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Page layout */
+
 .page {
   padding: 40px 16px 70px;
 }
@@ -37,7 +37,7 @@
   margin: 0 auto;
 }
 
-/* Title banner layout */
+
 .title-banner {
   background: var(--banner-dark);
   color: #fff;
@@ -61,7 +61,7 @@
   font-family: Georgia, "Times New Roman", serif;
 }
 
-/* Content */
+
 .content {
   padding: 20px 6px 0;
   line-height: 1.6;
@@ -79,7 +79,7 @@
   color: #000;
 }
 
-/* Callout box (CENTERED) */
+
 .callout {
   background: var(--ml-grey);
   border: 2px solid var(--ml-blue);
@@ -106,14 +106,14 @@
   color: #000;
 }
 
-/* Footnote line */
+
 .footnote {
   font-size: 12px;
   margin: 10px 0 10px;
   color: #000;
 }
 
-/* Tables */
+
 .table-wrap {
   display: flex;
   flex-direction: column;
@@ -153,7 +153,7 @@
   color: #000;
 }
 
-/* Process section */
+
 .process {
   margin-top: 18px;
   color: #000;
@@ -168,7 +168,7 @@
   margin: 10px 0;
 }
 
-/* Substeps box */
+
 .substeps {
   margin-top: 8px;
   padding: 10px 12px;
@@ -183,7 +183,7 @@
   color: #000;
 }
 
-/* Section title (centered) */
+
 .section-title {
   margin: 16px 0 10px;
   font-size: 18px;
@@ -195,7 +195,7 @@
   text-align: center;
 }
 
-/* Bottom line (centered) */
+
 .bottom-line {
   margin-top: 14px;
   font-size: 14px;
@@ -213,14 +213,14 @@
   word-break: break-word;
 }
 
-/* Seal on left */
+
 .banner-seal {
   width: 80px;
   height: auto;
   flex-shrink: 0;
 }
 
-/* Text container */
+
 .banner-text {
   flex: 1;
   display: flex;

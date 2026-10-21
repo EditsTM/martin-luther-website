@@ -1,7 +1,7 @@
-/*
- * File: public\css\thankYou.css
- * Purpose: Defines presentation styles for the thankYou interface.
- */
+
+
+
+
 body, html {
   margin: 0;
   padding: 0;
@@ -11,7 +11,7 @@ body, html {
   flex-direction: column;
 }
 
-/* [OK] Background hero for thank you */
+
 main.thankyou-section {
   flex: 1;
   display: flex;
@@ -56,12 +56,12 @@ main.thankyou-section::before {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
 }
 
-/* [OK] Wrapper for the button */
+
 .thankyou-button {
   margin-top: 10px;
 }
 
-/* [OK] MATCHES News & Events button style */
+
 .thankyou-button .btn {
   display: inline-block;
   background: #1e2a57 !important;

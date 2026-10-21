@@ -1,18 +1,18 @@
-/*
- * File: public\css\church\events.css
- * Purpose: Defines presentation styles for the events interface.
- */
+
+
+
+
 
 :root{
   --blue: #282f7f;
-  --navy: #1f2a57;      /* Edit button + modal primary */
-  --save: #2f6fce;      /* Save button */
+  --navy: #1f2a57;
+  --save: #2f6fce;
   --grey: #eaeaea;
 }
 
-/* =============================
-   HERO SECTION
-============================= */
+
+
+
 .events-hero{
   background: url("/images/Prayer.jpg") no-repeat center/cover;
 }
@@ -26,9 +26,9 @@
   font-weight: 700;
 }
 
-/* =============================
-   MAIN CONTAINER
-============================= */
+
+
+
 .events-grid{
   display: flex;
   flex-direction: column;
@@ -37,18 +37,18 @@
   padding: 0;
 }
 
-/* =============================
-   EVENT ROW LAYOUT
-============================= */
+
+
+
 .event-row{
   display: flex;
   width: 100%;
   align-items: stretch;
 }
 
-/* =============================
-   TEXT + IMAGE ITEMS
-============================= */
+
+
+
 .grid-item{
   flex: 1 1 50%;
   width: 50%;
@@ -77,9 +77,9 @@
   border: 2px solid #000;
 }
 
-/* =============================
-   IMAGE BEHAVIOR
-============================= */
+
+
+
 .event-img{
   width: 100%;
   height: auto;
@@ -88,9 +88,9 @@
   display: block;
 }
 
-/* =============================
-   TITLE + DATE
-============================= */
+
+
+
 .event-header{
   width: 100%;
   text-align: center;
@@ -111,9 +111,9 @@
   margin-top: 4px;
 }
 
-/* =============================
-   TEXT BOX
-============================= */
+
+
+
 .text-box{
   width: 100%;
   text-align: center;
@@ -129,9 +129,9 @@
   margin: 10px 25px;
 }
 
-/* =============================
-   NOTES DISPLAY (non-admin too)
-============================= */
+
+
+
 .event-notes{
   width: 90%;
   margin: 0 auto;
@@ -141,9 +141,9 @@
   padding: 10px 0 0 0;
 }
 
-/* =============================
-   EDIT BUTTON (matches screenshot)
-============================= */
+
+
+
 .ml-edit-btn{
   margin-top: 18px;
   background: var(--navy);
@@ -161,9 +161,9 @@
   color: var(--navy);
 }
 
-/* =============================
-   ADMIN ADD BUTTON
-============================= */
+
+
+
 .add-btn-wrapper{
   display: none;
   width: 100%;
@@ -191,14 +191,14 @@ body.admin-mode .add-event-btn{
   cursor: pointer;
 }
 
-/* =============================
-   MODAL (matches screenshot)
-============================= */
+
+
+
 .event-modal-overlay{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.35);
-  display: none; /* JS sets to flex */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 9999;
@@ -259,7 +259,7 @@ body.admin-mode .add-event-btn{
   background: var(--grey);
 }
 
-/* Change Photo button */
+
 .event-modal-primary{
   margin-top: 14px;
   width: 280px;
@@ -328,9 +328,9 @@ body.admin-mode .add-event-btn{
   cursor: pointer;
 }
 
-/* =============================
-   MOBILE
-============================= */
+
+
+
 @media (max-width: 950px){
   .event-row{
     flex-direction: column;
@@ -341,7 +341,7 @@ body.admin-mode .add-event-btn{
     flex: 1 1 100%;
   }
 
-  /* force Text then Image on mobile */
+
   .event-row .grid-item.grey{ order: 1; }
   .event-row .grid-item.white{ order: 2; }
 
@@ -357,7 +357,7 @@ body.admin-mode .add-event-btn{
     grid-template-columns: 1fr;
   }
 }
-/* Remove Photo button */
+
 .event-modal-remove {
   margin-top: 10px;
   width: 280px;

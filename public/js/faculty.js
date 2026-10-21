@@ -1,29 +1,29 @@
-/**
- * File: public\js\faculty.js
- * Purpose: Implements client-side behavior for the faculty experience.
- */
-// public/js/faculty.js
+
+
+
+
+
 
 function getCsrfToken() {
-  // If you later add: <meta name="csrf-token" content="...">
-  // this grabs it so we can send it with POST requests.
+
+
   const meta = document.querySelector('meta[name="csrf-token"]');
   return meta?.getAttribute("content") || "";
 }
 
 async function fetchJson(url, options = {}) {
-  // Centralized fetch for JSON:
-  // - credentials ensures session cookies are included (admin auth)
-  // - no-store avoids stale admin responses being cached
+
+
+
   const res = await fetch(url, {
     credentials: "same-origin",
     cache: "no-store",
     ...options,
   });
 
-  // Standardize error handling (so callers can just try/catch)
+
   if (!res.ok) {
-    // If the server returns a JSON error body with { message }, show it
+
     let msg = `Request failed (${res.status})`;
     try {
       const ct = res.headers.get("content-type") || "";
@@ -35,7 +35,7 @@ async function fetchJson(url, options = {}) {
     throw new Error(msg);
   }
 
-  // Guard: we expect JSON from these endpoints
+
   const ct = res.headers.get("content-type") || "";
   if (!ct.includes("application/json")) {
     throw new Error("Expected JSON response.");
@@ -45,7 +45,7 @@ async function fetchJson(url, options = {}) {
 }
 
 async function postJson(url, payload) {
-  // Helper for JSON POSTs (optionally includes CSRF token header)
+
   const csrf = getCsrfToken();
   const headers = { "Content-Type": "application/json" };
   if (csrf) headers["X-CSRF-Token"] = csrf;
@@ -58,7 +58,7 @@ async function postJson(url, payload) {
 }
 
 async function postFormData(url, formData) {
-  // Helper for multipart/form-data uploads (browser sets Content-Type boundary)
+
   const csrf = getCsrfToken();
   const headers = {};
   if (csrf) headers["X-CSRF-Token"] = csrf;
@@ -70,10 +70,10 @@ async function postFormData(url, formData) {
   });
 }
 
-// ---------- ADMIN CHECK ----------
+
 async function isAdminLoggedIn() {
-  // NOTE: This only controls UI (show/hide edit buttons).
-  // Your backend MUST still enforce admin auth on every /admin route.
+
+
   try {
     const data = await fetchJson("/admin/check");
     return !!data.loggedIn;
@@ -83,16 +83,16 @@ async function isAdminLoggedIn() {
   }
 }
 
-// ---------- LOAD FACULTY DATA ----------
+
 async function loadFacultyData() {
   try {
     const data = await fetchJson("/admin/faculty.json");
 
-    // Normalize admin arrays because the backend uses "admin" but UI expects "admins"
+
     data.admin = Array.isArray(data.admin) ? data.admin : [];
     data.admins = data.admin;
 
-    // Ensure arrays exist so the UI can safely iterate without crashing
+
     if (!data.teachers) data.teachers = [];
     if (!data.staff) data.staff = [];
 
@@ -100,7 +100,7 @@ async function loadFacultyData() {
   } catch (e) {
     console.error("Failed to load faculty data:", e);
 
-    // Safe fallback so the page still renders even if fetch fails
+
     return {
       principal: {
         name: "Name",
@@ -114,8 +114,8 @@ async function loadFacultyData() {
   }
 }
 
-// ---------- MODAL STATE ----------
-// We store what card is being edited so Save/Delete/Upload know what to update.
+
+
 let currentEditContext = null;
 let modalInitialized = false;
 
@@ -128,9 +128,9 @@ let modalSaveBtn;
 let modalDeleteBtn;
 let modalCloseBtn;
 
-// ---------- MODAL SETUP ----------
+
 function setupEditModal() {
-  // Query modal elements once and wire up handlers once
+
   modalEl = document.getElementById("faculty-edit-modal");
   if (!modalEl) return;
 
@@ -155,34 +155,34 @@ function setupEditModal() {
     return;
   }
 
-  // Close modal: "X" button and clicking the overlay background
+
   modalCloseBtn.addEventListener("click", closeEditModal);
   modalEl.addEventListener("click", (e) => {
     if (e.target === modalEl) closeEditModal();
   });
 
-  // SAVE CHANGES
+
   modalSaveBtn.addEventListener("click", async () => {
     if (!currentEditContext) return;
 
     const { role, index, cardElement } = currentEditContext;
 
-    // Basic normalization so empty inputs don’t break layout
+
     const name = modalNameInput.value.trim() || "Name";
     const subject =
       modalSubjectInput.value.trim() ||
       (role === "principal" ? "Principal" : "Subject");
 
-    // Different roles use different endpoints/payloads
+
     let url = "/admin/faculty/update";
     let payload = { role, name, subject };
 
     if (role === "principal") {
-      // principal uses /faculty/update with no index
+
     } else if (role === "teacher") {
       payload.index = index;
     } else if (role === "staff") {
-      payload.index = index; // staff mirrors teacher behavior
+      payload.index = index;
     } else if (role === "admin") {
       url = "/admin/faculty/update-admin";
       payload = { index, name, subject };
@@ -195,7 +195,7 @@ function setupEditModal() {
         return;
       }
 
-      // Update UI immediately without reloading the whole page
+
       cardElement.querySelector(".faculty-name").textContent = name;
       cardElement.querySelector(".faculty-subject").textContent = subject;
 
@@ -206,18 +206,18 @@ function setupEditModal() {
     }
   });
 
-  // DELETE ENTRY
+
   modalDeleteBtn.addEventListener("click", async () => {
     if (!currentEditContext) return;
 
     const { role, index, cardElement } = currentEditContext;
 
-    // Principal is not deletable in this UI
+
     if (role === "principal") return;
 
     if (!confirm("Are you sure you want to delete this entry?")) return;
 
-    // Convert index to a number before sending to server
+
     const idx = Number(index);
     let url = "";
 
@@ -238,10 +238,10 @@ function setupEditModal() {
         return;
       }
 
-      // Remove the deleted card from the DOM
+
       cardElement.remove();
 
-      // Re-index remaining cards so future edits/deletes map to correct array indexes
+
       document
         .querySelectorAll(`.faculty-card[data-role="${role}"]`)
         .forEach((c, newIndex) => {
@@ -255,7 +255,7 @@ function setupEditModal() {
     }
   });
 
-  // PHOTO UPLOAD
+
   modalPhotoInput.addEventListener("change", async () => {
     if (!currentEditContext) return;
     const { role, index, cardElement } = currentEditContext;
@@ -263,9 +263,9 @@ function setupEditModal() {
     const file = modalPhotoInput.files[0];
     if (!file) return;
 
-    // Client-side guardrails to prevent obvious bad uploads.
-    // IMPORTANT: These do NOT replace server-side validation.
-    const MAX_BYTES = 5 * 1024 * 1024; // 5MB
+
+
+    const MAX_BYTES = 5 * 1024 * 1024;
     const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
     if (!allowed.includes(file.type)) {
@@ -280,7 +280,7 @@ function setupEditModal() {
       return;
     }
 
-    // Send file + role + index (index not needed for principal)
+
     const formData = new FormData();
     formData.append("image", file);
     formData.append("role", role);
@@ -293,17 +293,17 @@ function setupEditModal() {
         return;
       }
 
-      // Defensive cleanup: avoid weird leading slashes or empty paths
+
       const imagePath = String(data.image || "").replace(/^\/+/, "");
       if (!imagePath) {
         alert("Upload succeeded but no image path returned.");
         return;
       }
 
-      // Cache-bust so the browser shows the new image immediately
+
       const newSrc = "/" + imagePath + "?t=" + Date.now();
 
-      // Update both modal preview and the card image
+
       modalPhotoPreview.src = newSrc;
       cardElement.querySelector("img").src = newSrc;
     } catch (err) {
@@ -316,25 +316,25 @@ function setupEditModal() {
 }
 
 function openEditModal(context) {
-  // Lazily initialize (safe if initFacultyPage calls it early too)
+
   if (!modalInitialized) {
     setupEditModal();
   }
   if (!modalEl) return;
 
-  // Store context so Save/Delete/Upload know what they are operating on
+
   currentEditContext = context;
 
-  // Pre-fill modal fields from the card
+
   modalNameInput.value = context.name || "";
   modalSubjectInput.value = context.subject || "";
   modalPhotoPreview.src = context.imageSrc || "/images/faculty/PlaceHolder.jpg";
 
-  // Hide delete for principal
+
   modalDeleteBtn.style.display =
     context.role === "principal" ? "none" : "inline-block";
 
-  // Show modal and prevent background scroll
+
   modalEl.classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -342,26 +342,26 @@ function openEditModal(context) {
 function closeEditModal() {
   if (!modalEl) return;
 
-  // Hide modal and re-enable scrolling
+
   modalEl.classList.remove("open");
   document.body.style.overflow = "";
 
-  // Clear state for safety
+
   currentEditContext = null;
   modalPhotoInput.value = "";
 }
 
-// ---------- CARD CREATION ----------
+
 function createFacultyCard(person, options) {
   const { role, index, isAdmin } = options;
 
-  // Each person becomes a "faculty-card"
+
   const card = document.createElement("article");
   card.className =
     "faculty-card" + (role === "principal" ? " principal-card" : "");
   card.dataset.role = role;
 
-  // Only non-principal cards have array indexes
+
   if (role !== "principal") card.dataset.index = index;
   if (isAdmin && role !== "principal") {
     card.classList.add("faculty-card--reorderable");
@@ -376,7 +376,7 @@ function createFacultyCard(person, options) {
   img.draggable = false;
   imgWrapper.appendChild(img);
 
-  // Use textContent (not innerHTML) to avoid XSS sinks
+
   const nameEl = document.createElement("h3");
   nameEl.className = "faculty-name";
   nameEl.textContent = person.name || "Name";
@@ -390,7 +390,7 @@ function createFacultyCard(person, options) {
   card.appendChild(nameEl);
   card.appendChild(subjEl);
 
-  // Admins see an Edit button that opens the modal
+
   if (isAdmin) {
     const editBtn = document.createElement("button");
     editBtn.className = "edit-btn admin-only";
@@ -436,13 +436,13 @@ function getFacultyInsertionReference(container, x, y, draggingEl, placeholderEl
     slots.push({
       x: beforeX,
       y: cy,
-      refIndex: idx, // insert before this card
+      refIndex: idx,
     });
 
     slots.push({
       x: afterX,
       y: cy,
-      refIndex: idx + 1, // insert after this card
+      refIndex: idx + 1,
     });
   });
 
@@ -450,7 +450,7 @@ function getFacultyInsertionReference(container, x, y, draggingEl, placeholderEl
   let bestDist = Infinity;
   for (const slot of slots) {
     const dx = slot.x - x;
-    const dy = (slot.y - y) * 1.05; // keep row preference without sticky feel
+    const dy = (slot.y - y) * 1.05;
     const dist = Math.hypot(dx, dy);
     if (dist < bestDist) {
       bestDist = dist;
@@ -694,9 +694,9 @@ function setupFacultyDragReorder(container, role) {
   });
 }
 
-// ---------- INIT PAGE ----------
+
 async function initFacultyPage() {
-  // Determine admin mode first so we can show/hide admin-only UI
+
   const isAdmin = await isAdminLoggedIn();
   if (isAdmin) document.body.classList.add("admin-mode");
 
@@ -709,10 +709,10 @@ async function initFacultyPage() {
   const addTeacherBtn = document.getElementById("add-teacher-btn");
   const addStaffBtn = document.getElementById("add-staff-btn");
 
-  // Ensure modal handlers exist before any Edit click happens
+
   setupEditModal();
 
-  // ADMINISTRATION: principal + admins in one grid
+
   adminGrid.innerHTML = "";
   adminGrid.appendChild(
     createFacultyCard(data.principal, { role: "principal", isAdmin })
@@ -724,7 +724,7 @@ async function initFacultyPage() {
     );
   });
 
-  // FACULTY: teachers grid
+
   facultyGrid.innerHTML = "";
   data.teachers.forEach((t, idx) => {
     facultyGrid.appendChild(
@@ -732,7 +732,7 @@ async function initFacultyPage() {
     );
   });
 
-  // STAFF: optional grid (only if page has it)
+
   if (staffGrid) {
     staffGrid.innerHTML = "";
     (data.staff || []).forEach((s, idx) => {
@@ -748,7 +748,7 @@ async function initFacultyPage() {
     if (staffGrid) setupFacultyDragReorder(staffGrid, "staff");
   }
 
-  // ADD ADMIN
+
   if (isAdmin && addAdminBtn) {
     addAdminBtn.style.display = "inline-block";
     addAdminBtn.addEventListener("click", async () => {
@@ -771,7 +771,7 @@ async function initFacultyPage() {
     });
   }
 
-  // ADD TEACHER
+
   if (isAdmin && addTeacherBtn) {
     addTeacherBtn.style.display = "inline-block";
     addTeacherBtn.addEventListener("click", async () => {
@@ -794,12 +794,12 @@ async function initFacultyPage() {
     });
   }
 
-  // ADD STAFF
+
   if (isAdmin && addStaffBtn) {
     addStaffBtn.style.display = "inline-block";
     addStaffBtn.addEventListener("click", async () => {
       try {
-        // This endpoint already expects POST; we include credentials/no-store/optional CSRF
+
         const out = await fetchJson("/admin/faculty/add-staff", {
           method: "POST",
           credentials: "same-origin",
@@ -830,5 +830,5 @@ async function initFacultyPage() {
   }
 }
 
-// Start once the DOM is available
+
 document.addEventListener("DOMContentLoaded", initFacultyPage);

@@ -1,14 +1,14 @@
-/*
- * File: public\css\school\faculty.css
- * Purpose: Defines presentation styles for the faculty interface.
- */
 
-/* HERO */
+
+
+
+
+
 .faculty-overlay {
   background: var(--hero-overlay);
 }
 
-/* MATCH CHURCH PAGE HERO HEADER */
+
 .faculty-overlay h1 {
   font-size: 50px;
   font-weight: 800;
@@ -16,17 +16,17 @@
 }
 
 
-/* MAIN */
+
 .faculty-main { padding: 80px 0; }
 .faculty-inner { width: 90%; max-width: 1200px; margin: auto; text-align: center; }
 
 .faculty-heading {
   font-size: 36px;
   font-weight: 800;
-  color: #000000;   /* 🔹 headers black */
+  color: #000000;
 }
 
-/* CENTER ADD BUTTONS */
+
 .add-btn-wrapper {
   width: 100%;
   display: flex;
@@ -35,9 +35,9 @@
 }
 
 
-/* ==================================================
-   GRID — MAX 3 PER ROW + LARGER CARDS
-================================================== */
+
+
+
 .faculty-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -56,13 +56,13 @@
   }
 }
 
-/* CARD STYLE (SHARED BY ADMIN + FACULTY) */
+
 .faculty-card {
   background: white;
   border-radius: 16px;
   padding: 24px;
   width: 100%;
-  height: 430px;                  /* [OK] FIXED BOX SIZE */
+  height: 430px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -95,19 +95,19 @@ body.admin-mode .faculty-card--reorderable.is-dragging {
 }
 
 .faculty-image-wrapper {
-  height: 360px;                /* 🔼 more of the card height */
+  height: 360px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 12px;
-  overflow: hidden;             /* just in case */
+  overflow: hidden;
 }
 
-/* Image fills as much as possible but shows the FULL picture */
+
 .faculty-image-wrapper img {
-  width: 100%;      /* [INFO] Forces full width */
-  height: 100%;     /* Fits the wrapper height */
-  object-fit: cover; /* [INFO] Fills width completely */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 12px;
 }
 
@@ -118,26 +118,26 @@ body.admin-mode .faculty-card--reorderable.is-dragging {
   margin: 6px 0 0;
   line-height: 1.2;
   text-align: center;
-  white-space: normal;   /* allows wrapping */
-  overflow: visible;     /* ensures nothing is hidden */
+  white-space: normal;
+  overflow: visible;
 }
 
-/* 🔹 Name = black, Subject = gray */
+
 .faculty-name {
   color: #000000;
   font-weight: 700;
 }
 
-/* Optional: slightly smaller font for long titles */
+
 .faculty-subject {
   font-size: 0.95rem;
   color: #6c757d;
   font-weight: 600;
 }
 
-/* ==================================================
-   ADMIN EDIT CONTROLS — (kept for reuse)
-================================================== */
+
+
+
 .faculty-controls {
   margin-top: auto;
   padding-top: 16px;
@@ -149,7 +149,7 @@ body.admin-mode .faculty-card--reorderable.is-dragging {
   width: 100%;
 }
 
-/* Hide raw input */
+
 .upload-label input[type="file"] {
   display: none;
 }
@@ -180,7 +180,7 @@ body.admin-mode .faculty-card--reorderable.is-dragging {
 .delete-btn { background: #b30000; }
 .delete-btn:hover { background: #d00000; }
 
-/* Admin buttons hidden by default */
+
 .add-teacher-btn {
   display: none;
 }
@@ -203,19 +203,19 @@ body.admin-mode .admin-only { display: block; }
 .editable { border-bottom: 1px dashed transparent; }
 body.admin-mode .editable:hover { border-color: #ff9f45; }
 
-/* Admin grid spacing */
+
 #admin-grid {
   margin-top: 10px;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .faculty-overlay h1 { font-size: 50px; }
 }
 
-/* ==================================================
-   🔽 EXTRA CHANGES (REQUESTED) – OVERRIDES ONLY
-================================================== */
+
+
+
 
 .faculty-grid:has(.faculty-card:only-child) {
   display: flex !important;
@@ -227,7 +227,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   justify-content: center !important;
 }
 
-/* 4️⃣ Make admin cards guaranteed same width as faculty */
+
 #admin-grid .faculty-card,
 .principal-container .faculty-card {
   max-width: 360px;
@@ -235,7 +235,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   margin-right: auto;
 }
 
-/* 5️⃣ EDIT BUTTON ON CARD */
+
 .edit-btn {
   border: none;
   border-radius: 999px;
@@ -252,9 +252,9 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   background: #285b94;
 }
 
-/* ==================================================
-   6️⃣ MODAL STYLES
-================================================== */
+
+
+
 
 .faculty-modal {
   position: fixed;
@@ -300,7 +300,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   margin: 0 0 18px;
   font-size: 24px;
   font-weight: 800;
-  color: #000000;  /* 🔹 modal header black */
+  color: #000000;
   text-align: left;
 }
 
@@ -310,7 +310,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   gap: 20px;
 }
 
-/* Image side */
+
 .modal-image-section {
   flex: 1 1 100%;
   display: flex;
@@ -326,7 +326,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   margin-bottom: 14px;
 }
 
-/* Reuse upload-label but allow full width here */
+
 .modal-upload-label {
   width: 220px !important;
   background: #1e2a57;
@@ -338,7 +338,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   font-weight: 700;
 }
 
-/* Form side */
+
 .modal-form-section {
   flex: 1 1 50%;
   text-align: left;
@@ -348,7 +348,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   display: block;
   margin-bottom: 14px;
   font-weight: 600;
-  color: #000000; /* label text dark */
+  color: #000000;
 }
 
 .modal-label input {
@@ -360,7 +360,7 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Actions */
+
 .modal-actions {
   margin-top: 18px;
   display: flex;
@@ -368,14 +368,14 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
   gap: 10px;
 }
 
-/* Reuse save/delete-btn but make width auto in modal */
+
 .modal-actions .save-btn,
 .modal-actions .delete-btn {
   width: auto;
   min-width: 110px;
 }
 
-/* Mobile modal tweaks */
+
 @media (max-width: 600px) {
   .faculty-modal-content {
     padding: 20px;
@@ -395,25 +395,25 @@ body.admin-mode .editable:hover { border-color: #ff9f45; }
     text-align: center;
   }
 }
-/* (Everything you already had above — unchanged) */
 
-/* ==================================================
-   🔽 EXTRA CHANGES (REQUESTED) – OVERRIDES ONLY
-================================================== */
+
+
+
+
 
 .faculty-grid:has(.faculty-card:only-child) {
   display: flex !important;
   justify-content: center !important;
 }
 
-/* [INFO] FIX #3 — prevent single faculty card from becoming massive */
+
 .faculty-grid:has(.faculty-card:only-child) .faculty-card {
   max-width: 360px !important;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Keep admin grid consistent */
+
 #admin-grid .faculty-card,
 .principal-container .faculty-card {
   max-width: 360px;

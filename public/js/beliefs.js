@@ -1,7 +1,7 @@
-/**
- * File: public\js\beliefs.js
- * Purpose: Implements carousel, expand toggle, and tab behavior for beliefs page.
- */
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const carousel = document.querySelector(".carousel");
   const track = document.querySelector(".carousel__track");

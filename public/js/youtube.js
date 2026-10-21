@@ -1,9 +1,9 @@
-/**
- * File: public\js\youtube.js
- * Purpose: Implements client-side behavior for the youtube experience.
- */
-// [OK] public/js/youtube.js
-// Safely fetch and render latest and past YouTube videos
+
+
+
+
+
+
 
 function escapeHTML(v) {
   return String(v ?? "")
@@ -15,7 +15,7 @@ function escapeHTML(v) {
 }
 
 function isValidYouTubeId(id) {
-  // Typical YouTube video IDs are 11 chars: letters, numbers, _ and -
+
   return /^[A-Za-z0-9_-]{11}$/.test(String(id || ""));
 }
 
@@ -42,7 +42,7 @@ async function loadVideos() {
       return;
     }
 
-    // 🎥 First = latest video
+
     const latestId = data.items[0]?.snippet?.resourceId?.videoId;
     const latestTitle = data.items[0]?.snippet?.title || "Latest Video";
 
@@ -64,7 +64,7 @@ async function loadVideos() {
       latestContainer.textContent = "Could not load latest video.";
     }
 
-    // 🕐 Past videos
+
     const pastVideos = data.items.slice(1, 4);
     const pastHtml = pastVideos
       .map((item) => {
@@ -101,5 +101,5 @@ async function loadVideos() {
   }
 }
 
-// [OK] Wait until page fully loaded before running
+
 window.addEventListener("DOMContentLoaded", loadVideos);

@@ -1,7 +1,7 @@
-/**
- * File: public\js\time.js
- * Purpose: Implements client-side behavior for the church time page.
- */
+
+
+
+
 (() => {
   const DEFAULT_CARD = {
     id: null,
@@ -113,7 +113,7 @@
       return cards.length ? cards : [normalizeCard(DEFAULT_CARD)];
     }
 
-    // Back-compat with the earlier single-card payload shape.
+
     if (data && typeof data === "object") {
       const card = normalizeCard({
         id: 1,

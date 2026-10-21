@@ -1,28 +1,28 @@
-/*
- * File: public\css\prayerRequest.css
- * Purpose: Defines presentation styles for the prayerRequest interface.
- */
-/* ------------------ HERO SECTION ------------------ */
+
+
+
+
+
 .prayer-hero {
   height: 320px;
   background: url("../images/prayer.jpg") no-repeat center center / cover;
 }
 
 .prayer-overlay {
-  background: var(--hero-overlay); /* match Expectations & Member hero overlay */
+  background: var(--hero-overlay);
   flex-direction: column;
   text-align: center;
   padding: 0 20px;
 }
 
 .prayer-overlay h1 {
-  font-size: 50px; /* match others */
-  font-weight: 700; /* same as Become a Member & Beliefs */
+  font-size: 50px;
+  font-weight: 700;
   text-transform: none;
 }
 
 
-/* ------------------ CONTENT BOX ------------------ */
+
 .prayer-box {
   background: #f5f5f5;
   padding: 40px;
@@ -39,7 +39,7 @@
   color: #333;
 }
 
-/* ------------------ FORM INPUTS ------------------ */
+
 .prayer-box input,
 .prayer-box textarea {
   width: 100%;
@@ -50,12 +50,12 @@
   margin-top: 5px;
 }
 
-/* Center the buttons & submit inside the form */
+
 .prayer-box form {
   text-align: center;
 }
 
-/* ------------------ YES / NO BUTTONS ------------------ */
+
 .radio-buttons {
   display: flex;
   justify-content: center;
@@ -68,7 +68,7 @@
   display: none;
 }
 
-/* Base button styling */
+
 .radio-btn {
   display: inline-block;
   padding: 12px 30px;
@@ -84,7 +84,7 @@
   transition: all 0.25s ease;
 }
 
-/* Hover – invert like News & Events */
+
 .radio-btn:hover {
   background: white;
   color: #1e2a57;
@@ -92,7 +92,7 @@
   box-shadow: 0 6px 18px rgba(30, 42, 87, 0.35);
 }
 
-/* CLEAR SELECTED STATE */
+
 .radio-buttons input#yes:checked + .yes-btn,
 .radio-buttons input#no:checked + .no-btn {
   background: white;
@@ -102,16 +102,16 @@
   box-shadow: 0 0 0 3px #1e2a57 inset, 0 0 10px rgba(30,42,87,0.45);
 }
 
-/* Unselected button fades slightly */
+
 .radio-buttons input#yes:checked ~ .no-btn,
 .radio-buttons input#no:checked ~ .yes-btn {
   opacity: 0.6;
 }
 
 
-/* ------------------ SUBMIT BUTTON ------------------ */
+
 .submit-btn {
-  width: 100%;                 /* FULL WIDTH */
+  width: 100%;
   padding: 16px 0;
   border-radius: 6px;
   background: #1e2a57;
@@ -126,7 +126,7 @@
   transition: all 0.3s ease;
 }
 
-/* Hover – same as News & Events */
+
 .submit-btn:hover {
   background: white;
   color: #1e2a57;

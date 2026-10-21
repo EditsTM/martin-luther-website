@@ -1,13 +1,13 @@
-/*
- * File: public\css\header.css
- * Purpose: Defines presentation styles for the header interface.
- */
+
+
+
+
 @import url('/css/site.css');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
-/* Prevent header/footer pop-in while they load */
 
-/* Hide page until header+footer are injected */
+
+
 body.preload {
   opacity: 0;
 }
@@ -19,16 +19,16 @@ body.loaded {
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Open Sans', Arial, sans-serif; }
 
-/* ===== HEADER ===== */
+
 .main-header {
   display:flex; justify-content:space-between; align-items:center;
-  flex-wrap:nowrap; /* ⛔ stays one line until it needs to wrap */
+  flex-wrap:nowrap;
   padding:0 160px; background:#fff; border-bottom:3px solid #282f7f;
   position:relative; z-index:1000; overflow:hidden;
   transition:all .25s ease;
 }
 
-/* ===== LOGO ===== */
+
 .logo-section { display:flex; align-items:center; gap:12px; flex-shrink:0; }
 .logo { max-height:95px; height:auto; transition:.25s; }
 .logo-link { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; transition:.2s; flex-shrink:0; }
@@ -37,7 +37,7 @@ body { font-family:'Open Sans', Arial, sans-serif; }
 .logo-text h1 { font-weight:700; font-size:34px; color:#282f7f; margin-bottom:8px; transition:.25s; }
 .logo-text p { font-weight:500; font-size:11px; color:#4279bc; letter-spacing:1px; text-transform:uppercase; transform:translateY(2px); }
 
-/* ===== NAVIGATION ===== */
+
 .nav-links { flex-shrink:1; min-width:0; }
 .nav-links ul { list-style:none; display:flex; align-items:center; gap:32px; flex-wrap:nowrap; }
 .nav-links a {
@@ -47,11 +47,11 @@ body { font-family:'Open Sans', Arial, sans-serif; }
 }
 .nav-links a:hover { color:#282f7f; transform:scale(1.05); }
 
-/* ===== DROPDOWN ===== */
+
 .dropdown { position:relative; flex-shrink:0; }
 .dropbtn { cursor:pointer; }
 
-/* ===== MEGA MENU ===== */
+
 .mega-menu {
   position:fixed; top:var(--menu-top,110px); left:0; right:0; width:100%;
   background:#fff; box-shadow:0 8px 25px rgba(0,0,0,.25);
@@ -59,7 +59,7 @@ body { font-family:'Open Sans', Arial, sans-serif; }
 }
 .dropdown.open .mega-menu { display:block; opacity:1; }
 
-/* ===== MENU GRID ===== */
+
 .dropdown-content {
   display:grid; grid-template-columns:repeat(4,1fr); gap:40px;
   max-width:1600px; margin:0 auto; width:100%;
@@ -76,12 +76,12 @@ body { font-family:'Open Sans', Arial, sans-serif; }
 }
 .mega-column a:hover { color:#4279bc; background:rgba(230,240,255,.7); padding-left:8px; }
 
-/* ===== RESPONSIVE BREAKS ===== */
 
-/* 🔹 XL Screens */
+
+
 @media(min-width:1600px){ .main-header{padding:0 220px;} }
 
-/* 🔹 Large (no wrapping yet) */
+
 @media(max-width:1599px) and (min-width:1276px){
   .main-header{padding:0 130px;}
   .logo-text h1{font-size:32px;}
@@ -89,20 +89,20 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   .nav-links a{font-size:16.5px;}
 }
 
-/* 🔹 Center Nav for ≥1275px */
+
 @media(min-width:1275px) {
   .main-header {
-    justify-content:center;   /* [OK] centers entire nav section */
-    gap:120px;                /* [OK] spacing between logo and nav */
+    justify-content:center;
+    gap:120px;
   }
   .nav-links ul {
-    justify-content:center;   /* [OK] centers the link group */
+    justify-content:center;
     position:relative;
-    top:8px;                  /* [OK] lowered slightly more for visual balance */
+    top:8px;
   }
 }
 
-/* 🔹 WRAP START (≤1275px) */
+
 @media(max-width:1275px){
   .main-header{
     flex-direction:column;
@@ -112,7 +112,7 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   }
   .logo-section{
     flex-wrap:wrap;
-    justify-content:center; /* [OK] center logo only when wrapping starts */
+    justify-content:center;
     width:100%;
   }
   .logo{
@@ -142,7 +142,7 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   }
 }
 
-/* 🔹 Tablets */
+
 @media(max-width:1024px){
   .main-header{padding:15px 40px;}
   .logo{max-height:75px;}
@@ -152,7 +152,7 @@ body { font-family:'Open Sans', Arial, sans-serif; }
   .dropdown-content{grid-template-columns:repeat(2,1fr);gap:20px;}
 }
 
-/* 🔹 Mobile / Scroll Fix */
+
 @media(max-width:770px){
   .main-header{padding:15px 25px;}
   .nav-links ul{gap:20px; justify-content:center;}

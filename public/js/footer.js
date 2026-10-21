@@ -1,8 +1,8 @@
-/**
- * File: public\js\footer.js
- * Purpose: Implements client-side behavior for the footer experience.
- */
-//public/js/footer.js
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", async () => {
   async function fetchJson(url, options = {}) {
     const res = await fetch(url, {

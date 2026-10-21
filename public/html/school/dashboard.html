@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--
-  File: public\html\school\dashboard.html
-  Purpose: Provides HTML markup for the dashboard page.
--->
+
 
 <html lang="en">
 <head>
@@ -23,7 +20,7 @@
   <div id="header"></div>
 
   <main class="admin-shell">
-    <!-- LEFT SIDEBAR -->
+
     <aside class="admin-sidebar">
       <div class="admin-sidebar__title">
         <div class="admin-sidebar__welcome">Welcome, Admin!</div>
@@ -43,18 +40,18 @@
       </nav>
     </aside>
 
-    <!-- RIGHT CONTENT -->
+
 <section class="admin-content">
-  <!-- FACULTY VIEW (default) -->
+
   <div class="admin-view is-active" id="view-faculty"></div>
 
-  <!-- PASTORS VIEW -->
+
   <div class="admin-view" id="view-pastors"></div>
 
-  <!-- EVENTS VIEW -->
+
   <div class="admin-view" id="view-events"></div>
 
-  <!-- SERVICE TIMES VIEW -->
+
   <div class="admin-view" id="view-service-times">
     <div class="panel">
       <div class="panel__header">
@@ -82,7 +79,7 @@
     </div>
   </div>
 
-  <!-- SUGGESTIONS VIEW -->
+
   <div class="admin-view" id="view-suggestions">
     <div class="panel">
       <div class="panel__header">
@@ -104,7 +101,7 @@
     </div>
   </div>
 
-  <!-- [OK] LIVE PREVIEW PANEL (shared for faculty/pastors/events) -->
+
   <div class="preview-panel">
     <div class="preview-toolbar">
       <div class="preview-title">Preview</div>
@@ -123,7 +120,7 @@
 </section>
   </main>
 
-  <!-- SUGGESTION MODAL -->
+
   <div class="modal-backdrop" id="suggestionModal" aria-hidden="true">
     <div class="modal">
       <button class="modal__close" id="closeSuggestionModal" type="button" aria-label="Close">×</button>
@@ -131,7 +128,7 @@
       <h3 class="modal__title">Add Suggested Improvement</h3>
 
       <form id="suggestionForm" class="modal__form">
-        <!-- Page dropdown -->
+
         <label class="field">
           <span class="field__label">What page are you requesting an edit?</span>
           <select name="page" required>
@@ -146,7 +143,7 @@
           </select>
         </label>
 
-        <!-- Change type -->
+
         <label class="field">
           <span class="field__label">What type of change is this?</span>
           <select name="changeType" id="changeType" required>
@@ -159,7 +156,7 @@
           </select>
         </label>
 
-        <!-- Conditional: wording -->
+
         <div id="wordingFields" class="field-group is-hidden">
           <label class="field">
             <span class="field__label">From:</span>
@@ -172,7 +169,7 @@
           </label>
         </div>
 
-        <!-- Conditional: description -->
+
         <div id="descriptionField" class="field-group">
           <label class="field">
             <span class="field__label">Description:</span>

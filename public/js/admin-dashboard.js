@@ -1,27 +1,27 @@
-/**
- * File: public\js\admin-dashboard.js
- * Purpose: Implements client-side behavior for the admin dashboard experience.
- */
+
+
+
+
 (() => {
-  // -------------------------
-  // View switching (left nav)
-  // -------------------------
+
+
+
 const navButtons = document.querySelectorAll(".admin-nav__item[data-view]");
 const views = document.querySelectorAll(".admin-view");
 const previewPanel = document.querySelector(".preview-panel");
 
 function showView(name) {
-  // Switch active view
+
   views.forEach((v) => v.classList.remove("is-active"));
   document.querySelector(`#view-${name}`)?.classList.add("is-active");
 
-  // Highlight active nav button
+
   navButtons.forEach((b) => b.classList.remove("is-active"));
   document
     .querySelector(`.admin-nav__item[data-view="${name}"]`)
     ?.classList.add("is-active");
 
-  // Default: show preview (unless suggestions)
+
   previewPanel?.classList.remove("is-hidden");
 
   if (name === "events") {
@@ -36,7 +36,7 @@ function showView(name) {
       console.error(err);
     });
   } else if (name === "suggestions") {
-    // Hide preview completely for Suggestions
+
     previewPanel?.classList.add("is-hidden");
   }
 }
@@ -46,15 +46,15 @@ navButtons.forEach((btn) => {
 });
 
 
- // -------------------------
-// Preview panel (iframe)
-// -------------------------
+
+
+
 const previewFrame = document.getElementById("previewFrame");
 const refreshPreviewBtn = document.getElementById("refreshPreviewBtn");
 
 function setPreview(url) {
   if (!previewFrame) return;
-  // Cache-bust so edits show immediately
+
   previewFrame.src = `${url}?t=${Date.now()}`;
 }
 
@@ -64,9 +64,9 @@ refreshPreviewBtn?.addEventListener("click", () => {
   previewFrame.src = `${base}?t=${Date.now()}`;
 });
 
-// -------------------------
-// Suggestions UI (FIXED: no listener loop + status colors)
-// -------------------------
+
+
+
 const suggestionsList = document.getElementById("suggestionsList");
 const toggleAllBtn = document.getElementById("toggleAllBtn");
 const addSuggestionBtn = document.getElementById("addSuggestionBtn");
@@ -205,7 +205,7 @@ async function loadSuggestions() {
   renderSuggestions();
 }
 
-// [OK] IMPORTANT: these MUST be outside loadSuggestions()
+
 async function setSuggestionStatus(id, status) {
   const res = await fetch(`/admin/suggestions/${id}`, {
     method: "PATCH",
@@ -224,7 +224,7 @@ async function deleteSuggestion(id) {
   if (!res.ok) throw new Error("Failed to delete");
 }
 
-// [OK] attach click handler ONCE (prevents confirm loop)
+
 if (!window.__mlSuggestionsHandlerAttached) {
   window.__mlSuggestionsHandlerAttached = true;
 
@@ -254,14 +254,14 @@ if (!window.__mlSuggestionsHandlerAttached) {
         const ok = confirm("Delete this suggestion forever?");
         if (!ok) return;
 
-        // remove immediately so it "goes away forever" visually
+
         card.remove();
         suggestionsCache = suggestionsCache.filter((x) => x.id !== id);
 
-        // delete from DB
+
         await deleteSuggestion(id);
 
-        // refresh list to keep counts correct
+
         await loadSuggestions();
         return;
       }
@@ -353,7 +353,7 @@ suggestionForm?.addEventListener("submit", async (e) => {
     description: formData.get("description"),
   };
 
-  // cleanup based on type
+
   if (payload.changeType === "wording") {
     payload.description = "";
   } else {
@@ -376,10 +376,10 @@ suggestionForm?.addEventListener("submit", async (e) => {
   closeModal();
   await loadSuggestions();
 });
-  
-// -------------------------
-// Initial load behavior
-// -------------------------
+
+
+
+
 showView("faculty");
 
 loadFooterTime().catch((err) => {
@@ -402,9 +402,9 @@ loadSuggestions().catch((err) => {
 });
 })();
 
-// -------------------------
-// Logout (force redirect)
-// -------------------------
+
+
+
 (() => {
   const btn = document.getElementById("logoutBtn");
   if (!btn) return;
@@ -417,10 +417,10 @@ loadSuggestions().catch((err) => {
         headers: { Accept: "text/html" },
       });
     } catch (e) {
-      // ignore
+
     }
 
-    // always go to login page
+
     window.location.href = "/admin/login";
   });
 })();

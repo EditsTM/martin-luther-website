@@ -1,16 +1,16 @@
-/*
- * File: public\css\church\beliefs.css
- * Purpose: Defines presentation styles for the beliefs interface.
- */
-/* =============================
-   HERO SECTION - OUR BELIEFS
-============================= */
+
+
+
+
+
+
+
 .beliefs-hero {
   background-position: center 70%;
 }
 
 .beliefs-overlay {
-  background: var(--hero-overlay); /* match Expectations overlay */
+  background: var(--hero-overlay);
   flex-direction: column;
   text-align: center;
   padding: 0 20px;
@@ -25,10 +25,10 @@
 
 .belief-highlight {
   background: linear-gradient(45deg, #ffb300, #ffde59);
-  -webkit-background-clip: text; /* Safari/Chrome */
-  -webkit-text-fill-color: transparent; /* Safari/Chrome */
-  background-clip: text; /* Standard property */
-  color: transparent; /* fallback */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
   display: inline-block;
 }
 
@@ -51,9 +51,9 @@
 }
 
 
-/* =============================
-   WHAT WE BELIEVE — CAROUSEL
-============================= */
+
+
+
 .beliefs-carousel {
   margin-top: 40px;
 }
@@ -66,7 +66,7 @@
   margin: 0 0 18px;
 }
 
-/* Carousel frame */
+
 .carousel {
   position: relative;
   width: 100%;
@@ -76,7 +76,7 @@
   box-sizing: border-box;
 }
 
-/* Side arrows */
+
 .carousel__arrow {
   position: absolute;
   top: 50%;
@@ -107,7 +107,7 @@
 .carousel__arrow--prev { left: 8px; }
 .carousel__arrow--next { right: 8px; }
 
-/* Viewport and track */
+
 .carousel__viewport {
   overflow: hidden;
   width: 100%;
@@ -122,9 +122,9 @@
   will-change: transform;
 }
 
-/* =============================
-   BELIEF CARD STYLING (Centered Version)
-============================= */
+
+
+
 .belief-card {
   list-style: none;
   background: #f0f0f0;
@@ -133,22 +133,22 @@
   padding: 24px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;      
-  justify-content: center;  
-  text-align: center;       
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   min-height: 200px;
   border: 1.5px solid rgba(0, 0, 0, 0.05);
   color: #ffffff;
 }
 
-/* No hover effects */
+
 .belief-card:hover {
   transform: none;
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
   border-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Title & Text */
+
 .belief-card h4 {
   margin: 12px 0 10px;
   font-size: 20px;
@@ -165,9 +165,9 @@
   max-width: 85%;
 }
 
-/* =============================
-   ICON — Larger + Half Gradient Fill (mask fix)
-============================= */
+
+
+
 .belief-card__icon {
   display: flex;
   justify-content: center;
@@ -179,9 +179,9 @@
   border: none;
 }
 
-/* =============================
-   ICON — Half Gradient Line Effect
-============================= */
+
+
+
 .belief-card__icon {
   display: flex;
   justify-content: center;
@@ -193,32 +193,32 @@
   position: relative;
 }
 
-/* Icon itself */
+
 .belief-card__icon img {
-  width: 52px;  /* slightly bigger for visibility */
+  width: 52px;
   height: 52px;
   position: relative;
   z-index: 1;
   display: block;
-  filter: brightness(0) saturate(100%) invert(0); /* make lines solid black base */
+  filter: brightness(0) saturate(100%) invert(0);
 }
 
-/* [OK] Overlay that colors the lines half blue / half navy */
+
 .belief-card__icon::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(66, 121, 188, 0.85) 50%, #1e2a57 50%);
-  mix-blend-mode: lighten; /* keeps black outlines visible while tinting color */
+  mix-blend-mode: lighten;
   pointer-events: none;
   z-index: 2;
 }
 
 
 
-/* =============================
-   RESPONSIVE — 2 per view / 1 per view
-============================= */
+
+
+
 @media (max-width: 1024px) {
   .carousel__track {
     grid-auto-columns: calc((100% - 24px) / 2);
@@ -235,12 +235,12 @@
   }
 }
 
-/* ======================================================
-   EXPAND ALL BUTTON (MATCHES NEWS & EVENTS)
-====================================================== */
+
+
+
 .expand-toggle {
   display: inline-block;
-  margin: 5px auto 25px;  /* was 0 auto 25px */
+  margin: 5px auto 25px;
   background: #1e2a57 !important;
   color: white !important;
   border: 2px solid #1e2a57 !important;
@@ -262,7 +262,7 @@
 }
 
 
-/* Grid view for expanded mode */
+
 .carousel.expanded .carousel__viewport {
   overflow: visible;
 }
@@ -278,24 +278,24 @@
   display: none;
 }
 
-/* Slightly smaller gap on tablets */
+
 @media (max-width: 1024px) {
   .carousel.expanded .carousel__track {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Single-column stack on phones */
+
 @media (max-width: 650px) {
   .carousel.expanded .carousel__track {
     grid-template-columns: 1fr;
   }
 }
 
-/* Center the expand button */
+
 .expand-btn-wrapper {
   text-align: center;
-  margin-bottom: 10px; /* was 25px — closer to boxes */
+  margin-bottom: 10px;
 }
 
 
@@ -315,7 +315,7 @@
   transform: scale(1.05);
 }
 
-/* Expanded grid layout */
+
 .carousel.expanded .carousel__viewport {
   overflow: visible;
 }
@@ -328,7 +328,7 @@
   transform: none !important;
 }
 
-/* [OK] Centered icons and text in expanded mode */
+
 .carousel.expanded .belief-card {
   height: 260px;
   display: flex;
@@ -338,7 +338,7 @@
   text-align: center;
 }
 
-/* Keep icons neatly aligned */
+
 .carousel.expanded .belief-card__icon {
   margin-bottom: 10px;
 }
@@ -364,9 +364,9 @@
     height: auto;
   }
 }
-/* =============================
-   EXPAND BUTTON + LAYOUT CLEANUP
-============================= */
+
+
+
 .expand-btn-wrapper {
   text-align: center;
   margin-top: 25px;
@@ -388,9 +388,9 @@
   transform: scale(1.05);
 }
 
-/* =============================
-   EXPANDED GRID LAYOUT
-============================= */
+
+
+
 .carousel.expanded .carousel__viewport {
   overflow: visible;
 }
@@ -418,9 +418,9 @@
     grid-template-columns: 1fr;
   }
 }
-/* ============================================
-   CONFESSION TABS SECTION (Themed Final)
-=============================================== */
+
+
+
 .confession-tabs {
   width: 100vw;
   margin: 80px 0 0;
@@ -435,19 +435,19 @@
   box-shadow: inset 0 6px 15px rgba(0,0,0,0.05);
 }
 
-/* Inner content container */
+
 .confession-tabs .tabs {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* NAVIGATION BAR */
+
 .tab-buttons {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(30, 42, 87, 0.85); /* same as Expand All button */
+  background: rgba(30, 42, 87, 0.85);
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 40px;
@@ -475,7 +475,7 @@
 
 .tab-btn.active {
   color: #fff;
-  background: #1e2a57; /* slightly darker than base color */
+  background: #1e2a57;
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(30, 42, 87, 0.4);
 }
 
@@ -489,7 +489,7 @@
   border-radius: 2px;
 }
 
-/* CONTENT GRID */
+
 .tab-content-wrapper {
   display: block;
 }
@@ -504,7 +504,7 @@
   display: grid;
 }
 
-/* CARD STYLING */
+
 .confession-card {
   background: #fff;
   border-radius: 12px;
@@ -541,11 +541,11 @@
 
 .confession-card li {
   margin-bottom: 8px;
-  list-style-type: disc; /* clean bullet points */
+  list-style-type: disc;
   color: #2f2f2f;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 768px) {
   .tab-buttons {
     flex-direction: column;

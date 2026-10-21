@@ -1,19 +1,19 @@
-/*
- * File: public\css\youtube.css
- * Purpose: Defines presentation styles for the youtube interface.
- */
-/* =============================
-   HERO
-============================= */
+
+
+
+
+
+
+
 .youtube-overlay h1 {
   font-size: 90px;
   font-weight: 800;
   letter-spacing: 3px;
 }
 
-/* =============================
-   GENERAL SECTIONS
-============================= */
+
+
+
 .youtube-section {
   width: 100%;
   margin: 0;
@@ -44,9 +44,9 @@
   border-radius: 8px;
 }
 
-/* =============================
-   MOST RECENT LIVESTREAM SECTION
-============================= */
+
+
+
 .livestream-section {
   background: #eaf0fa;
   margin: 0;
@@ -72,9 +72,9 @@
   padding: 0;
 }
 
-/* =============================
-   LEFT SIDE (Stay Connected)
-============================= */
+
+
+
 .youtube-left {
   flex: 1;
   display: flex;
@@ -113,7 +113,7 @@
   max-width: 650px;
 }
 
-/* Buttons */
+
 .social-buttons {
   display: flex;
   justify-content: center;
@@ -149,9 +149,9 @@
   transform: scale(1.07);
 }
 
-/* =============================
-   RIGHT SIDE (Video)
-============================= */
+
+
+
 .youtube-right {
   flex: 1;
   display: flex;
@@ -187,9 +187,9 @@
   object-fit: cover;
 }
 
-/* =============================
-   PAST LIVESTREAMS — FIXED
-============================= */
+
+
+
 .youtube-section.past-livestreams {
   background: #eaf0fa;
   margin: 0;
@@ -234,14 +234,14 @@
   padding: 0;
 }
 
-/* Divider */
+
 .past-livestreams .youtube-videos iframe + iframe {
   border-left: 4px solid #1e2a57;
 }
 
-/* =============================
-   FIX: cramped 1001–1150 widths
-============================= */
+
+
+
 @media (max-width: 1150px) and (min-width: 1001px) {
   .youtube-left-inner {
     width: 94%;
@@ -269,11 +269,11 @@
   }
 }
 
-/* =============================
-   RESPONSIVE
-============================= */
+
+
+
 @media (max-width: 1000px) {
-  /* [OK] Move "Most Recent Livestream" banner above the first video */
+
   .livestream-section .youtube-heading {
     display: none;
   }

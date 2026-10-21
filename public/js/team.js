@@ -1,12 +1,12 @@
-/**
- * File: public\js\team.js
- * Purpose: Implements client-side behavior for the team experience.
- */
-// public/js/team.js
 
-// ---------- SECURITY HELPERS ----------
+
+
+
+
+
+
 function getCsrfToken() {
-  // Supports: <meta name="csrf-token" content="..."> (optional)
+
   const meta = document.querySelector('meta[name="csrf-token"]');
   return meta?.getAttribute("content") || "";
 }
@@ -72,22 +72,22 @@ async function postFormData(url, formData) {
 }
 
 function normalizeImagePath(path, fallback = "/images/Placeholder.jpg") {
-  // Allow only site-relative images under /images/
-  // (Prevents accidental storage of odd/unsafe paths.)
+
+
   const p = String(path || "").trim();
   if (!p) return fallback;
 
-  // Strip origin if somehow present
+
   const noOrigin = p.replace(/^https?:\/\/[^/]+/i, "");
 
-  // Ensure starts with /
+
   const rel = noOrigin.startsWith("/") ? noOrigin : "/" + noOrigin;
 
   return rel.startsWith("/images/") ? rel : fallback;
 }
 
-// ---------- ADMIN CHECK ----------
-// NOTE: UI-only. Backend must still enforce admin permissions on /api/team routes.
+
+
 async function isAdminLoggedIn() {
   try {
     const data = await fetchJson("/admin/check");
@@ -101,7 +101,7 @@ async function isAdminLoggedIn() {
 let teamData = [];
 let isAdmin = false;
 
-// Modal state (cached DOM elements + current editing context)
+
 let teamModalEl;
 let teamModalNameInput;
 let teamModalSubjectInput;
@@ -112,10 +112,10 @@ let teamModalSaveBtn;
 let teamModalDeleteBtn;
 let teamModalCloseBtn;
 
-let currentEditIndex = null; // null = new member, number = existing member index
-let currentEditCard = null;  // reference to the card being edited (for instant UI updates)
+let currentEditIndex = null;
+let currentEditCard = null;
 
-// ---------- MODAL SETUP ----------
+
 function setupTeamModal() {
   teamModalEl = document.getElementById("team-edit-modal");
   if (!teamModalEl) return;
@@ -143,7 +143,7 @@ function setupTeamModal() {
     return;
   }
 
-  //Make TAB insert a tab inside the Bio textarea (instead of cycling controls)
+
   teamModalBioTextarea.addEventListener("keydown", (e) => {
     if (e.key !== "Tab") return;
 
@@ -159,13 +159,13 @@ function setupTeamModal() {
   });
 
 
-  // Close modal via "X" or clicking the overlay background
+
   teamModalCloseBtn.addEventListener("click", closeTeamModal);
   teamModalEl.addEventListener("click", (e) => {
     if (e.target === teamModalEl) closeTeamModal();
   });
 
-  // SAVE (create or update)
+
   teamModalSaveBtn.addEventListener("click", async () => {
     const name = teamModalNameInput.value.trim() || "Name";
     const subject = teamModalSubjectInput.value.trim() || "Pastor";
@@ -184,12 +184,12 @@ function setupTeamModal() {
 
     try {
       if (currentEditIndex === null) {
-        // CREATE new member
+
         const out = await postJson("/api/team", body, "POST");
-        // If your backend returns {success:false}, handle it
+
         if (out && out.success === false) throw new Error(out.message || "Failed to add team member");
       } else {
-        // UPDATE existing member by index
+
         const out = await postJson(`/api/team/${currentEditIndex}`, body, "PUT");
         if (out && out.success === false) throw new Error(out.message || "Failed to update team member");
       }
@@ -202,7 +202,7 @@ function setupTeamModal() {
     }
   });
 
-  // DELETE
+
   teamModalDeleteBtn.addEventListener("click", async () => {
     if (currentEditIndex === null) {
       closeTeamModal();
@@ -223,7 +223,7 @@ function setupTeamModal() {
     }
   });
 
-  // PHOTO UPLOAD
+
   teamModalPhotoInput.addEventListener("change", async () => {
     if (currentEditIndex === null) {
       alert("Please save this member first, then update the photo.");
@@ -234,8 +234,8 @@ function setupTeamModal() {
     const file = teamModalPhotoInput.files[0];
     if (!file) return;
 
-    // Client-side guardrails (server must still enforce type/size!)
-    const MAX_BYTES = 5 * 1024 * 1024; // 5MB
+
+    const MAX_BYTES = 5 * 1024 * 1024;
     const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowed.includes(file.type)) {
       alert("Please upload a JPG, PNG, WEBP, or GIF image.");
@@ -259,7 +259,7 @@ function setupTeamModal() {
         return;
       }
 
-      // Only accept a safe /images/... relative path coming back from server
+
       const safeImg = normalizeImagePath("/" + String(data.image || "").replace(/^\/+/, ""));
       const newSrc = safeImg + "?t=" + Date.now();
 
@@ -294,20 +294,20 @@ function openTeamModal(index, cardElement) {
   } else {
     const member = teamData[index];
 
-// Keep compatibility with old array bios, but treat bio as ONE string going forward
+
 const bioText = Array.isArray(member.bio)
   ? member.bio
       .map((p) => String(p || "").trim())
       .filter((p) => p.length > 0)
       .join("\n\n")
-  : String(member.bio || ""); // no splitting, no trimming that could drop content
+  : String(member.bio || "");
 
 teamModalNameInput.value = member.name || "";
 teamModalSubjectInput.value = member.subject || "";
 teamModalBioTextarea.value = bioText;
 
 
-    // Normalize image so preview can't point somewhere unexpected
+
     teamModalPhotoPreview.src = normalizeImagePath(member.image);
 
     teamModalDeleteBtn.style.display = "inline-block";
@@ -326,7 +326,7 @@ function closeTeamModal() {
   if (teamModalPhotoInput) teamModalPhotoInput.value = "";
 }
 
-// ---------- RENDER TEAM CARDS ----------
+
 function renderTeam() {
   const grid = document.getElementById("teamGrid");
   if (!grid) return;
@@ -354,15 +354,15 @@ function renderTeam() {
     const h4 = document.createElement("h4");
     h4.textContent = member.subject || "Pastor";
 
-    //Bio (store/display as ONE text block, preserve line breaks via CSS)
+
     const bioDiv = document.createElement("div");
     bioDiv.className = "bio-text";
 
     const bioText = Array.isArray(member.bio)
-      ? member.bio.join("\n\n") // supports your old array data
+      ? member.bio.join("\n\n")
       : (member.bio || "");
 
-    bioDiv.textContent = bioText; // safe against HTML injection
+    bioDiv.textContent = bioText;
 
     card.appendChild(img);
     card.appendChild(h3);
@@ -385,10 +385,10 @@ function renderTeam() {
   });
 }
 
-// ---------- LOAD TEAM DATA ----------
+
 async function loadTeam() {
   try {
-    // Use helper so cookies are included + no caching
+
     const data = await fetchJson("/api/team");
     teamData = data.team || [];
     renderTeam();
@@ -402,7 +402,7 @@ async function loadTeam() {
   }
 }
 
-// ---------- INIT ----------
+
 async function initTeamPage() {
   isAdmin = await isAdminLoggedIn();
   if (isAdmin) document.body.classList.add("admin-mode");

@@ -1,10 +1,10 @@
-/*
- * File: public\css\church\expectations.css
- * Purpose: Defines presentation styles for the expectations interface.
- */
-/* =============================
-   HERO SECTION
-============================= */
+
+
+
+
+
+
+
 .expectations-hero {
   background-position: center 70%;
 }
@@ -38,9 +38,9 @@
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 }
 
-/* =============================
-   MAIN CONTENT
-============================= */
+
+
+
 .expectations-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -61,9 +61,9 @@
   margin-bottom: 40px;
 }
 
-/* =============================
-   INTRO SECTION (ABOVE FLOW)
-============================= */
+
+
+
 .expect-intro {
   width: 100vw;
   position: relative;
@@ -150,7 +150,7 @@
   text-align: center;
 }
 
-/* Same core style as home page "News & Events" button */
+
 .intro-button .visit-btn {
   display: inline-flex;
   align-items: center;
@@ -225,9 +225,9 @@
   }
 }
 
-/* =============================
-   SERVICE CARDS
-============================= */
+
+
+
 .service-cards {
   display: flex;
   justify-content: center;
@@ -276,9 +276,9 @@
   gap: 8px;
 }
 
-/* =============================
-   TOP ICONS (CIRCLES)
-============================= */
+
+
+
 .icon-circle {
   width: 60px;
   height: 60px;
@@ -300,11 +300,11 @@
 .light-blue-bg { background: rgba(66, 121, 188, 0.15); }
 .yellow-bg { background: rgba(255, 255, 255, 0.25); }
 
-/* =============================
-   INDIVIDUAL CARD STYLES
-============================= */
 
-/* Sunday (Correct) */
+
+
+
+
 .sunday {
   background: #1e2a57;
   color: white;
@@ -313,7 +313,7 @@
 .sunday .card-icon { filter: brightness(0) invert(1); }
 .icon-white { width: 18px; height: 18px; filter: brightness(0) invert(1); }
 
-/* Bible (Reverted to BLACK icons) */
+
 .bible {
   background: linear-gradient(135deg, #f7f9ff, #dee5fa);
   color: #2c2c2c;
@@ -321,17 +321,17 @@
 .bible h3 { color: #2c2c2c; }
 .bible-book-icon,
 .bible-icon-small {
-  filter: none !important; /* restore black icons */
+  filter: none !important;
 }
 
-/* Monday (Correct color and correct icon size) */
+
 .monday {
   background: #1e2a57;
   color: white;
 }
 .monday h3, .monday p { color: white; }
 
-/* Keep icons white but FIX size */
+
 .monday-icon {
   width: 28px !important;
   height: 28px !important;
@@ -343,9 +343,9 @@
   filter: brightness(0) invert(1) !important;
 }
 
-/* =============================
-   SUNDAY SERVICE FLOW GRID
-============================= */
+
+
+
 .service-flow {
   position: relative;
   left: 50%;
@@ -372,9 +372,9 @@
   margin-bottom: 40px;
 }
 
-/* =============================
-   SERVICE FLOW - ICON LEFT LAYOUT
-============================= */
+
+
+
 
 .flow-grid {
   display: grid;
@@ -386,9 +386,9 @@
 }
 
 .t-item {
-  display: flex;                 /* make it horizontal */
-  align-items: flex-start;       /* align text top with icon */
-  gap: 18px;                     /* space between icon and text */
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
   border-radius: 16px;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
   padding: 24px 28px;
@@ -401,42 +401,42 @@
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* Circle (icon) style */
+
 .t-badge {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #1e2a57 !important;  /* dark blue */
+  background: #1e2a57 !important;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-bottom: 0; /* remove top spacing */
+  margin-bottom: 0;
 }
 
-/* Icons stay white */
+
 .t-badge img {
   width: 28px;
   height: 28px;
   filter: brightness(0) invert(1);
 }
 
-/* Text block */
+
 .t-card {
   flex: 1;
   text-align: left;
 }
 
-/* Alternate box backgrounds (keep your color scheme) */
+
 .theme-teal, .theme-purple, .theme-green, .theme-warm-alt {
-  background: #d8dcee !important; /* light blue shade */
+  background: #d8dcee !important;
 }
 
 .theme-blue, .theme-warm {
-  background: #f6f6f6 !important; /* light grey */
+  background: #f6f6f6 !important;
 }
 
-/* Responsive layout adjustments */
+
 @media (max-width: 1000px) {
   .flow-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -448,7 +448,7 @@
     grid-template-columns: 1fr;
   }
   .t-item {
-    flex-direction: column; /* stack for small screens */
+    flex-direction: column;
     align-items: center;
     text-align: center;
   }
@@ -458,9 +458,9 @@
 }
 
 
-/* =============================
-   GOOD TO KNOW SECTION
-============================= */
+
+
+
 .good-to-know {
   width: 100vw;
   position: relative;
@@ -542,7 +542,7 @@
     padding: 0 25px;
   }
 }
-/* FIX: Bible Study icons should stay BLACK and the correct size */
+
 .bible-icon-small {
   width: 18px !important;
   height: 18px !important;
@@ -554,34 +554,34 @@
   height: 28px !important;
   filter: none !important;
 }
-/* =============================
-   SERVICE FLOW - UPDATED COLORS
-============================= */
 
-/* All circles (badges) become dark blue */
+
+
+
+
 .t-badge {
   background: #1e2a57 !important;
 }
 .t-badge img {
-  filter: brightness(0) invert(1) !important; /* keep icons white */
+  filter: brightness(0) invert(1) !important;
 }
 
-/* Alternate box backgrounds */
-.theme-teal,       /* Box 1 */
-.theme-purple,     /* Box 3 */
-.theme-green,      /* Box 5 */
-.theme-warm-alt {  /* Box 6 */
-  background: #d8dcee !important; /* lighter shade of #1e2a57 */
+
+.theme-teal,
+.theme-purple,
+.theme-green,
+.theme-warm-alt {
+  background: #d8dcee !important;
 }
 
-/* Grey boxes */
-.theme-blue,       /* Box 2 */
-.theme-warm {      /* Box 4 */
+
+.theme-blue,
+.theme-warm {
   background: #f6f6f6 !important;
 }
-/* =============================
-   SERVICE FLOW — FINAL FIX
-============================= */
+
+
+
 
 .t-item {
   background: #fff;
@@ -597,7 +597,7 @@
 
 .t-line {
   display: flex;
-  align-items: center; /* [OK] Header centers to icon */
+  align-items: center;
   gap: 16px;
 }
 
@@ -609,7 +609,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* [OK] Icon always stays correct size */
+  flex-shrink: 0;
 }
 
 .t-badge img {
@@ -627,7 +627,7 @@
 }
 
 .t-item p {
-  margin: 0; /* [OK] Body text starts immediately */
+  margin: 0;
   line-height: 1.55;
   font-size: 15px;
   color: #2f2f2f;
@@ -635,7 +635,7 @@
 }
 
 
-/* Mobile: stack neatly (icon, header, then body) */
+
 @media (max-width: 650px) {
   .t-item {
     grid-template-columns: 1fr;
@@ -655,68 +655,68 @@
     text-align: center;
   }
 }
-/* =============================
-   GOOD TO KNOW ICON COLOR UPDATE
-============================= */
+
+
+
 .good-icon {
-  background: #1e2a57 !important;   /* new dark blue */
+  background: #1e2a57 !important;
 }
 
 .good-icon img {
-  filter: brightness(0) invert(1) !important;  /* keep icons white */
+  filter: brightness(0) invert(1) !important;
 }
-/* =============================
-   MAKE BOLD TEXT BLACK IN CONTENT
-============================= */
+
+
+
 .expectations-content strong {
   color: #000 !important;
   font-weight: 700;
 }
 
-/* FULL-WIDTH CENTERED GOOD-ITEM */
+
 .full-width-center {
-  grid-column: 1 / -1;        /* span across both columns */
-  justify-content: center;    /* center horizontally */
+  grid-column: 1 / -1;
+  justify-content: center;
   text-align: center;
 }
 
 .full-width-center .good-icon {
-  margin: 0 auto;             /* center the icon */
+  margin: 0 auto;
 }
 
 .full-width-center div {
-  text-align: center;         /* make text centered */
+  text-align: center;
 }
-/* Hearing Assistance — centered full-width row */
+
 .good-item-hearing {
-  grid-column: 1 / -1;     /* span both columns */
-  display: flex;           /* same layout as other items */
-  justify-content: center; /* centers left-to-right */
-  align-items: flex-start; /* aligns icon + header top like others */
-  gap: 18px;               /* consistent spacing */
-  text-align: left;        /* keeps text to the right of icon */
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  text-align: left;
   margin-top: 20px;
 }
 
 .good-item-hearing .good-icon {
-  margin-top: 4px;         /* matches other icons */
-}
-/* Slightly more breathing room for Bible Study card */
-.bible {
-  padding-bottom: 36px; /* was effectively ~32px via .card */
+  margin-top: 4px;
 }
 
-/* Slightly increase Bible Study icons */
+.bible {
+  padding-bottom: 36px;
+}
+
+
 .bible-icon-small {
-  width: 20px !important;   /* was 18px */
+  width: 20px !important;
   height: 20px !important;
   filter: none !important;
 }
-/* Make ONLY the Bible Study card slightly taller so the last row doesn't touch the border */
+
 .card.bible {
-  height: 315px;   /* try 315; bump to 320 if you want a touch more */
+  height: 315px;
 }
-/* [OK] Make Sunday (blue) card match Bible card height */
+
 .card.sunday {
   height: 315px;
 }

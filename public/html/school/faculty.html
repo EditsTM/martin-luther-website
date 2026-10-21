@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--
-  File: public\html\school\faculty.html
-  Purpose: Provides HTML markup for the faculty page.
--->
+
 
 <html lang="en">
 <head>
@@ -13,11 +10,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Our Faculty | Martin Luther</title>
 
-  <!-- Shared Header & Footer -->
+
   <link rel="stylesheet" href="/css/header.css" />
   <link rel="stylesheet" href="/css/footer.css" />
 
-  <!-- Page-specific CSS -->
+
   <link rel="stylesheet" href="../../css/school/faculty.css" />
   <link rel="icon" href="/favicon.ico">
 
@@ -25,51 +22,45 @@
 
 <body>
 
-  <!-- HEADER -->
+
   <div id="header"></div>
 
-  <!-- HERO SECTION -->
+
   <section class="faculty-hero">
     <div class="faculty-overlay">
       <h1>Our Staff/Faculty</h1>
     </div>
   </section>
 
-  <!-- MAIN CONTENT -->
+
   <main class="faculty-main">
     <div class="faculty-inner">
 
-      <!-- =======================
-           ADMINISTRATION
-      ======================== -->
+
       <h2 class="faculty-heading">Administration</h2>
 
-      <!-- Centered Add Button for Admin -->
+
       <div class="add-btn-wrapper">
         <button id="add-admin-btn" class="add-teacher-btn admin-only">+</button>
       </div>
 
-      <!-- Principal / Admin Cards -->
+
       <div id="admin-grid" class="faculty-grid"></div>
 
-      <!-- =======================
-           FACULTY
-      ======================== -->
+
       <h2 class="faculty-heading" style="margin-top:50px;">Faculty</h2>
 
-      <!-- Centered Add Button for Faculty -->
+
       <div class="add-btn-wrapper">
         <button id="add-teacher-btn" class="add-teacher-btn admin-only">+</button>
       </div>
 
       <div id="faculty-grid" class="faculty-grid"></div>
 
-      <!-- =======================
-           STAFF (NEW)
-      ======================== -->
+
       <h2 class="faculty-heading" style="margin-top:50px;">Staff</h2>
 
-      <!-- Centered Add Button for Staff -->
+
       <div class="add-btn-wrapper">
         <button id="add-staff-btn" class="add-teacher-btn admin-only">+</button>
       </div>
@@ -79,7 +70,7 @@
     </div>
   </main>
 
-  <!-- ✳️ EDIT MODAL -->
+
   <div id="faculty-edit-modal" class="faculty-modal">
     <div class="faculty-modal-content">
       <button id="modal-close-btn" class="modal-close-btn">&times;</button>
@@ -118,10 +109,10 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
+
   <div id="footer"></div>
 
-  <!-- JS -->
+
   <script src="/js/header.js"></script>
   <script src="/js/footer.js"></script>
   <script src="/js/layoutReady.js"></script>

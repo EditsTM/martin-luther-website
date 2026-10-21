@@ -1,7 +1,7 @@
-/*
- * File: public\css\school\admin.css
- * Purpose: Defines presentation styles for the admin interface.
- */
+
+
+
+
 
 :root {
   --blue: #282f7f;
@@ -21,9 +21,9 @@ body {
   background: #fff;
 }
 
-/* =============================
-   HERO / BACKGROUND SECTION
-============================= */
+
+
+
 .admin-hero {
   position: relative;
   width: 100%;
@@ -46,9 +46,9 @@ body {
   align-items: center;
 }
 
-/* =============================
-   LOGIN CARD
-============================= */
+
+
+
 .login-card {
   background: rgba(255, 255, 255, 0.9);
   padding: 40px 60px;
@@ -72,9 +72,9 @@ body {
   margin-bottom: 25px;
 }
 
-/* =============================
-   FORM STYLING
-============================= */
+
+
+
 .login-form {
   display: flex;
   flex-direction: column;
@@ -168,9 +168,9 @@ body {
   background: var(--light-blue);
 }
 
-/* =============================
-   BACK LINK
-============================= */
+
+
+
 .back-link {
   display: inline-block;
   margin-top: 20px;
@@ -184,9 +184,9 @@ body {
   color: var(--blue);
 }
 
-/* =============================
-   ANIMATION
-============================= */
+
+
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -198,9 +198,9 @@ body {
   }
 }
 
-/* =============================
-   RESPONSIVE
-============================= */
+
+
+
 @media (max-width: 700px) {
   .login-card {
     width: 85%;

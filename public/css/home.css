@@ -1,10 +1,10 @@
-/*
- * File: public\css\home.css
- * Purpose: Defines presentation styles for the home interface.
- */
-/* ======================================================
-   HERO SECTION
-====================================================== */
+
+
+
+
+
+
+
 .hero {
   position: relative;
   width: 100%;
@@ -22,7 +22,7 @@
   overflow: hidden;
 }
 
-/* Blue overlay */
+
 .hero::before {
   content: "";
   position: absolute;
@@ -30,18 +30,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(30, 42, 87, 0.6); /* #1e2a57 with 60% transparency */
+  background: rgba(30, 42, 87, 0.6);
   z-index: 1;
 }
 
-/* Keep text above overlay */
+
 .hero-content {
   position: relative;
   z-index: 2;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
 
-/* Hero text */
+
 .hero-content h1 {
   font-size: 60px;
   margin-bottom: 20px;
@@ -54,7 +54,7 @@
   font-weight: 600;
 }
 
-/* Hero buttons container */
+
 .hero-buttons {
   display: flex;
   justify-content: center;
@@ -62,9 +62,9 @@
   flex-wrap: wrap;
 }
 
-/* ======================================================
-   HERO BUTTON STYLES (SCOPED — DOES NOT AFFECT FOOTER)
-====================================================== */
+
+
+
 .hero-buttons .btn,
 .hero-buttons .btn-outline {
   display: inline-block;
@@ -79,7 +79,7 @@
   box-shadow: none;
 }
 
-/* Filled Hero Button */
+
 .hero-buttons .btn {
   background: #1e2a57;
   color: white;
@@ -92,7 +92,7 @@
   transform: scale(1.07);
 }
 
-/* Outline Hero Button */
+
 .hero-buttons .btn-outline {
   background: transparent;
   border: 2.5px solid white;
@@ -105,9 +105,9 @@
   transform: scale(1.07);
 }
 
-/* ======================================================
-   QUICK LINKS STRIP
-====================================================== */
+
+
+
 .quick-links {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -160,9 +160,9 @@
 }
 
 
-/* ======================================================
-   EVENTS SECTION
-====================================================== */
+
+
+
 .events-section {
   text-align: center;
   background: #f9f9f9;
@@ -176,7 +176,7 @@
   margin-bottom: 16px;
 }
 
-/* Cards layout */
+
 .events-cards {
   display: flex;
   justify-content: center;
@@ -186,7 +186,7 @@
   max-width: 1280px;
 }
 
-/* Individual event cards */
+
 .event-card {
   background: #ffffff;
   border-radius: 12px;
@@ -220,7 +220,7 @@
   border-bottom: 1.5px solid #000;
 }
 
-/* Event text */
+
 .event-name {
   color: #000;
   font-size: 24px;
@@ -236,7 +236,7 @@
   padding: 0 16px;
 }
 
-/* Button under cards */
+
 .events-button {
   margin-top: 4px;
 }
@@ -263,9 +263,9 @@
 }
 
 
-/* ======================================================
-   CALENDAR SHOWCASE
-====================================================== */
+
+
+
 .calendar-showcase {
   background:
     radial-gradient(circle at top right, rgba(66, 121, 188, 0.16), transparent 34%),
@@ -432,9 +432,9 @@
   outline-offset: 3px;
 }
 
-/* ======================================================
-   SCHOOL MERCH
-====================================================== */
+
+
+
 .school-merch {
   background: #1e2a57;
   color: #ffffff;
@@ -556,9 +556,9 @@
 }
 
 
-/* ======================================================
-   RESPONSIVE DESIGN
-====================================================== */
+
+
+
 @media (max-width: 500px) {
   .hero-buttons .btn,
   .hero-buttons .btn-outline {

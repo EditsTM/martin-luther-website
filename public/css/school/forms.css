@@ -1,7 +1,7 @@
-/*
- * File: public\css\school\forms.css
- * Purpose: Defines presentation styles for the forms interface.
- */
+
+
+
+
 
 .forms-overlay h1 {
   font-size: 48px;
@@ -10,9 +10,9 @@
 }
 
 
-/* =============================
-   MAIN CONTENT
-============================= */
+
+
+
 .forms-content {
   max-width: 1200px;
   margin: 80px auto;
@@ -23,9 +23,9 @@
   justify-content: center;
 }
 
-/* =============================
-   BIG CENTER PANEL
-============================= */
+
+
+
 .forms-panel {
   width: 100%;
   max-width: 900px;
@@ -50,7 +50,7 @@
   color: #000;
 }
 
-/* BIG CTA button */
+
 .forms-cta {
   display: inline-block;
   padding: 18px 40px;
@@ -70,7 +70,7 @@
   color: var(--ml-blue);
 }
 
-/* Mobile adjustments */
+
 @media (max-width: 600px) {
   .forms-panel {
     padding: 40px 25px;

@@ -1,7 +1,7 @@
-/*
- * File: public\css\school\admin-dashboard.css
- * Purpose: Defines presentation styles for the admin dashboard interface.
- */
+
+
+
+
 :root{
   --blue: #282f7f;
   --light-blue: #4279bc;
@@ -176,7 +176,7 @@ body{
   color: #6b7280;
 }
 
-/* MODAL */
+
 .modal-backdrop{
   position: fixed;
   inset: 0;
@@ -259,9 +259,9 @@ body{
   }
 }
 
-/* =============================
-   PREVIEW PANEL
-============================= */
+
+
+
 .preview-panel{
   margin-top: 16px;
   border: 1px solid rgba(66,121,188,0.25);
@@ -291,7 +291,7 @@ body{
 .preview-panel.is-hidden {
   display: none;
 }
-/* Logout button styling */
+
 .admin-nav__item--logout{
   background: var(--blue);
   color: #fff;
@@ -299,7 +299,7 @@ body{
   font-weight: 700;
 }
 
-/* Hover/focus = clearly interactive */
+
 .admin-nav__item--logout:hover,
 .admin-nav__item--logout:focus-visible{
   background: var(--light-blue);
@@ -307,7 +307,7 @@ body{
   box-shadow: 0 8px 18px rgba(40, 47, 127, 0.25);
 }
 
-/* Smooth transitions */
+
 .admin-nav__item{
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -349,20 +349,20 @@ body{
   border-color: rgba(179,0,0,0.35);
   color: var(--danger);
 }
-/* Status styling */
+
 .suggestion-card--in-progress{
-  border-color: rgba(234, 179, 8, 0.55); 
-  background: rgba(254, 249, 195, 0.85);  
+  border-color: rgba(234, 179, 8, 0.55);
+  background: rgba(254, 249, 195, 0.85);
 }
 
 .suggestion-card--done{
-  border-color: rgba(34, 197, 94, 0.55);  
-  background: rgba(220, 252, 231, 0.92);  
+  border-color: rgba(34, 197, 94, 0.55);
+  background: rgba(220, 252, 231, 0.92);
 }
 
 .suggestion-card--in-progress .icon-btn{
   border-color: rgba(234, 179, 8, 0.55);
-  color: #a16207; 
+  color: #a16207;
 }
 
 .suggestion-card--done .btn-mini.js-done{
